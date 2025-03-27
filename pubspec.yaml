@@ -2,6 +2,17 @@ name: cartan
 description: "A new Flutter project."
 publish_to: 'none'
 version: 0.1.0
+homepage: https://cartan.pt
+repository: https://github.com/cogniwave/cartan
+issue_tracker: https://github.com/cogniwave/cartan/issues
+platforms:
+  ios:
+  android:
+topics:
+  - flutter
+  - ios
+  - android
+  - mobile
 
 environment:
   sdk: ^3.7.2
