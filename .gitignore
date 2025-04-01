@@ -43,4 +43,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
 cartan.code-workspace
+.env
+/linux
+/macos
+/web
+

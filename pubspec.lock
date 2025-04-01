@@ -25,6 +25,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
+  bugsnag_bridge:
+    dependency: transitive
+    description:
+      name: bugsnag_bridge
+      sha256: "385d280e12abc9169fc20f43c8c28ad5bf970be81d4c077738e12c1f97676b48"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
+  bugsnag_flutter:
+    dependency: "direct main"
+    description:
+      name: bugsnag_flutter
+      sha256: "4cbcceac63e2b0423ea10aeef3b7bdc1ffdd3e1f4b9154e630c60bb73fe4b312"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.2"
   characters:
     dependency: transitive
     description:
@@ -62,6 +78,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_dotenv:
+    dependency: "direct main"
+    description:
+      name: flutter_dotenv
+      sha256: b7c7be5cd9f6ef7a78429cabd2774d3c4af50e79cb2b7593e3d5d763ef95c61b
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.2.1"
   flutter_lints:
     dependency: "direct dev"
     description:
