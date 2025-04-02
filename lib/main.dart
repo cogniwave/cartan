@@ -6,22 +6,24 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cartan/src/themes/app_themes.dart';
 import 'package:bugsnag_flutter/bugsnag_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'dart:async';
 
 Future<void> initializeApp() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load();
 
-  // final bugsnagApiKey = 'd591b3ade83580c510f9fc556bfe7115';
+  // package_info_plus
+  final packageInfo = await PackageInfo.fromPlatform();
+  final appVersion = packageInfo.version;
 
-  final bugsnagApiKey = dotenv.env['TESTE_API_KEY'] ?? 'BUGSNAG_API_KEY';
-
+  final bugsnagApiKey = dotenv.env['BUGSNAG_API_KEY'] ?? '';
   
   await bugsnag.start(
     apiKey: bugsnagApiKey,
     releaseStage: FlavorConfig.instance.flavor.toString().split('.').last,
     enabledReleaseStages: {'dev', 'staging', 'prod'},
-    appVersion: '1.0.0',
+    appVersion: appVersion,
     metadata: {
       'app': {
         'environment': FlavorConfig.instance.flavor.toString().split('.').last,
@@ -37,16 +39,15 @@ Future<void> initializeApp() async {
   };
 
   runZonedGuarded(() {
-    runApp(const MyApp());
+    runApp(const Cartan());
   }, (Object error, StackTrace stack) {
     bugsnag.notify(error, stack);
   });
   
-  runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class Cartan extends StatelessWidget {
+  const Cartan({super.key});
 
   @override
   Widget build(BuildContext context) {
