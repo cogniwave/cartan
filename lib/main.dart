@@ -18,7 +18,7 @@ Future<void> initializeApp() async {
   final appVersion = packageInfo.version;
 
   final bugsnagApiKey = dotenv.env['BUGSNAG_API_KEY'] ?? '';
-  
+
   await bugsnag.start(
     apiKey: bugsnagApiKey,
     releaseStage: FlavorConfig.instance.flavor.toString().split('.').last,
@@ -29,7 +29,7 @@ Future<void> initializeApp() async {
         'environment': FlavorConfig.instance.flavor.toString().split('.').last,
         'apiBaseUrl': FlavorConfig.instance.values.apiBaseUrl,
         'appName': FlavorConfig.instance.values.appName,
-      }
+      },
     },
   );
 
@@ -38,12 +38,10 @@ Future<void> initializeApp() async {
     FlutterError.presentError(details);
   };
 
-  runZonedGuarded(() {
-    runApp(const Cartan());
-  }, (Object error, StackTrace stack) {
-    bugsnag.notify(error, stack);
-  });
-  
+  runZonedGuarded(
+    () => runApp(const Cartan()),
+    (Object error, StackTrace stack) => bugsnag.notify(error, stack),
+  );
 }
 
 class Cartan extends StatelessWidget {
@@ -54,18 +52,14 @@ class Cartan extends StatelessWidget {
     return MaterialApp(
       title: FlavorConfig.instance.values.appName,
       theme: AppThemes.darkTheme,
-      supportedLocales: const [
-        Locale('pt', ''),
-      ],
+      supportedLocales: const [Locale('pt', '')],
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      navigatorObservers: [
-        BugsnagNavigatorObserver(),
-      ],
+      navigatorObservers: [BugsnagNavigatorObserver()],
       home: const HomePage(),
     );
   }
