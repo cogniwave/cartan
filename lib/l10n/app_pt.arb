@@ -1,7 +1,26 @@
 {
   "@@locale": "pt",
   "title": "Cartan",
-    "@title": {},
-  "greeting": "Bem-vindo!",
-    "@greeting": {}
+  "@title": {},
+
+  "cards": "Cartões",
+  "@cards": {},
+
+  "emptyCards": "Ainda não tens cartões associados",
+  "@emptyCards": {},
+
+  "add": "Adicionar",
+  "@add": {},
+
+  "help": "Ajuda",
+  "@help": {},
+
+  "success": "Operação realizada com sucesso!",
+  "@success": {},
+
+  "error": "Ocorreu um erro ao processar a sua solicitação.",
+  "@error": {},
+
+  "close": "Fechar",
+  "@close": {}
 }

@@ -21,7 +21,11 @@ class AppThemes {
       colorScheme: ColorScheme.dark(
         primary: AppColors.primary,
         secondary: AppColors.secondary,
+        tertiary: AppColors.accent,
+        tertiaryContainer: AppColors.accentAlt,
+        outline: AppColors.borders,
         surface: AppColors.background,
+        tertiaryFixed: AppColors.success,
         error: AppColors.error,
       ),
 
