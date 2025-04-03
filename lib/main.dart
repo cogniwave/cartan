@@ -17,19 +17,19 @@ Future<void> initializeApp() async {
   final packageInfo = await PackageInfo.fromPlatform();
   final appVersion = packageInfo.version;
 
-  final bugsnagApiKey = dotenv.env['BUGSNAG_API_KEY'] ?? '';
+  final environment = FlavorConfig.instance.flavor.toString().split('.').last;
 
   await bugsnag.start(
-    apiKey: bugsnagApiKey,
-    releaseStage: FlavorConfig.instance.flavor.toString().split('.').last,
+    apiKey: dotenv.env['BUGSNAG_API_KEY'] ?? '',
+    releaseStage: environment,
     enabledReleaseStages: {'dev', 'staging', 'prod'},
     appVersion: appVersion,
     metadata: {
       'app': {
-        'environment': FlavorConfig.instance.flavor.toString().split('.').last,
+        'environment': environment,
         'apiBaseUrl': FlavorConfig.instance.values.apiBaseUrl,
         'appName': FlavorConfig.instance.values.appName,
-      },
+      }
     },
   );
 
