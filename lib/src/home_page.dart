@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
-import 'package:cartan/utils/messages.dart';
+import 'package:cartan/utils/app_snackbar.dart';
+import '../src/themes/app_themes.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,19 +15,21 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final customColor = Theme.of(context).extension<CustomColors>()!;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        backgroundColor: theme.appBarTheme.backgroundColor,
         title: Text(
           localizations.cards,
           style: TextStyle(
-            color: Theme.of(context).colorScheme.primary,
+            color: theme.colorScheme.primary,
             fontWeight: FontWeight.bold,
           ),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.more_vert, color: Theme.of(context).colorScheme.primary),
+            icon: Icon(Icons.more_vert, color: theme.colorScheme.primary),
             onPressed: () {
               showMenu(
                 context: context,
@@ -56,8 +59,8 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: <Widget>[
           Divider(
-            color: Theme.of(context).dividerTheme.color,
-            thickness: Theme.of(context).dividerTheme.thickness,
+            color: theme.dividerTheme.color,
+            thickness: theme.dividerTheme.thickness,
           ),
           Padding(
             padding: const EdgeInsets.only(top: 100.0),
@@ -69,7 +72,7 @@ class _HomePageState extends State<HomePage> {
                   localizations.emptyCards,
                   style: TextStyle(
                     fontSize: 24,
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: theme.colorScheme.secondary,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -78,8 +81,8 @@ class _HomePageState extends State<HomePage> {
                   icon: const Icon(AntIcons.plusCircleOutlined),
                   label: Text(localizations.add),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
-                    foregroundColor: Theme.of(context).colorScheme.primary,
+                    backgroundColor: customColor.accentAlt,
+                    foregroundColor: theme.colorScheme.primary,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 24,
                       vertical: 12,
@@ -89,35 +92,8 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   onPressed: () {
-                    // Add button action
-                  },
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton.icon(
-                  label: Text('success'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.tertiaryFixed,
-                    foregroundColor: Colors.white,
-                  ),
-                  onPressed: () {
-                    Messages.showSuccess(context, localizations.success);
-                  },
-                ),
-                ElevatedButton.icon(
-                  label: Text('error'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.error,
-                    foregroundColor: Colors.white,
-                  ),
-                  onPressed: () {
-                    Messages.showError(context, localizations.error);
+                    // Button action
+                    AppSnackBar.showSuccess(context, "a funcionar");
                   },
                 ),
               ],

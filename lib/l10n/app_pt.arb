@@ -1,26 +1,42 @@
 {
   "@@locale": "pt",
   "title": "Cartan",
-  "@title": {},
+  "@title": {
+    "description": "The name of the application, displayed as the app title."
+  },
 
   "cards": "Cartões",
-  "@cards": {},
+  "@cards": {
+    "description": "The title used in the AppBar for the cards section."
+  },
 
   "emptyCards": "Ainda não tens cartões associados",
-  "@emptyCards": {},
+  "@emptyCards": {
+    "description": "Message displayed on the Home page when no cards are associated."
+  },
 
   "add": "Adicionar",
-  "@add": {},
+  "@add": {
+    "description": "Label for the button used to add a new card."
+  },
 
   "help": "Ajuda",
-  "@help": {},
+  "@help": {
+    "description": "Label for the help option in the menu."
+  },
 
   "success": "Operação realizada com sucesso!",
-  "@success": {},
+  "@success": {
+    "description": "Feedback message displayed in a SnackBar when an operation succeeds."
+  },
 
   "error": "Ocorreu um erro ao processar a sua solicitação.",
-  "@error": {},
+  "@error": {
+    "description": "Error message displayed in a SnackBar when an operation fails."
+  },
 
   "close": "Fechar",
-  "@close": {}
+  "@close": {
+    "description": "Label for the button used to close the SnackBar."
+  }
 }
