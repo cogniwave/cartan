@@ -93,7 +93,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                   onPressed: () {
                     // Button action
-                    AppSnackBar.showSuccess(context, "a funcionar");
                   },
                 ),
               ],
