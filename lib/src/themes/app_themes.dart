@@ -12,18 +12,72 @@ class AppColors {
   static const Color error = Color(0xFFEF5350);
 }
 
+// Custom color extension
+class CustomColors extends ThemeExtension<CustomColors> {
+  final Color success;
+  final Color borders;
+  final Color accent;
+  final Color accentAlt;
+
+  const CustomColors({
+    required this.success,
+    required this.borders,
+    required this.accent,
+    required this.accentAlt,
+  });
+
+  @override
+  ThemeExtension<CustomColors> copyWith({
+    Color? success,
+    Color? borders,
+    Color? accent,
+    Color? accentAlt,
+  }) {
+    return CustomColors(
+      success: success ?? this.success,
+      borders: borders ?? this.borders,
+      accent: accent ?? this.accent,
+      accentAlt: accentAlt ?? this.accentAlt,
+    );
+  }
+
+  @override
+  ThemeExtension<CustomColors> lerp(ThemeExtension<CustomColors>? other, double t) {
+    if (other is! CustomColors) {
+      return this;
+    }
+    return CustomColors(
+      success: Color.lerp(success, other.success, t)!,
+      borders: Color.lerp(borders, other.borders, t)!,
+      accent: Color.lerp(accent, other.accent, t)!,
+      accentAlt: Color.lerp(accentAlt, other.accentAlt, t)!,
+    );
+  }
+
+  // Factory for dark theme
+  static CustomColors dark = CustomColors(
+    success: AppColors.success,
+    borders: AppColors.borders,
+    accent: AppColors.accent,
+    accentAlt: AppColors.accentAlt,
+  );
+}
+
 class AppThemes {
   static ThemeData get darkTheme {
     return ThemeData(
       brightness: Brightness.dark,
-      
+
       // Color schemes
       colorScheme: ColorScheme.dark(
         primary: AppColors.primary,
         secondary: AppColors.secondary,
-        surface: AppColors.background,
         error: AppColors.error,
+        surface: AppColors.background,
       ),
+
+      // Add custom colors extension
+      extensions: [CustomColors.dark],
 
       // AppBar
       appBarTheme: AppBarTheme(
