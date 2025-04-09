@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
-import 'package:cartan/utils/app_snackbar.dart';
-import '../src/themes/app_themes.dart';
+import 'themes/app_themes.dart';
+import 'screens/settings_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -41,20 +41,30 @@ class _HomePageState extends State<HomePage> {
                 ),
                 items: [
                   PopupMenuItem(
+                    value: 'settings',
+                    child: Text(localizations.settings),
+                  ),
+                  PopupMenuItem(
                     value: 'help',
                     child: Text(localizations.help),
                   ),
-
                 ],
                 elevation: 8,
               ).then((value) {
                 if (value != null) {
-                  // Menu options
+                  if (value == 'settings') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SettingsScreen()),
+                    );
+                  } else if (value == 'help') {
+                    // Help option menu
+                  }
                 }
               });
             },
           ),
-        ],
+        ]
       ),
       body: Column(
         children: <Widget>[
@@ -63,13 +73,17 @@ class _HomePageState extends State<HomePage> {
             thickness: theme.dividerTheme.thickness,
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 100.0),
+            padding: const EdgeInsets.only(
+              top: 100.0,
+              left: 16.0,
+              right: 16.0,
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  localizations.emptyCards,
+                  localizations.empty_cards,
                   style: TextStyle(
                     fontSize: 24,
                     color: theme.colorScheme.secondary,
