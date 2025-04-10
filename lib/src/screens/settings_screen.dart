@@ -46,7 +46,7 @@ class SettingsScreen extends StatelessWidget {
               },
             ),
             SwitchListTile(
-              title: Text(localizations.theme),
+              title: Text(localizations.dark_mode),
               // subtitle: Text(localizations.theme_description),
               value: themeProvider.isDarkMode,
               onChanged: (value) {

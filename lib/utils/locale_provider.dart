@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:ui';
 
 class LocaleProvider extends ChangeNotifier {
   Locale? _locale;
+
+  final List<String> supportedLanguages = ['pt', 'en'];
+  final String defaultLanguage = 'pt';
 
   Locale? get locale => _locale;
 
@@ -17,8 +21,20 @@ class LocaleProvider extends ChangeNotifier {
 
     if (languageCode != null) {
       _locale = Locale(languageCode, '');
-      notifyListeners();
+    } else {
+      final deviceLocale = PlatformDispatcher.instance.locale.languageCode;
+
+      // Check if language is supported
+      if (supportedLanguages.contains(deviceLocale)) {
+        _locale = Locale(deviceLocale, '');
+        await prefs.setString('languageCode', deviceLocale);
+      } else {
+        _locale = Locale(defaultLanguage, '');
+        await prefs.setString('languageCode', defaultLanguage);
+      }
     }
+
+    notifyListeners();
   }
 
   // Save language chosen
@@ -35,7 +51,14 @@ class LocaleProvider extends ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('languageCode');
 
-    _locale = null;
+    final deviceLocale = PlatformDispatcher.instance.locale.languageCode;
+
+    if (supportedLanguages.contains(deviceLocale)) {
+      _locale = Locale(deviceLocale, '');
+    } else {
+      _locale = Locale(defaultLanguage, '');
+    }
+
     notifyListeners();
   }
 

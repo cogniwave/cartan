@@ -19,17 +19,6 @@ class LanguageScreen extends StatelessWidget {
       body: ListView(
         children: [
           RadioListTile<String>(
-            title: Text(localizations.system_default),
-            value: 'system',
-            groupValue: currentLanguage,
-            onChanged: (value) {
-              if (value != null) {
-                localeProvider.clearLocale();
-                Navigator.pop(context);
-              }
-            },
-          ),
-          RadioListTile<String>(
             title: Text('Português'),
             value: 'pt',
             groupValue: currentLanguage,

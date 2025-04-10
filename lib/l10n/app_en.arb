@@ -50,9 +50,9 @@
     "description": "Menu option for app language."
   },
 
-  "theme": "Theme",
-  "@theme": {
-    "description": "Menu option for app theme."
+  "dark_mode": "Dark mode",
+  "@dark_mode": {
+    "description": "Menu option for dark mode."
   },
 
   "font_size": "Font size",
@@ -73,11 +73,6 @@
   "feedback": "Feedback",
   "@feedback": {
     "description": "Menu option for user Feedback."
-  },
-
-  "system_default": "System default",
-  "@system_default": {
-    "description": "Option for selecting the system default font size."
   },
 
   "large_font": "Large",
