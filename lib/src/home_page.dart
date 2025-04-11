@@ -31,40 +31,13 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             icon: Icon(Icons.more_vert, color: theme.colorScheme.primary),
             onPressed: () {
-              showMenu(
-                context: context,
-                position: RelativeRect.fromLTRB(
-                  MediaQuery.of(context).size.width,
-                  kToolbarHeight,
-                  0,
-                  0,
-                ),
-                items: [
-                  PopupMenuItem(
-                    value: 'settings',
-                    child: Text(localizations.settings),
-                  ),
-                  PopupMenuItem(
-                    value: 'help',
-                    child: Text(localizations.help),
-                  ),
-                ],
-                elevation: 8,
-              ).then((value) {
-                if (value != null) {
-                  if (value == 'settings') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SettingsScreen()),
-                    );
-                  } else if (value == 'help') {
-                    // Help option menu
-                  }
-                }
-              });
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+              );
             },
           ),
-        ]
+        ],
       ),
       body: Column(
         children: <Widget>[
@@ -73,11 +46,7 @@ class _HomePageState extends State<HomePage> {
             thickness: theme.dividerTheme.thickness,
           ),
           Padding(
-            padding: const EdgeInsets.only(
-              top: 100.0,
-              left: 16.0,
-              right: 16.0,
-            ),
+            padding: const EdgeInsets.only(top: 100.0, left: 16.0, right: 16.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'src/home_page.dart';
 import 'utils/flavor_config.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:bugsnag_flutter/bugsnag_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -74,16 +73,8 @@ class Cartan extends StatelessWidget {
             title: FlavorConfig.instance.values.appName,
             theme: themeProvider.themeData,
             locale: localeProvider.locale,
-            supportedLocales: const [
-              Locale('pt', ''),
-              Locale('en', ''),
-            ],
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
             navigatorObservers: [BugsnagNavigatorObserver()],
             builder: (context, child) {
               return FontSizeScaler(child: child!);

@@ -24,46 +24,32 @@ class LocaleProvider extends ChangeNotifier {
     } else {
       final deviceLocale = PlatformDispatcher.instance.locale.languageCode;
 
-      // Check if language is supported
+      // Check if system language is supported
       if (supportedLanguages.contains(deviceLocale)) {
         _locale = Locale(deviceLocale, '');
-        await prefs.setString('languageCode', deviceLocale);
       } else {
         _locale = Locale(defaultLanguage, '');
-        await prefs.setString('languageCode', defaultLanguage);
       }
+
+      await prefs.setString('languageCode', _locale!.languageCode);
     }
 
     notifyListeners();
   }
 
-  // Save language chosen
+  // Save language chosen by user
   Future<void> setLocale(String languageCode) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('languageCode', languageCode);
+    if (supportedLanguages.contains(languageCode)) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('languageCode', languageCode);
 
-    _locale = Locale(languageCode, '');
-    notifyListeners();
-  }
-
-  // Remove language preferences (uses system default)
-  Future<void> clearLocale() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('languageCode');
-
-    final deviceLocale = PlatformDispatcher.instance.locale.languageCode;
-
-    if (supportedLanguages.contains(deviceLocale)) {
-      _locale = Locale(deviceLocale, '');
-    } else {
-      _locale = Locale(defaultLanguage, '');
+      _locale = Locale(languageCode, '');
+      notifyListeners();
     }
-
-    notifyListeners();
   }
 
   // Check current language
   String getCurrentLanguage() {
-    return _locale?.languageCode ?? 'system';
+    return _locale?.languageCode ?? defaultLanguage;
   }
 }

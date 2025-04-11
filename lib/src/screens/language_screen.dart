@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../../utils/locale_provider.dart';
+import 'package:cartan/utils/locale_provider.dart';
+import 'package:cartan/src/widgets/language_widgets.dart';
 
 class LanguageScreen extends StatelessWidget {
   const LanguageScreen({super.key});
@@ -18,27 +19,17 @@ class LanguageScreen extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          RadioListTile<String>(
-            title: Text('Português'),
+          LanguageOption(
+            title: 'Português',
             value: 'pt',
-            groupValue: currentLanguage,
-            onChanged: (value) {
-              if (value != null) {
-                localeProvider.setLocale(value);
-                Navigator.pop(context);
-              }
-            },
+            currentLanguage: currentLanguage,
+            localeProvider: localeProvider,
           ),
-          RadioListTile<String>(
-            title: Text('English'),
+          LanguageOption(
+            title: 'English',
             value: 'en',
-            groupValue: currentLanguage,
-            onChanged: (value) {
-              if (value != null) {
-                localeProvider.setLocale(value);
-                Navigator.pop(context);
-              }
-            },
+            currentLanguage: currentLanguage,
+            localeProvider: localeProvider,
           ),
         ],
       ),

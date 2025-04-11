@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../src/themes/app_themes.dart';
+import 'package:cartan/src/themes/app_themes.dart';
 
 class ThemeProvider extends ChangeNotifier {
   // Current theme state
@@ -30,13 +30,6 @@ class ThemeProvider extends ChangeNotifier {
   // Method to toggle between themes
   void toggleTheme() {
     _isDarkMode = !_isDarkMode;
-    _saveThemeToPrefs();
-    notifyListeners();
-  }
-
-  // Method to set a specific theme
-  void setDarkMode(bool isDark) {
-    _isDarkMode = isDark;
     _saveThemeToPrefs();
     notifyListeners();
   }

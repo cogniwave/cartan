@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../../utils/font_size_provider.dart';
+import 'package:cartan/utils/font_size_provider.dart';
+import 'package:cartan/src/widgets/font_size_widgets.dart';
 
 class FontSizeScreen extends StatelessWidget {
   const FontSizeScreen({super.key});
@@ -22,38 +23,23 @@ class FontSizeScreen extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          RadioListTile<double>(
-            title: Text(localizations.large_font),
+          FontSizeOption(
+            title: localizations.large_font,
             value: 1.75,
-            groupValue: currentFontSize,
-            onChanged: (value) {
-              if (value != null) {
-                fontSizeProvider.setFontSize(value);
-                Navigator.pop(context);
-              }
-            },
+            currentFontSize: currentFontSize,
+            fontSizeProvider: fontSizeProvider,
           ),
-          RadioListTile<double>(
-            title: Text(localizations.normal_font),
+          FontSizeOption(
+            title: localizations.normal_font,
             value: 1.0,
-            groupValue: currentFontSize,
-            onChanged: (value) {
-              if (value != null) {
-                fontSizeProvider.setFontSize(value);
-                Navigator.pop(context);
-              }
-            },
+            currentFontSize: currentFontSize,
+            fontSizeProvider: fontSizeProvider,
           ),
-          RadioListTile<double>(
-            title: Text(localizations.small_font),
+          FontSizeOption(
+            title: localizations.small_font,
             value: 0.5,
-            groupValue: currentFontSize,
-            onChanged: (value) {
-              if (value != null) {
-                fontSizeProvider.setFontSize(value);
-                Navigator.pop(context);
-              }
-            },
+            currentFontSize: currentFontSize,
+            fontSizeProvider: fontSizeProvider,
           ),
         ],
       ),

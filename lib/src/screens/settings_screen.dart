@@ -3,11 +3,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:bugsnag_flutter/bugsnag_flutter.dart';
 import 'package:provider/provider.dart';
-import '../../utils/app_snackbar.dart';
-import '../../utils/theme_provider.dart';
+import 'package:cartan/utils/app_snackbar.dart';
+import 'package:cartan/utils/theme_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../widgets/font_size_widgets.dart';
-import '../widgets/language_widgets.dart';
+import 'package:cartan/src/widgets/font_size_widgets.dart';
+import 'package:cartan/src/widgets/language_widgets.dart';
 import 'font_size_screen.dart';
 import 'language_screen.dart';
 
