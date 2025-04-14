@@ -1,71 +1,71 @@
 {
-  "@@locale": "pt",
+  "@@locale": "en",
   "title": "Cartan",
   "@title": {
     "description": "The name of the application, displayed as the app title."
   },
 
-  "cards": "Cartões",
+  "cards": "Cards",
   "@cards": {
     "description": "The title used in the AppBar for the cards section."
   },
 
-  "empty_cards": "Ainda não tens cartões associados",
+  "empty_cards": "You don't have any cards linked yet",
   "@emptyCards": {
     "description": "Message displayed on the Home page when no cards are associated."
   },
 
-  "add": "Adicionar",
+  "add": "Add",
   "@add": {
     "description": "Label for the button used to add a new card."
   },
 
-  "help": "Ajuda",
+  "help": "Help",
   "@help": {
     "description": "Label for the help option in the menu."
   },
 
-  "settings": "Definições",
+  "settings": "Settings",
   "@settings": {
     "description": "Label for the settings option in the menu."
   },
 
-  "success": "Operação realizada com sucesso!",
+  "success": "Operation completed successfully!",
   "@success": {
     "description": "Feedback message displayed in a SnackBar when an operation succeeds."
   },
 
-  "error": "Ocorreu um erro ao processar a sua solicitação.",
+  "error": "An error occurred while processing your request.",
   "@error": {
     "description": "Error message displayed in a SnackBar when an operation fails."
   },
 
-  "close": "Fechar",
+  "close": "Close",
   "@close": {
     "description": "Label for the button used to close the SnackBar."
   },
 
-  "language": "Idioma",
+  "language": "Language",
   "@language": {
     "description": "Menu option for app language."
   },
 
-  "dark_mode": "Modo escuro",
+  "dark_mode": "Dark mode",
   "@dark_mode": {
     "description": "Menu option for dark mode."
   },
 
-  "font_size": "Tamanho da letra",
+  "font_size": "Font size",
   "@font_size": {
     "description": "Menu option for app text size."
   },
 
-  "terms_of_service": "Termos de utilização",
+  "terms_of_service": "Terms of service",
   "@terms_of_service": {
     "description": "Menu option for app Terms of Service."
   },
 
-  "privacy_policy": "Política de privacidade",
+  "privacy_policy": "Privacy Policy",
   "@privacy_policy": {
     "description": "Menu option for app Privacy Policy."
   },
@@ -75,7 +75,7 @@
     "description": "Menu option for user Feedback."
   },
 
-  "large_font": "Grande",
+  "large_font": "Large",
   "@large_font": {
     "description": "Option for selecting a large font size."
   },
@@ -85,9 +85,8 @@
     "description": "Option for selecting the normal font size."
   },
 
-  "small_font": "Pequena",
+  "small_font": "Small",
   "@small_font": {
     "description": "Option for selecting a small font size."
   }
-
 }

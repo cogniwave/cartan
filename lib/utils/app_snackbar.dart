@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../src/themes/app_themes.dart';
+import 'package:cartan/src/themes/app_themes.dart';
 
 class AppSnackBar {
 
@@ -48,11 +48,10 @@ class AppSnackBar {
 
   // Success message
   static void showSuccess(BuildContext context, String message) {
-    final customColor = Theme.of(context).extension<CustomColors>()!;
     _showMessage(
       context: context,
       message: message,
-      color: customColor.success,
+      color: Theme.of(context).extension<CustomColors>()!.success,
       icon: AntIcons.checkOutlined,
       actionLabel: 'OK',
     );
@@ -60,14 +59,12 @@ class AppSnackBar {
 
   // Error message
   static void showError(BuildContext context, String message) {
-    final theme = Theme.of(context);
-    final localizations = AppLocalizations.of(context)!;
     _showMessage(
       context: context,
       message: message,
-      color: theme.colorScheme.error,
+      color: Theme.of(context).colorScheme.error,
       icon: AntIcons.closeOutlined,
-      actionLabel: localizations.close,
+      actionLabel: AppLocalizations.of(context)!.close,
       duration: const Duration(seconds: 4),
     );
   }
