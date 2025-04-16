@@ -1,0 +1,23 @@
+[
+  {
+    "id": "pingo_doce",
+    "displayName": "Pingo Doce",
+    "formats": ["^\\d{13}$", "^\\d{9}$"],
+    "assetImagePath": "lib/assets/images/loyalty_cards/pingo_doce_card.png",
+    "category": "Simple"
+  },
+  {
+    "id": "continente",
+    "displayName": "Continente",
+    "formats": ["^\\d{13}$"],
+    "assetImagePath": "lib/assets/images/loyalty_cards/continente_card.png",
+    "category": "Simple"
+  },
+  {
+    "id": "ikea",
+    "displayName": "IKEA",
+    "formats": ["^\\d{16}$", "^\\d{19}$"],
+    "assetImagePath": "lib/assets/images/loyalty_cards/ikea_card.png",
+    "category": "Simple"
+  }
+]

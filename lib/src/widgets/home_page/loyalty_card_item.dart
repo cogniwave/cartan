@@ -1,0 +1,32 @@
+import 'package:flutter/material.dart';
+import 'package:cartan/src/models/loyalty_card.dart';
+
+class LoyaltyCardItem extends StatelessWidget {
+  final LoyaltyCard card;
+  final VoidCallback? onTap;
+
+  const LoyaltyCardItem({
+    super.key,
+    required this.card,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Image.asset(
+          card.merchant.assetImagePath,
+          width: double.infinity,
+          height: 200,
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+}

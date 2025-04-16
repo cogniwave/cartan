@@ -88,5 +88,55 @@
   "small_font": "Small",
   "@small_font": {
     "description": "Option for selecting a small font size."
+  },
+
+  "select_merchant": "Select merchant",
+  "@select_merchant": {
+    "description": "Label for selecting a store or merchant."
+  },
+
+  "scan_barcode": "Scan barcode",
+  "@scan_barcode": {
+    "description": "Option to scan the barcode on a loyalty card."
+  },
+
+  "enter_manually": "Enter manually",
+  "@enter_manually": {
+    "description": "Option to manually enter the card number."
+  },
+
+  "position_barcode_in_frame": "Position the barcode within the frame",
+  "@position_barcode_in_frame": {
+    "description": "Instruction to help user align barcode for scanning."
+  },
+
+  "scanning_hint": "Make sure the barcode is well-lit and clearly visible",
+  "@scanning_hint": {
+    "description": "Tip to improve barcode scanning success."
+  },
+
+  "card_number": "Card number",
+  "@card_number": {
+    "description": "Label for the field where the card number is entered."
+  },
+
+  "add_card": "Add card",
+  "@add_card": {
+    "description": "Button or label to confirm adding a new loyalty card."
+  },
+
+  "format_hint": "Enter the number shown on your loyalty card",
+  "@format_hint": {
+    "description": "Hint text explaining the expected card number format."
+  },
+
+  "invalid_card_format": "Invalid card format",
+  "@invalid_card_format": {
+    "description": "Error message shown when the card number format is incorrect."
+  },
+
+  "card_added_successfully": "Card added successfully",
+  "@card_added_successfully": {
+    "description": "Message confirming that the card has been successfully added."
   }
 }

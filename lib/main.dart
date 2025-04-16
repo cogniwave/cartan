@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'src/home_page.dart';
-import 'utils/flavor_config.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:bugsnag_flutter/bugsnag_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:provider/provider.dart';
+import 'dart:async';
+import 'src/home_page.dart';
+import 'utils/flavor_config.dart';
 import 'utils/theme_provider.dart';
 import 'utils/locale_provider.dart';
 import 'utils/font_size_provider.dart';
-import 'src/widgets/font_size_widgets.dart';
-import 'dart:async';
+import 'package:cartan/src/widgets/font_size/font_size_scaler.dart';
+import 'package:cartan/src/repositories/merchants_repository.dart';
+import 'package:cartan/src/repositories/loyalty_card_repository.dart';
 
 Future<void> initializeApp() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,17 +44,29 @@ Future<void> initializeApp() async {
   };
 
   runZonedGuarded(
-    () => runApp(
+        () => runApp(
       MultiProvider(
         providers: [
+          // Providers existentes
           ChangeNotifierProvider(create: (_) => ThemeProvider()),
           ChangeNotifierProvider(create: (_) => LocaleProvider()),
           ChangeNotifierProvider(create: (_) => FontSizeProvider()),
+          // Novos providers
+          Provider<MerchantsRepository>(
+            create: (_) {
+              final repo = MerchantsRepository();
+              repo.initialize();
+              return repo;
+            },
+          ),
+          ProxyProvider<MerchantsRepository, LoyaltyCardRepository>(
+            update: (_, merchantsRepo, __) => LoyaltyCardRepository(merchantsRepo),
+          ),
         ],
         child: const Cartan(),
       ),
     ),
-    (Object error, StackTrace stack) => bugsnag.notify(error, stack),
+        (Object error, StackTrace stack) => bugsnag.notify(error, stack),
   );
 }
 
@@ -61,28 +75,21 @@ class Cartan extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => LocaleProvider()),
-        ChangeNotifierProvider(create: (_) => FontSizeProvider()),
-      ],
-      child: Consumer2<ThemeProvider, LocaleProvider>(
-        builder: (context, themeProvider, localeProvider, _) {
-          return MaterialApp(
-            title: FlavorConfig.instance.values.appName,
-            theme: themeProvider.themeData,
-            locale: localeProvider.locale,
-            supportedLocales: AppLocalizations.supportedLocales,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            navigatorObservers: [BugsnagNavigatorObserver()],
-            builder: (context, child) {
-              return FontSizeScaler(child: child!);
-            },
-            home: const HomePage(),
-          );
-        },
-      ),
+    return Consumer2<ThemeProvider, LocaleProvider>(
+      builder: (context, themeProvider, localeProvider, _) {
+        return MaterialApp(
+          title: FlavorConfig.instance.values.appName,
+          theme: themeProvider.themeData,
+          locale: localeProvider.locale,
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          navigatorObservers: [BugsnagNavigatorObserver()],
+          builder: (context, child) {
+            return FontSizeScaler(child: child!);
+          },
+          home: const HomePage(),
+        );
+      },
     );
   }
 }
