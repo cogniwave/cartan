@@ -34,6 +34,7 @@ dependencies:
   mobile_scanner: ^3.2.0
   barcode_widget: ^2.0.3
   qr_flutter: ^4.1.0
+  screen_brightness: ^0.2.2
 
 dev_dependencies:
   flutter_test:

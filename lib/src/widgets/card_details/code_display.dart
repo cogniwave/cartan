@@ -43,30 +43,47 @@ class CodeDisplayWidget extends StatelessWidget {
           Expanded(
             child: Center(
               child: showQrCode
-                  ? Container(
-                width: qrSize,
-                height: qrSize,
-                padding: qrPadding,
-                color: Colors.white,
-                alignment: Alignment.center,
-                child: FittedBox(
-                  fit: BoxFit.contain,
-                  child: QrImageView(
-                    data: cardNumber,
-                    version: QrVersions.auto,
-                    size: qrSize,
-                    backgroundColor: Colors.white,
-                    padding: EdgeInsets.zero,
+                  ? Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: onZoomPressed,
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    width: qrSize,
+                    height: qrSize,
+                    padding: qrPadding,
+                    color: Colors.white,
+                    alignment: Alignment.center,
+                    child: FittedBox(
+                      fit: BoxFit.contain,
+                      child: QrImageView(
+                        data: cardNumber,
+                        version: QrVersions.auto,
+                        size: qrSize,
+                        backgroundColor: Colors.white,
+                        padding: EdgeInsets.zero,
+                      ),
+                    ),
                   ),
                 ),
               )
-                  : BarcodeWidget(
-                barcode: Barcode.code128(),
-                data: cardNumber,
-                width: barcodeWidth,
-                height: barcodeHeight,
-                drawText: false,
-                color: theme.colorScheme.primary,
+                  : Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: onZoomPressed,
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    padding: EdgeInsets.all(16),
+                    child: BarcodeWidget(
+                      barcode: Barcode.code128(),
+                      data: cardNumber,
+                      width: barcodeWidth,
+                      height: barcodeHeight,
+                      drawText: false,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                ),
               ),
             ),
           ),

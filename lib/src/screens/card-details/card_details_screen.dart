@@ -1,3 +1,4 @@
+import 'package:cartan/src/screens/card-details/fullscreen_code_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cartan/src/models/merchant.dart';
@@ -39,18 +40,18 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
     super.dispose();
   }
 
-  /*void _openFullScreenCode() {
+  void _openFullScreenCode() {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => FullScreenCodePage(
-          cardNumber: widget.card.cardNumber,
+          cardNumber: widget.card.memberId,
           showQrCode: _showQrCode,
         ),
       ),
     );
   }
 
-  void _navigateToOptions() {
+  /*void _navigateToOptions() {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => CardOptionsScreen(
@@ -93,7 +94,7 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
           IconButton(
             icon: const Icon(Icons.more_vert, size: 24),
             onPressed: () {
-              // TODO: _navigateToOptions
+              // _navigateToOptions();
             },
           ),
         ],
@@ -150,13 +151,9 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
                 child: CodeDisplayWidget(
                   cardNumber: widget.card.memberId,
                   showQrCode: _showQrCode,
-                  onZoomPressed: () {
-                    // TODO: _openFullScreenCode
-                  },
+                  onZoomPressed: _openFullScreenCode, // Usar a função já definida
                 ),
               ),
-
-              SizedBox(height: isLandscape ? 16 : 24),
             ],
           ),
         ),

@@ -153,5 +153,10 @@
   "zoom": "Zoom",
   "@zoom": {
     "description": "Label for the zoom button to enlarge the code."
+  },
+
+  "back": "Back",
+  "@back": {
+    "description": "Label for the back button on fullscreen code mode."
   }
 }
