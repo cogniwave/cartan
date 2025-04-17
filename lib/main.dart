@@ -47,11 +47,9 @@ Future<void> initializeApp() async {
         () => runApp(
       MultiProvider(
         providers: [
-          // Providers existentes
           ChangeNotifierProvider(create: (_) => ThemeProvider()),
           ChangeNotifierProvider(create: (_) => LocaleProvider()),
           ChangeNotifierProvider(create: (_) => FontSizeProvider()),
-          // Novos providers
           Provider<MerchantsRepository>(
             create: (_) {
               final repo = MerchantsRepository();

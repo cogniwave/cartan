@@ -21,7 +21,7 @@ class CardDetailsScreen extends StatefulWidget {
 
 class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  // _showQrCode pode ser derivado do índice do TabController
+
   bool get _showQrCode => _tabController.index == 1;
 
   @override
@@ -66,6 +66,11 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
     final theme = Theme.of(context);
     final customColors = theme.extension<CustomColors>()!;
     final localizations = AppLocalizations.of(context)!;
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+
+    String formatMemberId(String id) {
+      return id.replaceAllMapped(RegExp(r'.{1,3}'), (match) => '${match.group(0)} ').trim();
+    }
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
@@ -73,12 +78,16 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
         backgroundColor: theme.colorScheme.surface,
         elevation: 0,
         iconTheme: IconThemeData(color: theme.colorScheme.primary),
-        title: Text(
-          widget.merchant.displayName,
-          style: theme.textTheme.titleMedium?.copyWith(
-            color: theme.colorScheme.primary,
-            fontWeight: FontWeight.bold,
-          ),
+        title: Row(
+          children: [
+            Image.asset(
+              widget.merchant.assetImagePath,
+              width: 40,
+              height: 40,
+            ),
+            const SizedBox(width: 8),
+            Text(widget.merchant.displayName),
+          ],
         ),
         actions: [
           IconButton(
@@ -89,50 +98,33 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 24),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
-                padding: const EdgeInsets.all(24),
-                child: Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.asset(
-                        widget.merchant.assetImagePath,
-                        height: 60,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.merchant.displayName,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            widget.card.memberId,
-                            style: theme.textTheme.bodyMedium,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                padding: EdgeInsets.fromLTRB(
+                  isLandscape ? 24 : 16,
+                  isLandscape ? 32 : 42,
+                  isLandscape ? 24 : 16,
+                  0,
+                ),                child: Text(
+                  formatMemberId(widget.card.memberId),
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.headlineLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.primary,
+                  ),
                 ),
               ),
 
+              SizedBox(height: isLandscape ? 8 : 16),
+
               // TabBar barcode / QR
               Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16),
+                margin: EdgeInsets.symmetric(horizontal: isLandscape ? 24 : 16),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.surface,
                   borderRadius: BorderRadius.circular(20),
@@ -150,12 +142,10 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
                 ),
               ),
 
-              const SizedBox(height: 16),
+              SizedBox(height: isLandscape ? 8 : 16),
 
-              // Barcode or QR Code
-              Container(
-                height: MediaQuery.of(context).size.height * 0.4, // ajuste conforme necessário
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+              SizedBox(
+                height: isLandscape ? 240 : 360,
                 child: CodeDisplayWidget(
                   cardNumber: widget.card.memberId,
                   showQrCode: _showQrCode,
@@ -164,6 +154,8 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
                   },
                 ),
               ),
+
+              SizedBox(height: isLandscape ? 16 : 24),
             ],
           ),
         ),

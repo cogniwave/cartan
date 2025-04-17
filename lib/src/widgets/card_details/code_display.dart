@@ -21,10 +21,23 @@ class CodeDisplayWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final localizations = AppLocalizations.of(context)!;
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+
+    final qrSize = isLandscape ? 120.0 : 200.0;
+    final barcodeWidth = isLandscape ? 240.0 : 300.0;
+    final barcodeHeight = isLandscape ? 80.0 : 120.0;
+
+    final verticalSpacing = isLandscape ? 8.0 : 24.0;
+    final containerPadding = isLandscape ? 12.0 : 14.0;
+
+    final qrPadding = isLandscape
+        ? EdgeInsets.all(containerPadding)
+        : EdgeInsets.symmetric(
+        horizontal: containerPadding, vertical: containerPadding);
 
     return Container(
-      margin: const EdgeInsets.all(24),
-      padding: const EdgeInsets.all(20),
+      margin: EdgeInsets.all(containerPadding),
+      padding: EdgeInsets.all(containerPadding),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
@@ -42,36 +55,45 @@ class CodeDisplayWidget extends StatelessWidget {
           Expanded(
             child: Center(
               child: showQrCode
-                  ? QrImageView(
-                data: cardNumber,
-                version: QrVersions.auto,
-                size: 100,
-                backgroundColor: Colors.white,
+                  ? Container(
+                width: qrSize,
+                height: qrSize,
+                padding: qrPadding,
+                color: Colors.white,
+                alignment: Alignment.center,
+                child: FittedBox(
+                  fit: BoxFit.contain,
+                  child: QrImageView(
+                    data: cardNumber,
+                    version: QrVersions.auto,
+                    size: qrSize,
+                    backgroundColor: Colors.white,
+                    padding: EdgeInsets.zero,
+                  ),
+                ),
               )
                   : BarcodeWidget(
                 barcode: Barcode.code128(),
                 data: cardNumber,
-                width: 300,
-                height: 120,
+                width: barcodeWidth,
+                height: barcodeHeight,
                 drawText: false,
                 color: theme.colorScheme.primary,
               ),
             ),
           ),
-          const SizedBox(height: 24),
-          Text(
-            cardNumber,
-            style: theme.textTheme.titleMedium,
-          ),
-          const SizedBox(height: 24),
+          SizedBox(height: verticalSpacing),
+          // Botão de zoom
           ElevatedButton.icon(
             onPressed: onZoomPressed,
-            icon: const Icon(AntIcons.searchOutlined),
+            icon: Icon(AntIcons.searchOutlined, size: isLandscape ? 16 : 24),
             label: Text(localizations.zoom),
             style: ElevatedButton.styleFrom(
               backgroundColor: theme.extension<CustomColors>()!.accentAlt,
               foregroundColor: theme.colorScheme.primary,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              padding: isLandscape
+                  ? const EdgeInsets.symmetric(horizontal: 16, vertical: 8)
+                  : const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16.0),
               ),
