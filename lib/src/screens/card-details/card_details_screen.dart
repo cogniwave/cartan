@@ -110,7 +110,8 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
                   isLandscape ? 32 : 42,
                   isLandscape ? 24 : 16,
                   0,
-                ),                child: Text(
+                ),
+                child: Text(
                   formatMemberId(widget.card.memberId),
                   textAlign: TextAlign.center,
                   style: theme.textTheme.headlineLarge?.copyWith(

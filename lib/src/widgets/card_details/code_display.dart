@@ -20,7 +20,6 @@ class CodeDisplayWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final localizations = AppLocalizations.of(context)!;
     final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
 
     final qrSize = isLandscape ? 120.0 : 200.0;
@@ -38,17 +37,6 @@ class CodeDisplayWidget extends StatelessWidget {
     return Container(
       margin: EdgeInsets.all(containerPadding),
       padding: EdgeInsets.all(containerPadding),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0x0D000000),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -83,11 +71,10 @@ class CodeDisplayWidget extends StatelessWidget {
             ),
           ),
           SizedBox(height: verticalSpacing),
-          // Botão de zoom
           ElevatedButton.icon(
             onPressed: onZoomPressed,
             icon: Icon(AntIcons.searchOutlined, size: isLandscape ? 16 : 24),
-            label: Text(localizations.zoom),
+            label: Text(AppLocalizations.of(context)!.zoom),
             style: ElevatedButton.styleFrom(
               backgroundColor: theme.extension<CustomColors>()!.accentAlt,
               foregroundColor: theme.colorScheme.primary,
