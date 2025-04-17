@@ -138,6 +138,21 @@
   "card_added_successfully": "Cartão adicionado com sucesso",
   "@card_added_successfully": {
     "description": "Message confirming that the card has been successfully added."
+  },
+
+  "barcode": "Código de barras",
+  "@barcode": {
+    "description": "Label for the barcode tab."
+  },
+
+  "qr_code": "QR Code",
+  "@qr_code": {
+    "description": "Label for the QR code tab."
+  },
+
+  "zoom": "Ampliar",
+  "@zoom": {
+    "description": "Label for the zoom button to enlarge the code."
   }
 
 }
