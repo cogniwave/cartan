@@ -60,7 +60,11 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
           merchant: widget.merchant,
         ),
       ),
-    );
+    ).then((result) {
+    if (result == true) {
+    Navigator.pop(context, true); // ← Volta para a HomePage, sinalizando que houve alteração
+    }
+    });
   }
 
   @override

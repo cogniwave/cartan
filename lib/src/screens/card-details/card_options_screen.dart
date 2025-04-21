@@ -1,12 +1,14 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:bugsnag_flutter/bugsnag_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:cartan/utils/app_snackbar.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cartan/src/models/merchant.dart';
 import 'package:cartan/src/models/loyalty_card.dart';
-import 'dart:io';
+import 'package:cartan/src/repositories/loyalty_card_repository.dart';
 
 class CardOptionsScreen extends StatelessWidget {
   final LoyaltyCard card;
@@ -17,6 +19,49 @@ class CardOptionsScreen extends StatelessWidget {
     required this.card,
     required this.merchant,
   });
+
+  void _showDeleteConfirmationDialog(BuildContext context, String cardId) {
+    final localizations = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(localizations.confirm_delete),
+          content: Text(localizations.confirm_delete_message),
+          actions: <Widget>[
+            TextButton(
+              child: Text(localizations.cancel),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                foregroundColor: theme.colorScheme.error,
+              ),
+              onPressed: () async {
+                try {
+                  final cardRepo = Provider.of<LoyaltyCardRepository>(context, listen: false);
+                  await cardRepo.deleteCard(cardId);
+
+                  Navigator.pop(context);
+                  AppSnackBar.showSuccess(context, localizations.card_deleted_successfully);
+
+                  Navigator.pop(context, true);
+                } catch (e) {
+                  Navigator.pop(context);
+                  AppSnackBar.showError(context, localizations.error_deleting_card);
+                }
+              },
+              child: Text(localizations.confirm),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -154,6 +199,10 @@ class CardOptionsScreen extends StatelessWidget {
               title: Text(localizations.remove),
               textColor: theme.colorScheme.error,
               leading: Icon(AntIcons.deleteOutlined),
+              iconColor: theme.colorScheme.error,
+              onTap: () {
+                _showDeleteConfirmationDialog(context, card.id);
+              },
             ),
           ],
         ),
