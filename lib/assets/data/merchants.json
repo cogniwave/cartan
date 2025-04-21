@@ -4,6 +4,7 @@
     "displayName": "Pingo Doce",
     "formats": ["^\\d{13}$", "^\\d{9}$"],
     "assetImagePath": "lib/assets/images/loyalty_cards/pingo_doce_card.png",
+    "website": "https://www.pingodoce.pt",
     "category": "Simple"
   },
   {
@@ -11,6 +12,7 @@
     "displayName": "Continente",
     "formats": ["^\\d{13}$"],
     "assetImagePath": "lib/assets/images/loyalty_cards/continente_card.png",
+    "website": "https://www.continente.pt",
     "category": "Simple"
   },
   {
@@ -18,6 +20,7 @@
     "displayName": "IKEA",
     "formats": ["^\\d{16}$", "^\\d{19}$"],
     "assetImagePath": "lib/assets/images/loyalty_cards/ikea_card.png",
+    "website": "https://www.ikea.com/pt/pt/",
     "category": "Simple"
   }
 ]

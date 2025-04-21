@@ -3,6 +3,7 @@ class Merchant {
   final String displayName;
   final List<String> formats;
   final String assetImagePath;
+  final String website;
   final String category;
 
   Merchant({
@@ -10,6 +11,7 @@ class Merchant {
     required this.displayName,
     required this.formats,
     required this.assetImagePath,
+    required this.website,
     required this.category,
   });
 
@@ -19,6 +21,7 @@ class Merchant {
       displayName: json['displayName'],
       formats: List<String>.from(json['formats']),
       assetImagePath: json['assetImagePath'],
+      website: json['website'],
       category: json['category'],
     );
   }
@@ -29,6 +32,7 @@ class Merchant {
       'displayName': displayName,
       'formats': formats,
       'assetImagePath': assetImagePath,
+      'website': website,
       'category': category,
     };
   }

@@ -132,7 +132,7 @@ class CardOptionsScreen extends StatelessWidget {
               title: Text(localizations.website),
               leading: Icon(AntIcons.globalOutlined),
               onTap: () async {
-                final Uri url = Uri.parse("https://www.google.pt");
+                final Uri url = Uri.parse(merchant.website);
                 try {
                   if (!await launchUrl(
                     url,
