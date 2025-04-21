@@ -1,10 +1,11 @@
-import 'package:cartan/src/screens/card-details/fullscreen_code_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cartan/src/models/merchant.dart';
 import 'package:cartan/src/models/loyalty_card.dart';
 import 'package:cartan/src/themes/app_themes.dart';
 import 'package:cartan/src/widgets/card_details/code_display.dart';
+import 'package:cartan/src/screens/card-details/fullscreen_code_page.dart';
+import 'card_options_screen.dart';
 
 class CardDetailsScreen extends StatefulWidget {
   final LoyaltyCard card;
@@ -51,7 +52,7 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
     );
   }
 
-  /*void _navigateToOptions() {
+  void _navigateToOptions() {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => CardOptionsScreen(
@@ -60,7 +61,7 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
         ),
       ),
     );
-  }*/
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +95,7 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
           IconButton(
             icon: const Icon(Icons.more_vert, size: 24),
             onPressed: () {
-              // _navigateToOptions();
+              _navigateToOptions();
             },
           ),
         ],

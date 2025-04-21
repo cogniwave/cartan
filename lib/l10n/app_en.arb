@@ -158,5 +158,20 @@
   "back": "Back",
   "@back": {
     "description": "Label for the back button on fullscreen code mode."
+  },
+
+  "nearest_places": "Nearest places",
+  "@nearest_places": {
+    "description": "Label for the nearest places section."
+  },
+
+  "website": "Website",
+  "@website": {
+    "description": "Label for the website link."
+  },
+
+  "remove": "Remove",
+  "@remove": {
+    "description": "Label for the remove action."
   }
 }

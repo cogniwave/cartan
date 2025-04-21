@@ -158,6 +158,20 @@
   "back": "Voltar",
   "@back": {
     "description": "Label for the back button on fullscreen code mode."
-  }
+  },
 
+  "nearest_places": "Locais mais próximos",
+  "@nearest_places": {
+    "description": "Label for the nearest places section."
+  },
+
+  "website": "Website",
+  "@website": {
+    "description": "Label for the website link."
+  },
+
+  "remove": "Remover",
+  "@remove": {
+    "description": "Label for the remove action."
+  }
 }
