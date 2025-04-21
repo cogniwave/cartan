@@ -6,6 +6,7 @@ import 'package:cartan/utils/app_snackbar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cartan/src/models/merchant.dart';
 import 'package:cartan/src/models/loyalty_card.dart';
+import 'dart:io';
 
 class CardOptionsScreen extends StatelessWidget {
   final LoyaltyCard card;
@@ -103,7 +104,17 @@ class CardOptionsScreen extends StatelessWidget {
               title: Text(localizations.nearest_places),
               leading: Icon(AntIcons.environmentOutlined),
               onTap: () async {
-                final Uri url = Uri.parse("https://www.google.pt");
+                final String encodedQuery = Uri.encodeComponent(merchant.displayName);
+
+                Uri url;
+                if (Platform.isIOS) {
+                  // Apple Maps
+                  url = Uri.parse("https://maps.apple.com/?q=$encodedQuery");
+                } else {
+                  // Google Maps (Android)
+                  url = Uri.parse("https://www.google.com/maps/search/?api=1&query=$encodedQuery");
+                }
+
                 try {
                   if (!await launchUrl(
                     url,
