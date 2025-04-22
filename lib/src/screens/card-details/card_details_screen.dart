@@ -62,7 +62,7 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
       ),
     ).then((result) {
     if (result == true) {
-    Navigator.pop(context, true); // ← Volta para a HomePage, sinalizando que houve alteração
+    Navigator.pop(context, true);
     }
     });
   }
@@ -115,7 +115,7 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
                   isLandscape ? 24 : 16,
                   isLandscape ? 32 : 42,
                   isLandscape ? 24 : 16,
-                  0,
+                  isLandscape ? 32 : 32,
                 ),
                 child: Text(
                   formatMemberId(widget.card.memberId),
@@ -142,6 +142,7 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
                   unselectedLabelColor: theme.colorScheme.primary,
                   indicatorColor: customColors.accentAlt,
                   indicatorSize: TabBarIndicatorSize.label,
+                  dividerColor: Colors.transparent,
                   tabs: [
                     Tab(text: localizations.barcode),
                     Tab(text: localizations.qr_code),

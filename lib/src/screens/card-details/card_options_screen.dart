@@ -20,9 +20,8 @@ class CardOptionsScreen extends StatelessWidget {
     required this.merchant,
   });
 
-  void _showDeleteConfirmationDialog(BuildContext context, String cardId) {
+  void _showDeleteDialog(BuildContext context, String cardId) {
     final localizations = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
 
     showDialog(
       context: context,
@@ -39,7 +38,7 @@ class CardOptionsScreen extends StatelessWidget {
             ),
             TextButton(
               style: TextButton.styleFrom(
-                foregroundColor: theme.colorScheme.error,
+                foregroundColor: Theme.of(context).colorScheme.error,
               ),
               onPressed: () async {
                 try {
@@ -76,10 +75,10 @@ class CardOptionsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(120),
+        preferredSize: Size.fromHeight(140),
         child: SafeArea(
           child: Container(
-            color: Theme.of(context).primaryColor,
+            color: theme.colorScheme.surface,
             child: Stack(
               children: [
                 Positioned(
@@ -87,7 +86,7 @@ class CardOptionsScreen extends StatelessWidget {
                   top: 0,
                   bottom: 0,
                   child: IconButton(
-                    icon: const Icon(AntIcons.leftOutlined, color: Colors.white),
+                    icon: Icon(AntIcons.leftOutlined, color: theme.colorScheme.primary),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ),
@@ -99,14 +98,14 @@ class CardOptionsScreen extends StatelessWidget {
                   child: Center(
                     child: Text(
                       merchant.displayName,
-                      style: TextStyle(color: Colors.white, fontSize: 22),
+                      style: TextStyle(color: theme.colorScheme.primary, fontSize: 22),
                     ),
                   ),
                 ),
 
                 Positioned(
                   right: 82,
-                  top: 36,
+                  top: 44,
                   child: Image.asset(
                     merchant.assetImagePath,
                     width: 100,
@@ -123,7 +122,7 @@ class CardOptionsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             Text(
               localizations.card_number,
               style: theme.textTheme.titleMedium?.copyWith(
@@ -132,11 +131,14 @@ class CardOptionsScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            Text(
-              formatMemberId(card.memberId),
-              style: theme.textTheme.headlineLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: theme.colorScheme.primary,
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: Text(
+                formatMemberId(card.memberId),
+                style: theme.textTheme.headlineLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: theme.colorScheme.primary,
+                ),
               ),
             ),
             Divider(
@@ -201,7 +203,7 @@ class CardOptionsScreen extends StatelessWidget {
               leading: Icon(AntIcons.deleteOutlined),
               iconColor: theme.colorScheme.error,
               onTap: () {
-                _showDeleteConfirmationDialog(context, card.id);
+                _showDeleteDialog(context, card.id);
               },
             ),
           ],
