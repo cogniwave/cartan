@@ -21,7 +21,6 @@ class ScanCardScreen extends StatefulWidget {
 
 class _ScanCardScreenState extends State<ScanCardScreen> with SingleTickerProviderStateMixin {
   final TextEditingController _codeController = TextEditingController();
-  bool _isScanning = true;
   bool _isValid = false;
   String? _errorMessage;
   late TabController _tabController;
@@ -44,7 +43,6 @@ class _ScanCardScreenState extends State<ScanCardScreen> with SingleTickerProvid
 
   void _handleTabChange() {
     setState(() {
-      _isScanning = _tabController.index == 0;
     });
   }
 
