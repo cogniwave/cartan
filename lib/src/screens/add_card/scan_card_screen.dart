@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cartan/src/models/merchant.dart';
 import 'package:cartan/src/models/loyalty_card.dart';
-import 'package:cartan/src/widgets/add_card_views/manual_entry_view.dart';
-import 'package:cartan/src/widgets/add_card_views/scanner_view.dart';
+import 'package:cartan/src/widgets/cards/manual_entry_view.dart';
+import 'package:cartan/src/widgets/cards/scanner_view.dart';
 import 'package:cartan/src/repositories/loyalty_card_repository.dart';
 import 'package:cartan/utils/card_format_validator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -68,7 +68,9 @@ class _ScanCardScreenState extends State<ScanCardScreen> with SingleTickerProvid
   }
 
   void _saveCard() async {
-    if (!_isValid) return;
+    if (!_isValid) {
+      return;
+    }
 
     final cardRepo = Provider.of<LoyaltyCardRepository>(context, listen: false);
     final newCard = LoyaltyCard(

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:cartan/src/widgets/home_page/add_card_button.dart';
 
 class EmptyCardsView extends StatelessWidget {
-  final VoidCallback onAddPressed;
+  final Widget addCardButton;
 
   const EmptyCardsView({
     super.key,
-    required this.onAddPressed,
+    required this.addCardButton,
   });
 
   @override
@@ -36,7 +35,7 @@ class EmptyCardsView extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 50),
-              AddCardButton(onPressed: onAddPressed),
+              addCardButton,
             ],
           ),
         ),

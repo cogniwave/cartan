@@ -7,9 +7,9 @@ import 'package:cartan/src/screens/settings_screen.dart';
 import 'package:cartan/src/repositories/loyalty_card_repository.dart';
 import 'package:cartan/src/repositories/merchants_repository.dart';
 import 'package:cartan/src/models/loyalty_card.dart';
-import 'package:cartan/src/widgets/home_page/add_card_button.dart';
-import 'package:cartan/src/widgets/home_page/empty_cards_view.dart';
-import 'package:cartan/src/widgets/home_page/cards_list_view.dart';
+import 'package:cartan/src/widgets/common/add_card_button.dart';
+import 'package:cartan/src/widgets/cards/empty_cards_view.dart';
+import 'package:cartan/src/widgets/cards/cards_list_view.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const SelectMerchantScreen()),
-    ).then((_) => _loadData());
+    );
   }
 
   void _navigateToCardDetails(LoyaltyCard card) {
@@ -60,6 +60,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final addCardButton = AddCardButton(
+      onPressed: _navigateToSelectMerchant,
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -89,7 +92,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: (_cards?.isEmpty ?? true)
           ? EmptyCardsView(
-        onAddPressed: _navigateToSelectMerchant,
+        addCardButton: addCardButton,
       )
           : Stack(
         children: [
@@ -100,9 +103,7 @@ class _HomePageState extends State<HomePage> {
           Positioned(
             right: 16,
             bottom: 16,
-            child: AddCardButton(
-              onPressed: _navigateToSelectMerchant,
-            ),
+            child: addCardButton,
           ),
         ],
       ),

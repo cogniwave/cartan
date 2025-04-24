@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cartan/src/repositories/merchants_repository.dart';
-import 'package:cartan/utils/custom_app_bar.dart';
+import 'package:cartan/src/widgets/common/app_bar.dart';
 import 'scan_card_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
