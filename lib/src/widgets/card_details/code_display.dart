@@ -20,19 +20,34 @@ class CodeDisplayWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
 
-    final qrSize = isLandscape ? 120.0 : 200.0;
-    final barcodeWidth = isLandscape ? 240.0 : 300.0;
-    final barcodeHeight = isLandscape ? 80.0 : 120.0;
+    late final double qrSize;
+    late final double barcodeWidth;
+    late final double barcodeHeight;
+    late final double verticalSpacing;
+    late final double containerPadding;
+    late final EdgeInsets qrPadding;
 
-    final verticalSpacing = isLandscape ? 8.0 : 24.0;
-    final containerPadding = isLandscape ? 12.0 : 14.0;
-
-    final qrPadding = isLandscape
-        ? EdgeInsets.all(containerPadding)
-        : EdgeInsets.symmetric(
-        horizontal: containerPadding, vertical: containerPadding);
+    if (isLandscape) {
+      qrSize = 120.0;
+      barcodeWidth = 240.0;
+      barcodeHeight = 80.0;
+      verticalSpacing = 8.0;
+      containerPadding = 12.0;
+      qrPadding = EdgeInsets.all(containerPadding);
+    } else {
+      qrSize = 200.0;
+      barcodeWidth = 300.0;
+      barcodeHeight = 120.0;
+      verticalSpacing = 24.0;
+      containerPadding = 14.0;
+      qrPadding = EdgeInsets.symmetric(
+        horizontal: containerPadding,
+        vertical: containerPadding,
+      );
+    }
 
     return Container(
       margin: EdgeInsets.all(containerPadding),
@@ -90,14 +105,20 @@ class CodeDisplayWidget extends StatelessWidget {
           SizedBox(height: verticalSpacing),
           ElevatedButton.icon(
             onPressed: onZoomPressed,
-            icon: Icon(AntIcons.searchOutlined, size: isLandscape ? 16 : 24),
+            icon: Icon(
+              AntIcons.searchOutlined,
+              size: isLandscape ? 16 : 24,
+            ),
             label: Text(AppLocalizations.of(context)!.zoom),
             style: ElevatedButton.styleFrom(
-              backgroundColor: theme.extension<CustomColors>()!.accentAlt,
+              backgroundColor:
+              theme.extension<CustomColors>()!.accentAlt,
               foregroundColor: theme.colorScheme.primary,
               padding: isLandscape
-                  ? const EdgeInsets.symmetric(horizontal: 16, vertical: 8)
-                  : const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  ? const EdgeInsets.symmetric(
+                  horizontal: 16, vertical: 8)
+                  : const EdgeInsets.symmetric(
+                  horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16.0),
               ),

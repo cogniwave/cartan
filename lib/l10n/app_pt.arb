@@ -179,24 +179,39 @@
   "@confirm_delete": {
     "description": "Title of the dialog asking for confirmation before deleting a card."
   },
+
   "confirm_delete_message": "Tem a certeza de que pretende remover este cartão? Esta ação não pode ser anulada.",
   "@confirm_delete_message": {
     "description": "Message shown in the dialog asking for delete confirmation."
   },
+
   "cancel": "Cancelar",
   "@cancel": {
     "description": "Label for the cancel button."
   },
+
   "confirm": "Confirmar",
   "@confirm": {
     "description": "Label for the confirm button."
   },
+
   "card_deleted_successfully": "Cartão eliminado com sucesso.",
   "@card_deleted_successfully": {
     "description": "Message shown when a card is successfully deleted."
   },
+
   "error_deleting_card": "Ocorreu um erro ao eliminar o cartão.",
   "@error_deleting_card": {
     "description": "Error message shown when card deletion fails."
+  },
+
+  "no_map_apps_installed": "Nenhuma aplicação de mapas instalada",
+  "@no_map_apps_installed": {
+    "description": "Displayed when the user has no map applications available to navigate."
+  },
+
+  "choose_map_app": "Escolher aplicação de mapas",
+  "@choose_map_app": {
+    "description": "Prompt asking the user to select which map application to use for navigation."
   }
 }

@@ -4,8 +4,8 @@ import 'package:bugsnag_flutter/bugsnag_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:cartan/utils/app_snackbar.dart';
+import 'package:cartan/utils/url_launcher.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:cartan/src/models/merchant.dart';
 import 'package:cartan/src/models/loyalty_card.dart';
 import 'package:cartan/src/repositories/loyalty_card_repository.dart';
@@ -42,8 +42,7 @@ class CardOptionsScreen extends StatelessWidget {
               ),
               onPressed: () async {
                 try {
-                  final cardRepo = Provider.of<LoyaltyCardRepository>(context, listen: false);
-                  await cardRepo.deleteCard(cardId);
+                  await Provider.of<LoyaltyCardRepository>(context, listen: false).deleteCard(cardId);
 
                   Navigator.pop(context);
                   AppSnackBar.showSuccess(context, localizations.card_deleted_successfully);
@@ -150,48 +149,20 @@ class CardOptionsScreen extends StatelessWidget {
             ListTile(
               title: Text(localizations.nearest_places),
               leading: Icon(AntIcons.environmentOutlined),
-              onTap: () async {
-                final String encodedQuery = Uri.encodeComponent(merchant.displayName);
-
-                Uri url;
-                if (Platform.isIOS) {
-                  // Apple Maps
-                  url = Uri.parse("https://maps.apple.com/?q=$encodedQuery");
-                } else {
-                  // Google Maps (Android)
-                  url = Uri.parse("https://www.google.com/maps/search/?api=1&query=$encodedQuery");
-                }
-
-                try {
-                  if (!await launchUrl(
-                    url,
-                    mode: LaunchMode.externalApplication,
-                  )) {
-                    AppSnackBar.showError(context, localizations.error);
-                  }
-                } catch (e) {
-                  bugsnag.notify(e, StackTrace.current);
-                  AppSnackBar.showError(context, localizations.error);
-                }
-              },
+              onTap: () => UrlLauncher.launchExternalUrl(
+                context,
+                merchant.displayName,
+                urlType: 'map',
+              ),
             ),
             ListTile(
               title: Text(localizations.website),
               leading: Icon(AntIcons.globalOutlined),
-              onTap: () async {
-                final Uri url = Uri.parse(merchant.website);
-                try {
-                  if (!await launchUrl(
-                    url,
-                    mode: LaunchMode.externalApplication,
-                  )) {
-                    AppSnackBar.showError(context, localizations.error);
-                  }
-                } catch (e) {
-                  bugsnag.notify(e, StackTrace.current);
-                  AppSnackBar.showError(context, localizations.error);
-                }
-              },
+              onTap: () => UrlLauncher.launchExternalUrl(
+                context,
+                merchant.website,
+                urlType: 'web',
+              ),
             ),
             Divider(
               color: theme.dividerTheme.color,

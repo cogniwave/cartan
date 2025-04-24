@@ -198,5 +198,15 @@
   "error_deleting_card": "An error occurred while deleting the card.",
   "@error_deleting_card": {
     "description": "Error message shown when card deletion fails."
+  },
+
+  "no_map_apps_installed": "No map apps installed",
+  "@no_map_apps_installed": {
+    "description": "Displayed when the user has no map applications available to navigate."
+  },
+
+  "choose_map_app": "Choose map app",
+  "@choose_map_app": {
+    "description": "Prompt asking the user to select which map application to use for navigation."
   }
 }

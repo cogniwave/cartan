@@ -111,12 +111,10 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
-                padding: EdgeInsets.fromLTRB(
-                  isLandscape ? 24 : 16,
-                  isLandscape ? 32 : 42,
-                  isLandscape ? 24 : 16,
-                  isLandscape ? 32 : 32,
-                ),
+                padding: isLandscape
+                    ? const EdgeInsets.fromLTRB(24, 32, 24, 32)
+                    : const EdgeInsets.fromLTRB(16, 42, 16, 42),
+
                 child: Text(
                   formatMemberId(widget.card.memberId),
                   textAlign: TextAlign.center,
