@@ -31,7 +31,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _loadData() async {
-    final merchantsRepo = Provider.of<MerchantsRepository>(context, listen: false);
+    final merchantsRepo = Provider.of<MerchantsRepository>(
+      context,
+      listen: false,
+    );
     if (!merchantsRepo.isInitialized) {
       await merchantsRepo.initialize();
     }
@@ -57,10 +60,8 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CardDetailsScreen(
-          card: card,
-          merchant: card.merchant,
-        ),
+        builder:
+            (context) => CardDetailsScreen(card: card, merchant: card.merchant),
       ),
     ).then((result) {
       if (result == true) {
@@ -86,10 +87,6 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           IconButton(
-            icon: Icon(AntIcons.reloadOutlined, color: theme.colorScheme.primary),
-            onPressed: _loadData,
-          ),
-          IconButton(
             icon: Icon(Icons.more_vert, color: theme.colorScheme.primary),
             onPressed: () {
               Navigator.push(
@@ -100,24 +97,33 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: (_cards?.isEmpty ?? true)
-          ? EmptyCardsView(
-        onAddPressed: _navigateToSelectMerchant,
-      )
-          : Stack(
-        children: [
-          CardsListView(
-            cards: _cards!,
-            onCardTap: _navigateToCardDetails,
-          ),
-          Positioned(
-            right: 16,
-            bottom: 16,
-            child: AddCardButton(
-              onPressed: _navigateToSelectMerchant,
-            ),
-          ),
-        ],
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await _loadData();
+        },
+        child:
+            (_cards?.isEmpty ?? true)
+                ? ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: [
+                    EmptyCardsView(onAddPressed: _navigateToSelectMerchant),
+                  ],
+                )
+                : Stack(
+                  children: [
+                    CardsListView(
+                      cards: _cards!,
+                      onCardTap: _navigateToCardDetails,
+                    ),
+                    Positioned(
+                      right: 16,
+                      bottom: 16,
+                      child: AddCardButton(
+                        onPressed: _navigateToSelectMerchant,
+                      ),
+                    ),
+                  ],
+                ),
       ),
     );
   }
