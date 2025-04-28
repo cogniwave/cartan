@@ -76,10 +76,6 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           IconButton(
-            icon: Icon(AntIcons.reloadOutlined, color: theme.colorScheme.primary),
-            onPressed: _loadData,
-          ),
-          IconButton(
             icon: Icon(Icons.more_vert, color: theme.colorScheme.primary),
             onPressed: () {
               Navigator.push(
