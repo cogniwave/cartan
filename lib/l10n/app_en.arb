@@ -208,5 +208,10 @@
   "choose_map_app": "Choose map app",
   "@choose_map_app": {
     "description": "Prompt asking the user to select which map application to use for navigation."
+  },
+
+  "remember_choice": "Remember my choice",
+  "@remember_choice": {
+    "description": "Label for the option allowing the user to save their selected map application as the default for future map launches."
   }
 }

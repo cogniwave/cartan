@@ -213,5 +213,11 @@
   "choose_map_app": "Escolher aplicação de mapas",
   "@choose_map_app": {
     "description": "Prompt asking the user to select which map application to use for navigation."
+  },
+
+  "remember_choice": "Lembrar a minha escolha",
+  "@remember_choice": {
+    "description": "Label for the option allowing the user to save their selected map application as the default for future map launches."
   }
+
 }
