@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cartan/utils/font_size_provider.dart';
-import 'package:cartan/src/widgets/font_size_widgets.dart';
+import 'package:cartan/src/widgets/font_size/font_size_option.dart';
 
 class FontSizeScreen extends StatelessWidget {
   const FontSizeScreen({super.key});

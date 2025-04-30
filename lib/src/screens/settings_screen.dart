@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:cartan/utils/app_snackbar.dart';
 import 'package:cartan/utils/theme_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:cartan/src/widgets/font_size_widgets.dart';
-import 'package:cartan/src/widgets/language_widgets.dart';
+import 'package:cartan/src/widgets/font_size/font_size_subtitle.dart';
+import 'package:cartan/src/widgets/language/language_subtitle.dart';
 import 'font_size_screen.dart';
 import 'language_screen.dart';
 
