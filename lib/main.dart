@@ -45,24 +45,16 @@ Future<void> initializeApp() async {
 
   runZonedGuarded(
         () => runApp(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_) => ThemeProvider()),
-          ChangeNotifierProvider(create: (_) => LocaleProvider()),
-          ChangeNotifierProvider(create: (_) => FontSizeProvider()),
-          Provider<MerchantsRepository>(
-            create: (_) {
-              final repo = MerchantsRepository();
-              repo.initialize();
-              return repo;
-            },
+          MultiProvider(
+            providers: [
+              ChangeNotifierProvider(create: (_) => ThemeProvider()),
+              ChangeNotifierProvider(create: (_) => LocaleProvider()),
+              ChangeNotifierProvider(create: (_) => FontSizeProvider()),
+              Provider(create: (_) => MerchantsRepository()),
+              Provider(create: (context) => LoyaltyCardRepository(context.read<MerchantsRepository>())),
+            ],
+            child: const Cartan(),
           ),
-          ProxyProvider<MerchantsRepository, LoyaltyCardRepository>(
-            update: (_, merchantsRepo, __) => LoyaltyCardRepository(merchantsRepo),
-          ),
-        ],
-        child: const Cartan(),
-      ),
     ),
         (Object error, StackTrace stack) => bugsnag.notify(error, stack),
   );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cartan/src/models/loyalty_card.dart';
-import 'package:cartan/src/widgets/home_page/loyalty_card_item.dart';
+import 'package:cartan/src/widgets/cards/loyalty_card_item.dart';
 
 class CardsListView extends StatelessWidget {
   final List<LoyaltyCard> cards;

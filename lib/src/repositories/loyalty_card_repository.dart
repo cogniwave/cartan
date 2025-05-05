@@ -22,10 +22,8 @@ class LoyaltyCardRepository {
 
     for (var item in decoded) {
       final merchant = _merchantsRepo.getMerchantById(item['merchantId']);
-      if (merchant != null) {
-        cards.add(LoyaltyCard.fromJson(item, merchant));
-      }
-    }
+      cards.add(LoyaltyCard.fromJson(item, merchant));
+        }
 
     return cards;
   }
