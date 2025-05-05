@@ -45,5 +45,21 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>LSApplicationQueriesSchemes</key>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+      <string>maps</string>            <!-- Apple Maps -->
+      <string>comgooglemaps</string>   <!-- Google Maps -->
+      <string>waze</string>            <!-- Waze -->
+      <string>here-route</string>      <!-- HERE WeGo -->
+      <string>mapswithme</string>      <!-- Maps.me -->
+      <string>tomtomhome</string>      <!-- TomTom GO -->
+      <string>sygic</string>           <!-- Sygic -->
+      <string>citymapper</string>      <!-- Citymapper -->
+      <string>osmandmaps</string>      <!-- OsmAnd -->
+      <string>mq</string>              <!-- MapQuest -->
+    </array>
+
+
 </dict>
 </plist>

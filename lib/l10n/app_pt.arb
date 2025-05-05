@@ -138,6 +138,75 @@
   "card_added_successfully": "Cartão adicionado com sucesso",
   "@card_added_successfully": {
     "description": "Message confirming that the card has been successfully added."
-  }
+  },
 
+  "barcode": "Código de barras",
+  "@barcode": {
+    "description": "Label for the barcode tab."
+  },
+
+  "qr_code": "QR Code",
+  "@qr_code": {
+    "description": "Label for the QR code tab."
+  },
+
+  "zoom": "Ampliar",
+  "@zoom": {
+    "description": "Label for the zoom button to enlarge the code."
+  },
+
+  "back": "Voltar",
+  "@back": {
+    "description": "Label for the back button on fullscreen code mode."
+  },
+
+  "nearest_places": "Locais mais próximos",
+  "@nearest_places": {
+    "description": "Label for the nearest places section."
+  },
+
+  "website": "Website",
+  "@website": {
+    "description": "Label for the website link."
+  },
+
+  "remove": "Remover",
+  "@remove": {
+    "description": "Label for the remove action."
+  },
+
+  "confirm_delete": "Eliminar cartão",
+  "@confirm_delete": {
+    "description": "Title of the dialog asking for confirmation before deleting a card."
+  },
+
+  "confirm_delete_message": "Tem a certeza de que pretende remover este cartão? Esta ação não pode ser anulada.",
+  "@confirm_delete_message": {
+    "description": "Message shown in the dialog asking for delete confirmation."
+  },
+
+  "cancel": "Cancelar",
+  "@cancel": {
+    "description": "Label for the cancel button."
+  },
+
+  "confirm": "Confirmar",
+  "@confirm": {
+    "description": "Label for the confirm button."
+  },
+
+  "card_deleted_successfully": "Cartão eliminado com sucesso.",
+  "@card_deleted_successfully": {
+    "description": "Message shown when a card is successfully deleted."
+  },
+
+  "error_deleting_card": "Ocorreu um erro ao eliminar o cartão.",
+  "@error_deleting_card": {
+    "description": "Error message shown when card deletion fails."
+  },
+
+  "no_map_apps_installed": "Nenhuma aplicação de mapas instalada",
+  "@no_map_apps_installed": {
+    "description": "Displayed when the user has no map applications available to navigate."
+  }
 }

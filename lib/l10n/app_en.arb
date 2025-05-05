@@ -138,5 +138,70 @@
   "card_added_successfully": "Card added successfully",
   "@card_added_successfully": {
     "description": "Message confirming that the card has been successfully added."
+  },
+
+  "barcode": "Barcode",
+  "@barcode": {
+    "description": "Label for the barcode tab."
+  },
+
+  "qr_code": "QR Code",
+  "@qr_code": {
+    "description": "Label for the QR code tab."
+  },
+
+  "zoom": "Zoom",
+  "@zoom": {
+    "description": "Label for the zoom button to enlarge the code."
+  },
+
+  "back": "Back",
+  "@back": {
+    "description": "Label for the back button on fullscreen code mode."
+  },
+
+  "nearest_places": "Nearest places",
+  "@nearest_places": {
+    "description": "Label for the nearest places section."
+  },
+
+  "website": "Website",
+  "@website": {
+    "description": "Label for the website link."
+  },
+
+  "remove": "Remove",
+  "@remove": {
+    "description": "Label for the remove action."
+  },
+
+  "confirm_delete": "Delete card",
+  "@confirm_delete": {
+    "description": "Title of the dialog asking for confirmation before deleting a card."
+  },
+  "confirm_delete_message": "Are you sure you want to remove this card? This action cannot be undone.",
+  "@confirm_delete_message": {
+    "description": "Message shown in the dialog asking for delete confirmation."
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Label for the cancel button."
+  },
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Label for the confirm button."
+  },
+  "card_deleted_successfully": "Card deleted successfully.",
+  "@card_deleted_successfully": {
+    "description": "Message shown when a card is successfully deleted."
+  },
+  "error_deleting_card": "An error occurred while deleting the card.",
+  "@error_deleting_card": {
+    "description": "Error message shown when card deletion fails."
+  },
+
+  "no_map_apps_installed": "No map apps installed",
+  "@no_map_apps_installed": {
+    "description": "Displayed when the user has no map applications available to navigate."
   }
 }

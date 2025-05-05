@@ -1,4 +1,5 @@
 import 'package:antdesign_icons/antdesign_icons.dart';
+import 'package:cartan/src/screens/card-details/card_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +31,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _loadData() async {
-    final merchantsRepo = Provider.of<MerchantsRepository>(context, listen: false);
+    final merchantsRepo = Provider.of<MerchantsRepository>(
+      context,
+      listen: false,
+    );
     if (!merchantsRepo.isInitialized) {
       await merchantsRepo.initialize();
     }
@@ -53,7 +57,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _navigateToCardDetails(LoyaltyCard card) {
-    // To do: Card details screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => CardDetailsScreen(card: card, merchant: card.merchant),
+      ),
+    ).then((result) {
+      if (result == true) {
+        _loadData();
+      }
+    });
   }
 
   @override

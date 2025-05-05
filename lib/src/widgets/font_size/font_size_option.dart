@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cartan/utils/font_size_provider.dart';
-import 'package:provider/provider.dart';
 
 class FontSizeOption extends StatelessWidget {
   final String title;

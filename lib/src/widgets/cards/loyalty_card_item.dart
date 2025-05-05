@@ -13,18 +13,21 @@ class LoyaltyCardItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Image.asset(
-          card.merchant.assetImagePath,
-          width: double.infinity,
-          height: 200,
-          fit: BoxFit.cover,
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12), // para efeito ripple arredondado
+      child: Card(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Image.asset(
+            card.merchant.assetImagePath,
+            width: double.infinity,
+            height: 200,
+            fit: BoxFit.cover,
+          ),
         ),
       ),
     );
