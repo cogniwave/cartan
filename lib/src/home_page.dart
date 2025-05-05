@@ -100,22 +100,32 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: (_cards?.isEmpty ?? true)
-          ? EmptyCardsView(
-        addCardButton: addCardButton,
-      )
-          : Stack(
-        children: [
-          CardsListView(
-            cards: _cards!,
-            onCardTap: _navigateToCardDetails,
-          ),
-          Positioned(
-            right: 16,
-            bottom: 16,
-            child: addCardButton,
-          ),
-        ],
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await _loadData();
+        },
+        child: (_cards?.isEmpty ?? true)
+            ? ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          children: [
+            EmptyCardsView(
+              addCardButton: addCardButton,
+            ),
+          ],
+        )
+            : Stack(
+          children: [
+            CardsListView(
+              cards: _cards!,
+              onCardTap: _navigateToCardDetails,
+            ),
+            Positioned(
+              right: 16,
+              bottom: 16,
+              child: addCardButton,
+            ),
+          ],
+        ),
       ),
     );
   }
