@@ -92,7 +92,7 @@ class _ScanCardScreenState extends State<ScanCardScreen>
     Navigator.pop(context, true);
   }
 
-  Widget _buildScannerTab() {
+  Widget _buildScannerTab(ThemeData theme) {
     if (_checkingPermission) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -101,13 +101,13 @@ class _ScanCardScreenState extends State<ScanCardScreen>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(AntIcons.cameraOutlined, size: 64, color: Colors.grey),
+            Icon(AntIcons.cameraOutlined, size: 64, color: theme.colorScheme.secondary),
             const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Text(
                 localizations.camera_permission_required,
-                style: Theme.of(context).textTheme.titleLarge,
+                style: theme.textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -161,7 +161,7 @@ class _ScanCardScreenState extends State<ScanCardScreen>
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  _buildScannerTab(),
+                  _buildScannerTab(theme),
                   ManualEntryView(
                     controller: _codeController,
                     errorMessage: _errorMessage,

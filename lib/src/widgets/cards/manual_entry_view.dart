@@ -24,22 +24,20 @@ class ManualEntryView extends StatelessWidget {
     required this.formats,
   });
 
-  int? _extractExpectedDigits() {
-    if (formats.isEmpty) return null;
+  int _extractExpectedDigits() {
+    assert(formats.isNotEmpty, 'formats must not be empty');
     final pattern = formats.first;
     final match = RegExp(r'\\d\{(\d+)\}').firstMatch(pattern);
-    return match != null ? int.tryParse(match.group(1)!) : null;
+    assert(match != null, 'Expected a \\d{n} pattern in formats');
+    return int.parse(match!.group(1)!);
   }
 
   @override
   Widget build(BuildContext context) {
-    final local = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
     final expected = _extractExpectedDigits();
-    final formatInfo = expected != null
-        ? '$expected ${local.digits}'
-        : '';
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
@@ -62,7 +60,7 @@ class ManualEntryView extends StatelessWidget {
             TextField(
               controller: controller,
               decoration: InputDecoration(
-                labelText: local.card_number,
+                labelText: localizations.card_number,
                 errorText: errorMessage,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -77,16 +75,14 @@ class ManualEntryView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  local.format_hint,
+                  localizations.format_hint,
                   style: theme.textTheme.bodySmall,
                 ),
-                if (expected != null) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    '($expected ${local.digits})',
-                    style: theme.textTheme.bodySmall,
-                  ),
-                ],
+                const SizedBox(height: 4),
+                Text(
+                  '($expected ${localizations.digits})',
+                  style: theme.textTheme.bodySmall,
+                ),
               ],
             ),
 
@@ -95,7 +91,7 @@ class ManualEntryView extends StatelessWidget {
             Center(
               child: ElevatedButton.icon(
                 icon: const Icon(AntIcons.formOutlined),
-                label: Text(local.add_card),
+                label: Text(localizations.add_card),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: theme.extension<CustomColors>()!.accent,
                   foregroundColor: theme.colorScheme.primary,
