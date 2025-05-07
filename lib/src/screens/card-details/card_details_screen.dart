@@ -53,7 +53,9 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
   }
 
   void _navigateToOptions() {
-    Navigator.of(context).push(
+    final navigator = Navigator.of(context);
+
+    navigator.push(
       MaterialPageRoute(
         builder: (context) => CardOptionsScreen(
           card: widget.card,
@@ -61,9 +63,9 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
         ),
       ),
     ).then((result) {
-    if (result == true) {
-    Navigator.pop(context, true);
-    }
+      if (result == true && mounted) {
+        navigator.pop(true);
+      }
     });
   }
 

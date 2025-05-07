@@ -94,14 +94,15 @@ class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
                           ),
                           title: Text(merchant.displayName),
                           onTap: () {
-                            Navigator.push(
-                              context,
+                            final navigator = Navigator.of(context);
+
+                            navigator.push(
                               MaterialPageRoute(
                                 builder: (context) => ScanCardScreen(merchant: merchant),
                               ),
                             ).then((result) {
-                              if (result == true) {
-                                Navigator.pop(context, true);
+                              if (result == true && mounted) {
+                                navigator.pop(true);
                               }
                             });
                           },

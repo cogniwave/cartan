@@ -1,91 +1,60 @@
-import 'package:cartan/src/screens/card-details/card_details_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:provider/provider.dart';
-import 'package:cartan/src/screens/add_card/select_merchant_screen.dart';
-import 'package:cartan/src/screens/settings_screen.dart';
-import 'package:cartan/src/repositories/loyalty_card_repository.dart';
-import 'package:cartan/src/repositories/merchants_repository.dart';
+import 'package:cartan/src/blocs/cards/cards_bloc.dart';
+import 'package:cartan/src/blocs/cards/cards_event.dart';
+import 'package:cartan/src/blocs/cards/cards_state.dart';
 import 'package:cartan/src/models/loyalty_card.dart';
+import 'package:cartan/src/screens/add_card/select_merchant_screen.dart';
+import 'package:cartan/src/screens/card-details/card_details_screen.dart';
+import 'package:cartan/src/screens/settings_screen.dart';
 import 'package:cartan/src/widgets/common/add_card_button.dart';
-import 'package:cartan/src/widgets/cards/empty_cards_view.dart';
 import 'package:cartan/src/widgets/cards/cards_list_view.dart';
+import 'package:cartan/src/widgets/cards/empty_cards_view.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  List<LoyaltyCard>? _cards;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadData();
-    });
-  }
-
-  Future<void> _loadData() async {
-    final merchantsRepo = Provider.of<MerchantsRepository>(
+  /// Navigate to merchant selection, then reload cards if added.
+  Future<void> _onAddNewCard(BuildContext context) async {
+    final added = await Navigator.push<bool>(
       context,
-      listen: false,
+      MaterialPageRoute(builder: (_) => const SelectMerchantScreen()),
     );
-    if (!merchantsRepo.isInitialized) {
-      await merchantsRepo.initialize();
-    }
-
-    final cardRepo = Provider.of<LoyaltyCardRepository>(context, listen: false);
-    final loadedCards = await cardRepo.getAllCards();
-
-    if (mounted) {
-      setState(() {
-        _cards = loadedCards;
-      });
+    // Check that widget is still in the tree before using context
+    if (!context.mounted) return;
+    if (added == true) {
+      context.read<CardsBloc>().add(LoadCards());
     }
   }
 
-  void _navigateToSelectMerchant() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const SelectMerchantScreen()),
-    ).then((result) {
-      if (result == true) {
-        _loadData();
-      }
-    });
-  }
-
-  void _navigateToCardDetails(LoyaltyCard card) {
-    Navigator.push(
+  /// Navigate to card details, then reload cards if updated.
+  Future<void> _onCardTap(BuildContext context, LoyaltyCard card) async {
+    final updated = await Navigator.push<bool>(
       context,
       MaterialPageRoute(
-        builder:
-            (context) => CardDetailsScreen(card: card, merchant: card.merchant),
+        builder: (_) => CardDetailsScreen(card: card, merchant: card.merchant),
       ),
-    ).then((result) {
-      if (result == true) {
-        _loadData();
-      }
-    });
+    );
+    if (!context.mounted) return;
+    if (updated == true) {
+      context.read<CardsBloc>().add(LoadCards());
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
+    final local = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final addCardButton = AddCardButton(
-      onPressed: _navigateToSelectMerchant,
+      onPressed: () => _onAddNewCard(context),
     );
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: theme.appBarTheme.backgroundColor,
         title: Text(
-          localizations.cards,
+          local.cards,
           style: TextStyle(
             color: theme.colorScheme.primary,
             fontWeight: FontWeight.bold,
@@ -97,7 +66,7 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                MaterialPageRoute(builder: (_) => const SettingsScreen()),
               );
             },
           ),
@@ -105,29 +74,40 @@ class _HomePageState extends State<HomePage> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          await _loadData();
+          context.read<CardsBloc>().add(LoadCards());
         },
-        child: (_cards?.isEmpty ?? true)
-            ? ListView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          children: [
-            EmptyCardsView(
-              addCardButton: addCardButton,
-            ),
-          ],
-        )
-            : Stack(
-          children: [
-            CardsListView(
-              cards: _cards!,
-              onCardTap: _navigateToCardDetails,
-            ),
-            Positioned(
-              right: 16,
-              bottom: 16,
-              child: addCardButton,
-            ),
-          ],
+        child: BlocBuilder<CardsBloc, CardsState>(
+          builder: (context, state) {
+            if (state is CardsLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is CardsError) {
+              return Center(child: Text('Error: ${state.message}'));
+            } else if (state is CardsLoaded) {
+              final cards = state.cards;
+              if (cards.isEmpty) {
+                return ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: [
+                    EmptyCardsView(addCardButton: addCardButton),
+                  ],
+                );
+              }
+              return Stack(
+                children: [
+                  CardsListView(
+                    cards: cards,
+                    onCardTap: (card) => _onCardTap(context, card),
+                  ),
+                  Positioned(
+                    right: 16,
+                    bottom: 16,
+                    child: addCardButton,
+                  ),
+                ],
+              );
+            }
+            return const SizedBox.shrink();
+          },
         ),
       ),
     );
