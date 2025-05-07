@@ -1,4 +1,3 @@
-import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:cartan/src/screens/card-details/card_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -53,7 +52,11 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const SelectMerchantScreen()),
-    );
+    ).then((result) {
+      if (result == true) {
+        _loadData();
+      }
+    });
   }
 
   void _navigateToCardDetails(LoyaltyCard card) {

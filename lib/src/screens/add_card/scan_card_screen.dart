@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:cartan/src/models/merchant.dart';
 import 'package:cartan/src/models/loyalty_card.dart';
 import 'package:cartan/src/widgets/cards/manual_entry_view.dart';
@@ -12,93 +14,126 @@ import 'package:cartan/src/themes/app_themes.dart';
 
 class ScanCardScreen extends StatefulWidget {
   final Merchant merchant;
-
   const ScanCardScreen({super.key, required this.merchant});
 
   @override
   _ScanCardScreenState createState() => _ScanCardScreenState();
 }
 
-class _ScanCardScreenState extends State<ScanCardScreen> with SingleTickerProviderStateMixin {
+class _ScanCardScreenState extends State<ScanCardScreen>
+    with SingleTickerProviderStateMixin {
   final TextEditingController _codeController = TextEditingController();
+  late TabController _tabController;
+
   bool _isValid = false;
   String? _errorMessage;
-  late TabController _tabController;
+
+  bool _hasCameraPermission = false;
+  bool _checkingPermission = true;
+
   AppLocalizations get localizations => AppLocalizations.of(context)!;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-    _tabController.addListener(_handleTabChange);
+    _tabController =
+    TabController(length: 2, vsync: this)..addListener(() => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _requestCameraPermission();
+    });
+  }
+
+  Future<void> _requestCameraPermission() async {
+    setState(() => _checkingPermission = true);
+    final status = await Permission.camera.request();
+    setState(() {
+      _hasCameraPermission = status.isGranted;
+      _checkingPermission = false;
+    });
+  }
+
+  Future<void> _openAppSettings() async {
+    await openAppSettings();
   }
 
   @override
   void dispose() {
     _codeController.dispose();
-    _tabController.removeListener(_handleTabChange);
     _tabController.dispose();
     super.dispose();
   }
 
-  void _handleTabChange() {
-    setState(() {
-    });
-  }
-
   void _validateCode(String code) {
-    final validator = CardFormatValidator();
-    final isValid = validator.isValidFormat(code, widget.merchant.formats);
-
+    final valid =
+    CardFormatValidator().isValidFormat(code, widget.merchant.formats);
     setState(() {
-      _isValid = isValid;
-      _errorMessage = isValid ? null : localizations.invalid_card_format;
+      _isValid = valid;
+      _errorMessage = valid ? null : localizations.invalid_card_format;
     });
   }
 
   void _handleCodeDetected(String code) {
     _codeController.text = code;
     _validateCode(code);
-
-    if (_isValid) {
-      _tabController.animateTo(1);
-    }
+    if (_isValid) _tabController.animateTo(1);
   }
 
-  void _saveCard() async {
-    if (!_isValid) {
-      return;
-    }
-
-    final cardRepo = Provider.of<LoyaltyCardRepository>(context, listen: false);
-    final newCard = LoyaltyCard(
+  Future<void> _saveCard() async {
+    if (!_isValid) return;
+    final repo =
+    Provider.of<LoyaltyCardRepository>(context, listen: false);
+    await repo.saveCard(LoyaltyCard(
       merchant: widget.merchant,
       memberId: _codeController.text.trim(),
-    );
-
-    await cardRepo.saveCard(newCard);
-
+    ));
     if (!mounted) return;
-    Navigator.popUntil(context, (route) => route.isFirst);
-    AppSnackBar.showSuccess(context, localizations.card_added_successfully);
+    AppSnackBar.showSuccess(
+        context, localizations.card_added_successfully);
+    Navigator.pop(context, true);
+  }
+
+  Widget _buildScannerTab() {
+    if (_checkingPermission) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (!_hasCameraPermission) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(AntIcons.cameraOutlined, size: 64, color: Colors.grey),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Text(
+                localizations.camera_permission_required,
+                style: Theme.of(context).textTheme.titleLarge,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: _openAppSettings,
+              child: Text(localizations.open_settings),
+            ),
+          ],
+        ),
+      );
+    }
+    return ScannerView(onCodeDetected: _handleCodeDetected);
   }
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final customColor = Theme.of(context).extension<CustomColors>()!;
+    final custom = theme.extension<CustomColors>()!;
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: theme.dividerTheme.color,
         title: Row(
           children: [
-            Image.asset(
-              widget.merchant.assetImagePath,
-              width: 40,
-              height: 40,
-            ),
+            Image.asset(widget.merchant.assetImagePath, width: 40, height: 40),
             const SizedBox(width: 8),
             Text(widget.merchant.displayName),
           ],
@@ -110,9 +145,10 @@ class _ScanCardScreenState extends State<ScanCardScreen> with SingleTickerProvid
             color: theme.colorScheme.surface,
             child: TabBar(
               controller: _tabController,
-              labelColor: customColor.accentAlt,
-              indicatorColor: customColor.accentAlt,
+              labelColor: custom.accentAlt,
               unselectedLabelColor: theme.colorScheme.primary,
+              indicatorColor: custom.accentAlt,
+              dividerColor: Colors.transparent,
               tabs: [
                 Tab(text: localizations.scan_barcode),
                 Tab(text: localizations.enter_manually),
@@ -125,9 +161,7 @@ class _ScanCardScreenState extends State<ScanCardScreen> with SingleTickerProvid
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  // Scan tab
-                  ScannerView(onCodeDetected: _handleCodeDetected),
-                  // Manual entry tab
+                  _buildScannerTab(),
                   ManualEntryView(
                     controller: _codeController,
                     errorMessage: _errorMessage,
@@ -135,6 +169,7 @@ class _ScanCardScreenState extends State<ScanCardScreen> with SingleTickerProvid
                     onSave: _saveCard,
                     isValid: _isValid,
                     assetImagePath: widget.merchant.assetImagePath,
+                    formats: widget.merchant.formats,
                   ),
                 ],
               ),

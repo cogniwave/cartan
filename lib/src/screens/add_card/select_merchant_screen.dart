@@ -5,12 +5,20 @@ import 'package:cartan/src/widgets/common/app_bar.dart';
 import 'scan_card_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class SelectMerchantScreen extends StatelessWidget {
+class SelectMerchantScreen extends StatefulWidget {
   const SelectMerchantScreen({super.key});
+
+  @override
+  State<SelectMerchantScreen> createState() => _SelectMerchantScreenState();
+}
+
+class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
+  String _searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
     final merchantsRepo = Provider.of<MerchantsRepository>(context);
+    final localizations = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -18,7 +26,26 @@ class SelectMerchantScreen extends StatelessWidget {
         child: Column(
           children: [
             CustomAppBar(
-              title: Text(AppLocalizations.of(context)!.select_merchant),
+              title: Text(localizations.select_merchant),
+            ),
+
+            // search
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: localizations.search,
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _searchQuery = value.toLowerCase();
+                  });
+                },
+              ),
             ),
 
             Expanded(
@@ -29,7 +56,15 @@ class SelectMerchantScreen extends StatelessWidget {
                     return const Center(child: CircularProgressIndicator());
                   }
 
-                  final merchants = merchantsRepo.getAllMerchants();
+                  var merchants = merchantsRepo.getAllMerchants();
+
+                  merchants.sort((a, b) => a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase()));
+
+                  if (_searchQuery.isNotEmpty) {
+                    merchants = merchants.where((merchant) {
+                      return merchant.displayName.toLowerCase().contains(_searchQuery);
+                    }).toList();
+                  }
 
                   return ListView.builder(
                     padding: const EdgeInsets.only(top: 16),
@@ -46,6 +81,15 @@ class SelectMerchantScreen extends StatelessWidget {
                               width: 80,
                               height: 80,
                               fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                // Fallback no image
+                                return Image.asset(
+                                  'lib/assets/images/loyalty_cards/card.png',
+                                  width: 80,
+                                  height: 80,
+                                  fit: BoxFit.cover,
+                                );
+                              },
                             ),
                           ),
                           title: Text(merchant.displayName),
@@ -55,7 +99,11 @@ class SelectMerchantScreen extends StatelessWidget {
                               MaterialPageRoute(
                                 builder: (context) => ScanCardScreen(merchant: merchant),
                               ),
-                            );
+                            ).then((result) {
+                              if (result == true) {
+                                Navigator.pop(context, true);
+                              }
+                            });
                           },
                         ),
                       );

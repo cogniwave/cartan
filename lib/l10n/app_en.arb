@@ -199,9 +199,24 @@
   "@error_deleting_card": {
     "description": "Error message shown when card deletion fails."
   },
-
   "no_map_apps_installed": "No map apps installed",
   "@no_map_apps_installed": {
     "description": "Displayed when the user has no map applications available to navigate."
+  },
+  "search": "Search",
+  "@search": {
+    "description": "Label for the search input field."
+  },
+  "camera_permission_required": "Camera access is required to scan your card.",
+  "@camera_permission_required": {
+    "description": "Message informing the user that camera permission is needed."
+  },
+  "open_settings": "Open App Settings",
+  "@open_app_settings": {
+    "description": "Button label to open the device settings for the app."
+  },
+  "digits": "digits",
+  "@digits": {
+    "description": "Digit count based on card number format."
   }
 }

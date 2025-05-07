@@ -11,6 +11,7 @@ class ManualEntryView extends StatelessWidget {
   final VoidCallback onSave;
   final bool isValid;
   final String assetImagePath;
+  final List<String> formats;
 
   const ManualEntryView({
     super.key,
@@ -20,12 +21,25 @@ class ManualEntryView extends StatelessWidget {
     required this.onSave,
     required this.isValid,
     required this.assetImagePath,
+    required this.formats,
   });
+
+  int? _extractExpectedDigits() {
+    if (formats.isEmpty) return null;
+    final pattern = formats.first;
+    final match = RegExp(r'\\d\{(\d+)\}').firstMatch(pattern);
+    return match != null ? int.tryParse(match.group(1)!) : null;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
+    final local = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+
+    final expected = _extractExpectedDigits();
+    final formatInfo = expected != null
+        ? '$expected ${local.digits}'
+        : '';
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
@@ -48,7 +62,7 @@ class ManualEntryView extends StatelessWidget {
             TextField(
               controller: controller,
               decoration: InputDecoration(
-                labelText: localizations.card_number,
+                labelText: local.card_number,
                 errorText: errorMessage,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -56,20 +70,32 @@ class ManualEntryView extends StatelessWidget {
               ),
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              onChanged: onChanged,
             ),
             const SizedBox(height: 12),
 
-            Text(
-              localizations.format_hint,
-              style: theme.textTheme.bodySmall,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  local.format_hint,
+                  style: theme.textTheme.bodySmall,
+                ),
+                if (expected != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    '($expected ${local.digits})',
+                    style: theme.textTheme.bodySmall,
+                  ),
+                ],
+              ],
             ),
+
             const SizedBox(height: 46),
 
             Center(
               child: ElevatedButton.icon(
                 icon: const Icon(AntIcons.formOutlined),
-                label: Text(localizations.add_card),
+                label: Text(local.add_card),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: theme.extension<CustomColors>()!.accent,
                   foregroundColor: theme.colorScheme.primary,
@@ -81,7 +107,10 @@ class ManualEntryView extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16.0),
                   ),
                 ),
-                onPressed: isValid ? onSave : null,
+                onPressed: () {
+                  onChanged(controller.text);
+                  if (isValid) onSave();
+                },
               ),
             ),
           ],

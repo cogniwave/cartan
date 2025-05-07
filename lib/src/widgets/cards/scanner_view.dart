@@ -50,6 +50,9 @@ class ScannerView extends StatelessWidget {
           child: Text(
             AppLocalizations.of(context)!.position_barcode_in_frame,
             textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
         ),
       ],
