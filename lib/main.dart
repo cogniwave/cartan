@@ -1,3 +1,4 @@
+import 'package:cartan/src/blocs/url_launcher/url_launcher_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -78,6 +79,10 @@ Future<void> initializeApp() async {
                 ctx.read<LoyaltyCardRepository>(),
                 ctx.read<MerchantsRepository>(),
               )..add(LoadCards()),
+            ),
+            // Provide the UrlLauncherBloc for URL launching functionality
+            BlocProvider<UrlLauncherBloc>(
+              create: (_) => UrlLauncherBloc(),
             ),
           ],
           child: const Cartan(),
