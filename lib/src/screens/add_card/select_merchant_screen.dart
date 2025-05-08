@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:cartan/src/repositories/merchants_repository.dart';
-import 'package:cartan/src/widgets/common/app_bar.dart';
-import 'scan_card_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/src/blocs/merchants/merchants_bloc.dart';
+import 'package:cartan/src/blocs/merchants/merchants_state.dart';
+import 'package:cartan/src/models/merchant.dart';
+import 'scan_card_screen.dart';
+import 'package:cartan/src/widgets/common/app_bar.dart';
 
 class SelectMerchantScreen extends StatefulWidget {
   const SelectMerchantScreen({super.key});
-
   @override
   State<SelectMerchantScreen> createState() => _SelectMerchantScreenState();
 }
@@ -15,62 +16,67 @@ class SelectMerchantScreen extends StatefulWidget {
 class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
   String _searchQuery = '';
 
+  /// Filter helper
+  List<Merchant> _filter(List<Merchant> all) {
+    if (_searchQuery.isEmpty) return all;
+    return all
+        .where((m) =>
+        m.displayName.toLowerCase().contains(_searchQuery.toLowerCase()))
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final merchantsRepo = Provider.of<MerchantsRepository>(context);
-    final localizations = AppLocalizations.of(context)!;
+    final local = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: theme.colorScheme.surface,
       body: SafeArea(
         child: Column(
           children: [
-            CustomAppBar(
-              title: Text(localizations.select_merchant),
-            ),
+            CustomAppBar(title: Text(local.select_merchant)),
 
-            // search
+            // Search field
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: TextField(
                 decoration: InputDecoration(
-                  hintText: localizations.search,
+                  hintText: local.search,
                   prefixIcon: const Icon(Icons.search),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 onChanged: (value) {
-                  setState(() {
-                    _searchQuery = value.toLowerCase();
-                  });
+                  setState(() => _searchQuery = value);
                 },
               ),
             ),
 
+            // Merchants list via Bloc
             Expanded(
-              child: FutureBuilder(
-                future: merchantsRepo.initialize(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
+              child: BlocBuilder<MerchantsBloc, MerchantsState>(
+                builder: (context, state) {
+                  if (state is MerchantsLoading) {
                     return const Center(child: CircularProgressIndicator());
                   }
-
-                  var merchants = merchantsRepo.getAllMerchants();
-
-                  merchants.sort((a, b) => a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase()));
-
-                  if (_searchQuery.isNotEmpty) {
-                    merchants = merchants.where((merchant) {
-                      return merchant.displayName.toLowerCase().contains(_searchQuery);
-                    }).toList();
+                  if (state is MerchantsError) {
+                    return Center(child: Text('Error: ${state.message}'));
                   }
+                  final merchants =
+                  (state as MerchantsLoaded).merchants..sort(
+                          (a, b) => a.displayName
+                          .toLowerCase()
+                          .compareTo(b.displayName.toLowerCase()));
+
+                  final filtered = _filter(merchants);
 
                   return ListView.builder(
                     padding: const EdgeInsets.only(top: 16),
-                    itemCount: merchants.length,
-                    itemBuilder: (context, index) {
-                      final merchant = merchants[index];
+                    itemCount: filtered.length,
+                    itemBuilder: (ctx, i) {
+                      final merchant = filtered[i];
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         child: ListTile(
@@ -81,30 +87,27 @@ class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
                               width: 80,
                               height: 80,
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                // Fallback no image
-                                return Image.asset(
-                                  'lib/assets/images/loyalty_cards/card.png',
-                                  width: 80,
-                                  height: 80,
-                                  fit: BoxFit.cover,
-                                );
-                              },
+                              errorBuilder: (_, __, ___) => Image.asset(
+                                'lib/assets/images/loyalty_cards/card.png',
+                                width: 80,
+                                height: 80,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                           title: Text(merchant.displayName),
-                          onTap: () {
-                            final navigator = Navigator.of(context);
-
-                            navigator.push(
+                          onTap: () async {
+                            // Navigate & handle async safely
+                            final added = await Navigator.of(context).push<bool>(
                               MaterialPageRoute(
-                                builder: (context) => ScanCardScreen(merchant: merchant),
+                                builder: (_) =>
+                                    ScanCardScreen(merchant: merchant),
                               ),
-                            ).then((result) {
-                              if (result == true && mounted) {
-                                navigator.pop(true);
-                              }
-                            });
+                            );
+                            if (!context.mounted) return;
+                            if (added == true) {
+                              Navigator.of(context).pop(true);
+                            }
                           },
                         ),
                       );
