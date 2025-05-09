@@ -15,7 +15,7 @@ import 'package:cartan/src/widgets/cards/empty_cards_view.dart';
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  /// Navigate to merchant selection, then reload cards if added.
+  // Navigate to merchant selection, then reload cards if added.
   Future<void> _onAddNewCard(BuildContext context) async {
     final added = await Navigator.push<bool>(
       context,
@@ -28,7 +28,7 @@ class HomePage extends StatelessWidget {
     }
   }
 
-  /// Navigate to card details, then reload cards if updated.
+  // Navigate to card details, then reload cards if updated.
   Future<void> _onCardTap(BuildContext context, LoyaltyCard card) async {
     final updated = await Navigator.push<bool>(
       context,
