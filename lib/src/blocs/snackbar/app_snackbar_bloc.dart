@@ -4,7 +4,6 @@ import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cartan/src/themes/app_themes.dart';
 
-// Definição dos eventos do SnackBar
 abstract class SnackBarEvent {}
 
 class ShowSuccessEvent extends SnackBarEvent {
@@ -19,10 +18,8 @@ class ShowErrorEvent extends SnackBarEvent {
   ShowErrorEvent(this.message);
 }
 
-// Definição do estado do SnackBar (opcional, poderia ser sem estado)
 class SnackBarState {}
 
-// BLoC para gerenciar as notificações de SnackBar
 class SnackBarBloc extends Bloc<SnackBarEvent, SnackBarState> {
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey;
 

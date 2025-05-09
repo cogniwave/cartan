@@ -15,3 +15,8 @@ class CardsError extends CardsState {
   final String message;
   CardsError(this.message);
 }
+
+class CardDeletedSuccessfully extends CardsState {
+  final String cardId;
+  CardDeletedSuccessfully(this.cardId);
+}

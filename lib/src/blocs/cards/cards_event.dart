@@ -10,3 +10,9 @@ class AddCard extends CardsEvent {
   final LoyaltyCard card;
   AddCard(this.card);
 }
+
+// Delete card
+class DeleteCard extends CardsEvent {
+  final String cardId;
+  DeleteCard(this.cardId);
+}

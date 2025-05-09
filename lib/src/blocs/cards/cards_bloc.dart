@@ -25,8 +25,23 @@ class CardsBloc extends Bloc<CardsEvent, CardsState> {
 
     // Save the new card
     on<AddCard>((event, emit) async {
-      await _cardRepo.saveCard(event.card);
-      add(LoadCards());
+      try {
+        await _cardRepo.saveCard(event.card);
+        add(LoadCards());
+      } catch (e) {
+        emit(CardsError(e.toString()));
+      }
+    });
+
+    // Delete a card
+    on<DeleteCard>((event, emit) async {
+      try {
+        await _cardRepo.deleteCard(event.cardId);
+        emit(CardDeletedSuccessfully(event.cardId));
+        add(LoadCards());
+      } catch (e) {
+        emit(CardsError(e.toString()));
+      }
     });
   }
 }
