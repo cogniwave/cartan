@@ -9,6 +9,7 @@ import 'package:cartan/src/widgets/font_size/font_size_subtitle.dart';
 import 'package:cartan/src/widgets/language/language_subtitle.dart';
 import 'package:cartan/src/widgets/common/url_launcher_listener.dart';
 import 'package:cartan/src/blocs/url_launcher/url_launcher_bloc.dart';
+import 'feedback_screen.dart';
 import 'font_size_screen.dart';
 import 'language_screen.dart';
 
@@ -105,6 +106,12 @@ class SettingsScreen extends StatelessWidget {
                 ListTile(
                   title: Text(localizations.feedback),
                   leading: const Icon(AntIcons.likeOutlined),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const FeedbackScreen()),
+                    );
+                  },
                 ),
               ],
             ),

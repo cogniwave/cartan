@@ -218,5 +218,45 @@
   "digits": "digits",
   "@digits": {
     "description": "Digit count based on card number format."
+  },
+  "name": "Name",
+  "@name": {
+    "description": "Label for the name field in feedback form"
+  },
+  "email": "Email",
+  "@email": {
+    "description": "Label for the email field in feedback form"
+  },
+  "message": "Message",
+  "@message": {
+    "description": "Label for the message field in feedback form"
+  },
+  "submit": "Submit feedback",
+  "@send": {
+    "description": "Label for the send feedback button"
+  },
+  "feedback_sent": "Thank you for your feedback!",
+  "@feedback_sent": {
+    "description": "Snackbar message after feedback is sent"
+  },
+  "name_required": "Name is required.",
+  "@name_required": {
+    "description": "Validation error shown when the name field is empty in the feedback form."
+  },
+  "email_required": "Email is required.",
+  "@email_required": {
+    "description": "Validation error shown when the email field is empty in the feedback form."
+  },
+  "invalid_email": "Please enter a valid email address.",
+  "@invalid_email": {
+    "description": "Validation error shown when the supplied email does not match a valid format."
+  },
+  "message_required": "Please enter your feedback.",
+  "@message_required": {
+    "description": "Validation error shown when the feedback message field is empty."
+  },
+  "feedback_submission_error": "Failed to send feedback. Please try again later.",
+  "@feedback_submission_error": {
+    "description": "Error message shown when feedback submission to the server fails."
   }
 }

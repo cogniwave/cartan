@@ -3,7 +3,7 @@
     "id": "pingo_doce",
     "displayName": "Pingo Doce",
     "formats": ["^\\d{13}$", "^\\d{9}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/pingo_doce_card.png",
+    "assetImagePath": "lib/assets/images/loyalty_cards/pingo_doce.png",
     "website": "https://www.pingodoce.pt/",
     "category": "Simple"
   },
@@ -11,7 +11,7 @@
     "id": "continente",
     "displayName": "Continente",
     "formats": ["^\\d{13}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/continente_card.png",
+    "assetImagePath": "lib/assets/images/loyalty_cards/continente.png",
     "website": "https://www.continente.pt/",
     "category": "Simple"
   },
@@ -19,7 +19,7 @@
     "id": "ikea",
     "displayName": "IKEA",
     "formats": ["^\\d{16}$", "^\\d{19}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/ikea_card.png",
+    "assetImagePath": "lib/assets/images/loyalty_cards/ikea.png",
     "website": "https://www.ikea.com/pt/pt/",
     "category": "Simple"
   },
@@ -27,7 +27,7 @@
     "id": "e_leclerc",
     "displayName": "E.Leclerc",
     "formats": ["^\\d{12}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/e_leclerc_card.png",
+    "assetImagePath": "lib/assets/images/loyalty_cards/e_leclerc.png",
     "website": "https://www.e-leclerc.pt/",
     "category": "Simple"
   },
@@ -35,7 +35,7 @@
     "id": "worten_resolve",
     "displayName": "Worten Resolve",
     "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/worten_resolve_card.png",
+    "assetImagePath": "lib/assets/images/loyalty_cards/worten_resolve.png",
     "website": "https://www.worten.pt/",
     "category": "Simple"
   },
@@ -43,7 +43,7 @@
     "id": "sport_zone",
     "displayName": "Sport Zone",
     "formats": ["^\\d{9}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/sport_zone_card.png",
+    "assetImagePath": "lib/assets/images/loyalty_cards/sport_zone.png",
     "website": "https://www.sportzone.pt/",
     "category": "Simple"
   },
@@ -51,7 +51,7 @@
     "id": "fnac",
     "displayName": "Fnac",
     "formats": ["^\\d{13}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/fnac_card.png",
+    "assetImagePath": "lib/assets/images/loyalty_cards/fnac.png",
     "website": "https://www.fnac.pt/",
     "category": "Simple"
   },
@@ -59,7 +59,7 @@
     "id": "oney",
     "displayName": "Oney",
     "formats": ["^\\d{11}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/oney_card.png",
+    "assetImagePath": "lib/assets/images/loyalty_cards/oney.png",
     "website": "https://www.oney.pt/",
     "category": "Simple"
   },
@@ -67,7 +67,7 @@
     "id": "universo",
     "displayName": "Universo",
     "formats": ["^\\d{16}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/universo_card.png",
+    "assetImagePath": "lib/assets/images/loyalty_cards/universo.png",
     "website": "https://universo.onyou.pt/",
     "category": "Simple"
   },
@@ -75,7 +75,7 @@
     "id": "bp",
     "displayName": "BP",
     "formats": ["^\\d{12}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/bp_card.png",
+    "assetImagePath": "lib/assets/images/loyalty_cards/bp.png",
     "website": "https://www.bp.com/pt/",
     "category": "Simple"
   },

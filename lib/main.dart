@@ -1,5 +1,3 @@
-import 'package:cartan/src/blocs/url_launcher/url_launcher_bloc.dart';
-import 'package:cartan/src/blocs/snackbar/app_snackbar_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +18,9 @@ import 'package:cartan/src/repositories/merchants_repository.dart';
 import 'package:cartan/src/repositories/loyalty_card_repository.dart';
 import 'src/blocs/merchants/merchants_bloc.dart';
 import 'src/blocs/merchants/merchants_event.dart';
+import 'package:cartan/src/blocs/feedback/feedback_bloc.dart';
+import 'package:cartan/src/blocs/url_launcher/url_launcher_bloc.dart';
+import 'package:cartan/src/blocs/snackbar/app_snackbar_bloc.dart';
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
@@ -90,6 +91,10 @@ Future<void> initializeApp() async {
             // Provide the SnackBarBloc for app messages
             BlocProvider<SnackBarBloc>(
               create: (_) => SnackBarBloc(scaffoldMessengerKey),
+            ),
+            // Provide the FeedbackBloc for feedback form submission
+            BlocProvider<FeedbackBloc>(
+              create: (_) => FeedbackBloc(),
             ),
           ],
           child: const Cartan(),
