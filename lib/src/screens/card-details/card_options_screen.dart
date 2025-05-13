@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:cartan/utils/app_snackbar.dart';
 import 'package:cartan/utils/url_launcher.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:cartan/src/models/merchant.dart';
 import 'package:cartan/src/models/loyalty_card.dart';
@@ -103,10 +104,10 @@ class CardOptionsScreen extends StatelessWidget {
                 Positioned(
                   right: 82,
                   top: 44,
-                  child: Image.asset(
+                  child: SvgPicture.asset(
                     merchant.assetImagePath,
                     width: 100,
-                    height: 100,
+                    height: 70,
                   ),
                 ),
               ],

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cartan/src/themes/app_themes.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ManualEntryView extends StatelessWidget {
   final TextEditingController controller;
@@ -48,13 +49,19 @@ class ManualEntryView extends StatelessWidget {
             Center(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: Image.asset(
-                  assetImagePath,
-                  height: 120,
-                  fit: BoxFit.contain,
+                child: SizedBox(
+                  width: 150,
+                  height: 100,
+                  child: FittedBox(
+                    fit: BoxFit.fill,
+                    child: SvgPicture.asset(
+                      assetImagePath,
+                    ),
+                  ),
                 ),
               ),
             ),
+
             const SizedBox(height: 40),
 
             TextField(

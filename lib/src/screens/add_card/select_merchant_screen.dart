@@ -4,6 +4,7 @@ import 'package:cartan/src/repositories/merchants_repository.dart';
 import 'package:cartan/src/widgets/common/app_bar.dart';
 import 'scan_card_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SelectMerchantScreen extends StatefulWidget {
   const SelectMerchantScreen({super.key});
@@ -76,20 +77,19 @@ class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
                         child: ListTile(
                           leading: ClipRRect(
                             borderRadius: BorderRadius.circular(8),
-                            child: Image.asset(
-                              merchant.assetImagePath,
+                            child: SizedBox(
                               width: 80,
-                              height: 80,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                // Fallback no image
-                                return Image.asset(
-                                  'lib/assets/images/loyalty_cards/card.png',
-                                  width: 80,
-                                  height: 80,
-                                  fit: BoxFit.cover,
-                                );
-                              },
+                              height: 50,
+                              child: SvgPicture.asset(
+                                merchant.assetImagePath,
+                                fit: BoxFit.fill,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return SvgPicture.asset(
+                                    'lib/assets/images/loyalty_cards/card.svg',
+                                    fit: BoxFit.fill,
+                                  );
+                                },
+                              ),
                             ),
                           ),
                           title: Text(merchant.displayName),

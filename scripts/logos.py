@@ -98,10 +98,13 @@ def convert_to_svg(input_path: str, output_path: str) -> None:
     """
     Converts a given image file to SVG format.
     """
+    # Path to inkscape.exe
+    INKSCAPE_PATH = r"C:\Program Files\Inkscape\bin\inkscape.exe"
+
     try:
         log("Converting logo to SVG...")
         run([
-            "inkscape",
+            INKSCAPE_PATH,
             "--export-filename",
             output_path,
             input_path,
@@ -153,7 +156,7 @@ def find_company_logos(path: str | None) -> None:
 
 @click.command("convert-existing-img")
 @click.option('--directory', type=str, required=False, help='Path to a directory in which all files will be converted to SVG. Defaults to lib/assets/images/loyalty_cards')
-def convert_existing_imgs(directory: str | None) -> None:
+def convert_existing_img(directory: str | None) -> None:
     """
     Convert existing image files to SVG format and saves them in {OUTPUT_DIR}
     """
@@ -176,7 +179,7 @@ def convert_existing_imgs(directory: str | None) -> None:
 if __name__ == "__main__":
     try: 
         cli.add_command(find_company_logos)
-        cli.add_command(convert_existing_imgs)
+        cli.add_command(convert_existing_img)
 
         cli()
     finally: 
