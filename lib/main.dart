@@ -1,3 +1,5 @@
+import 'package:cartan/src/services/navigation_service.dart';
+import 'package:cartan/src/services/scaffold_messenger_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -16,11 +18,6 @@ import 'utils/font_size_provider.dart';
 import 'package:cartan/src/widgets/font_size/font_size_scaler.dart';
 import 'package:cartan/src/repositories/merchants_repository.dart';
 import 'package:cartan/src/repositories/loyalty_card_repository.dart';
-import 'src/blocs/merchants/merchants_bloc.dart';
-import 'src/blocs/merchants/merchants_event.dart';
-import 'package:cartan/src/blocs/feedback/feedback_bloc.dart';
-import 'package:cartan/src/blocs/url_launcher/url_launcher_bloc.dart';
-import 'package:cartan/src/blocs/snackbar/app_snackbar_bloc.dart';
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
@@ -65,12 +62,6 @@ Future<void> initializeApp() async {
             ChangeNotifierProvider(create: (_) => FontSizeProvider()),
             Provider(create: (_) => MerchantsRepository()),
             // Provide a MerchantsBloc to manage loading of merchants
-            BlocProvider<MerchantsBloc>(
-              create:
-                  (ctx) =>
-              MerchantsBloc(ctx.read<MerchantsRepository>())
-                ..add(LoadMerchants()),
-            ),
             Provider(
               create:
                   (context) =>
@@ -84,18 +75,7 @@ Future<void> initializeApp() async {
                 ctx.read<MerchantsRepository>(),
               )..add(LoadCards()),
             ),
-            // Provide the UrlLauncherBloc for URL launching functionality
-            BlocProvider<UrlLauncherBloc>(
-              create: (_) => UrlLauncherBloc(),
-            ),
-            // Provide the SnackBarBloc for app messages
-            BlocProvider<SnackBarBloc>(
-              create: (_) => SnackBarBloc(scaffoldMessengerKey),
-            ),
-            // Provide the FeedbackBloc for feedback form submission
-            BlocProvider<FeedbackBloc>(
-              create: (_) => FeedbackBloc(),
-            ),
+
           ],
           child: const Cartan(),
         ),
@@ -115,12 +95,22 @@ class Cartan extends StatelessWidget {
         return MaterialApp(
           title: FlavorConfig.instance.values.appName,
           theme: themeProvider.themeData,
+          scaffoldMessengerKey: ScaffoldMessengerService().scaffoldMessengerKey,
+          navigatorKey: NavigationService().navigatorKey,
           locale: localeProvider.locale,
           supportedLocales: AppLocalizations.supportedLocales,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           navigatorObservers: [BugsnagNavigatorObserver()],
-          scaffoldMessengerKey: scaffoldMessengerKey,
           builder: (context, child) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              final theme = Theme.of(context);
+              final localizations = AppLocalizations.of(context)!;
+              ScaffoldMessengerService().initialize(
+                theme: theme,
+                localizations: localizations,
+              );
+            });
+
             return FontSizeScaler(child: child!);
           },
           home: const HomePage(),
@@ -128,4 +118,5 @@ class Cartan extends StatelessWidget {
       },
     );
   }
+
 }

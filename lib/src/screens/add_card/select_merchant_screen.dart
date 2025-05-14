@@ -1,14 +1,14 @@
+import 'package:cartan/src/services/navigation_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:cartan/src/blocs/merchants/merchants_bloc.dart';
-import 'package:cartan/src/blocs/merchants/merchants_state.dart';
-import 'package:cartan/src/models/merchant.dart';
-import 'scan_card_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:cartan/src/repositories/merchants_repository.dart';
 import 'package:cartan/src/widgets/common/app_bar.dart';
+import 'scan_card_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SelectMerchantScreen extends StatefulWidget {
   const SelectMerchantScreen({super.key});
+
   @override
   State<SelectMerchantScreen> createState() => _SelectMerchantScreenState();
 }
@@ -16,98 +16,94 @@ class SelectMerchantScreen extends StatefulWidget {
 class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
   String _searchQuery = '';
 
-  /// Filter helper
-  List<Merchant> _filter(List<Merchant> all) {
-    if (_searchQuery.isEmpty) return all;
-    return all
-        .where((m) =>
-        m.displayName.toLowerCase().contains(_searchQuery.toLowerCase()))
-        .toList();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final local = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
+    final merchantsRepo = Provider.of<MerchantsRepository>(context);
+    final localizations = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
         child: Column(
           children: [
-            CustomAppBar(title: Text(local.select_merchant)),
+            CustomAppBar(
+              title: Text(localizations.select_merchant),
+            ),
 
-            // Search field
+            // search
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: TextField(
                 decoration: InputDecoration(
-                  hintText: local.search,
+                  hintText: localizations.search,
                   prefixIcon: const Icon(Icons.search),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 onChanged: (value) {
-                  setState(() => _searchQuery = value);
+                  setState(() {
+                    _searchQuery = value.toLowerCase();
+                  });
                 },
               ),
             ),
 
-            // Merchants list via Bloc
             Expanded(
-              child: BlocBuilder<MerchantsBloc, MerchantsState>(
-                builder: (context, state) {
-                  if (state is MerchantsLoading) {
+              child: FutureBuilder(
+                future: merchantsRepo.initialize(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   }
-                  if (state is MerchantsError) {
-                    return Center(child: Text('Error: ${state.message}'));
-                  }
-                  final merchants =
-                  (state as MerchantsLoaded).merchants..sort(
-                          (a, b) => a.displayName
-                          .toLowerCase()
-                          .compareTo(b.displayName.toLowerCase()));
 
-                  final filtered = _filter(merchants);
+                  var merchants = merchantsRepo.getAllMerchants();
+
+                  merchants.sort((a, b) => a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase()));
+
+                  if (_searchQuery.isNotEmpty) {
+                    merchants = merchants.where((merchant) {
+                      return merchant.displayName.toLowerCase().contains(_searchQuery);
+                    }).toList();
+                  }
 
                   return ListView.builder(
                     padding: const EdgeInsets.only(top: 16),
-                    itemCount: filtered.length,
-                    itemBuilder: (ctx, i) {
-                      final merchant = filtered[i];
+                    itemCount: merchants.length,
+                    itemBuilder: (context, index) {
+                      final merchant = merchants[index];
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         child: ListTile(
                           leading: ClipRRect(
                             borderRadius: BorderRadius.circular(8),
-                            child: Image.asset(
-                              merchant.assetImagePath,
+                            child: SizedBox(
                               width: 80,
-                              height: 80,
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => Image.asset(
-                                'lib/assets/images/loyalty_cards/card.png',
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.cover,
+                              height: 50,
+                              child: Image.asset(
+                                merchant.assetImagePath,
+                                fit: BoxFit.fill,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Image.asset(
+                                    'lib/assets/images/loyalty_cards/card.svg',
+                                    fit: BoxFit.fill,
+                                  );
+                                },
                               ),
                             ),
                           ),
                           title: Text(merchant.displayName),
-                          onTap: () async {
-                            // Navigate & handle async safely
-                            final added = await Navigator.of(context).push<bool>(
+                          onTap: () {
+                            Navigator.push(
+                              context,
                               MaterialPageRoute(
-                                builder: (_) =>
-                                    ScanCardScreen(merchant: merchant),
+                                builder: (context) => ScanCardScreen(merchant: merchant),
                               ),
-                            );
-                            if (!context.mounted) return;
-                            if (added == true) {
-                              Navigator.of(context).pop(true);
-                            }
+                            ).then((result) {
+                              if (result == true) {
+                                NavigationService().pop(true);
+                              }
+                            });
                           },
                         ),
                       );

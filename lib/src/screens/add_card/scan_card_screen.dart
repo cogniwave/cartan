@@ -89,7 +89,7 @@ class _ScanCardScreenState extends State<ScanCardScreen>
     );
     context.read<CardsBloc>().add(AddCard(newCard));
 
-    AppSnackBar.showSuccess(context, localizations.card_added_successfully);
+    AppSnackBar.showSuccess(localizations.card_added_successfully);
     Navigator.pop(context, true);
   }
 
