@@ -1,22 +1,30 @@
-import 'package:cartan/src/models/loyalty_card.dart';
+part of 'cards_bloc.dart';
 
-abstract class CardsState {}
+enum Status { loading, success, failure }
 
-class CardsLoading extends CardsState {}
+final class CardsState extends Equatable {
+  const CardsState({
+    this.status = Status.loading,
+    this.cards = const <LoyaltyCard>[],
+    this.error,
+  });
 
-// Success
-class CardsLoaded extends CardsState {
+  final Status status;
   final List<LoyaltyCard> cards;
-  CardsLoaded(this.cards);
-}
+  final String? error;
 
-// Error
-class CardsError extends CardsState {
-  final String message;
-  CardsError(this.message);
-}
+  @override
+  List<Object?> get props => [status, cards, error];
 
-class CardDeletedSuccessfully extends CardsState {
-  final String cardId;
-  CardDeletedSuccessfully(this.cardId);
+  CardsState copyWith({
+    Status? status,
+    List<LoyaltyCard>? cards,
+    String? error,
+  }) {
+    return CardsState(
+      status: status ?? this.status,
+      cards: cards ?? this.cards,
+      error: error ?? this.error,
+    );
+  }
 }

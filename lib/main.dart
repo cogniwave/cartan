@@ -10,7 +10,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'dart:async';
 import 'src/home_page.dart';
 import 'src/blocs/cards/cards_bloc.dart';
-import 'src/blocs/cards/cards_event.dart';
 import 'utils/flavor_config.dart';
 import 'utils/theme_provider.dart';
 import 'utils/locale_provider.dart';
@@ -61,21 +60,17 @@ Future<void> initializeApp() async {
             ChangeNotifierProvider(create: (_) => LocaleProvider()),
             ChangeNotifierProvider(create: (_) => FontSizeProvider()),
             Provider(create: (_) => MerchantsRepository()),
-            // Provide a MerchantsBloc to manage loading of merchants
             Provider(
-              create:
-                  (context) =>
+              create: (context) =>
                   LoyaltyCardRepository(context.read<MerchantsRepository>()),
             ),
             // Provide the CardsBloc for state management of loyalty cards
             BlocProvider<CardsBloc>(
-              create:
-                  (ctx) => CardsBloc(
-                ctx.read<LoyaltyCardRepository>(),
-                ctx.read<MerchantsRepository>(),
-              )..add(LoadCards()),
+              create: (ctx) => CardsBloc(
+                cardRepo: ctx.read<LoyaltyCardRepository>(),
+                merchantsRepo: ctx.read<MerchantsRepository>(),
+              )..add(const LoadCards()),
             ),
-
           ],
           child: const Cartan(),
         ),
@@ -118,5 +113,4 @@ class Cartan extends StatelessWidget {
       },
     );
   }
-
 }

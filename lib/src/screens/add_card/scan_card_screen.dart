@@ -4,7 +4,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cartan/src/blocs/cards/cards_bloc.dart';
-import 'package:cartan/src/blocs/cards/cards_event.dart';
 import 'package:cartan/src/models/merchant.dart';
 import 'package:cartan/src/models/loyalty_card.dart';
 import 'package:cartan/src/widgets/cards/manual_entry_view.dart';

@@ -1,18 +1,30 @@
-import 'package:cartan/src/models/loyalty_card.dart';
+part of 'cards_bloc.dart';
 
-abstract class CardsEvent {}
+sealed class CardsEvent extends Equatable {
+  const CardsEvent();
 
-// Load all cards
-class LoadCards extends CardsEvent {}
-
-// Add new card
-class AddCard extends CardsEvent {
-  final LoyaltyCard card;
-  AddCard(this.card);
+  @override
+  List<Object> get props => [];
 }
 
-// Delete card
-class DeleteCard extends CardsEvent {
+final class LoadCards extends CardsEvent {
+  const LoadCards();
+}
+
+final class AddCard extends CardsEvent {
+  final LoyaltyCard card;
+
+  const AddCard(this.card);
+
+  @override
+  List<Object> get props => [card];
+}
+
+final class DeleteCard extends CardsEvent {
   final String cardId;
-  DeleteCard(this.cardId);
+
+  const DeleteCard(this.cardId);
+
+  @override
+  List<Object> get props => [cardId];
 }
