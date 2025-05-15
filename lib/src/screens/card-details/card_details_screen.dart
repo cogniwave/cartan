@@ -5,6 +5,7 @@ import 'package:cartan/src/models/loyalty_card.dart';
 import 'package:cartan/src/themes/app_themes.dart';
 import 'package:cartan/src/widgets/card_details/code_display.dart';
 import 'package:cartan/src/screens/card-details/fullscreen_code_page.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'card_options_screen.dart';
 
 class CardDetailsScreen extends StatefulWidget {
@@ -88,9 +89,9 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
         iconTheme: IconThemeData(color: theme.colorScheme.primary),
         title: Row(
           children: [
-            Image.asset(
+            SvgPicture.asset(
               widget.merchant.assetImagePath,
-              width: 40,
+              width: 70,
               height: 40,
             ),
             const SizedBox(width: 8),

@@ -11,6 +11,7 @@ import 'package:cartan/src/widgets/cards/scanner_view.dart';
 import 'package:cartan/utils/card_format_validator.dart';
 import 'package:cartan/utils/app_snackbar.dart';
 import 'package:cartan/src/themes/app_themes.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ScanCardScreen extends StatefulWidget {
   final Merchant merchant;
@@ -133,12 +134,25 @@ class _ScanCardScreenState extends State<ScanCardScreen>
         backgroundColor: theme.dividerTheme.color,
         title: Row(
           children: [
-            Image.asset(widget.merchant.assetImagePath, width: 40, height: 40),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: SizedBox(
+                width: 50,
+                height: 30,
+                child: FittedBox(
+                  fit: BoxFit.fill,
+                  child: SvgPicture.asset(
+                    widget.merchant.assetImagePath,
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(width: 8),
             Text(widget.merchant.displayName),
           ],
         ),
       ),
+
       body: Column(
         children: [
           Container(

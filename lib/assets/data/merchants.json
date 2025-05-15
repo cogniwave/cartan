@@ -1,570 +1,704 @@
 [
   {
-    "id": "pingo_doce",
-    "displayName": "Pingo Doce",
-    "formats": ["^\\d{13}$", "^\\d{9}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/pingo_doce.png",
-    "website": "https://www.pingodoce.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "continente",
-    "displayName": "Continente",
-    "formats": ["^\\d{13}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/continente.png",
-    "website": "https://www.continente.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "ikea",
-    "displayName": "IKEA",
-    "formats": ["^\\d{16}$", "^\\d{19}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/ikea.png",
-    "website": "https://www.ikea.com/pt/pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "e_leclerc",
-    "displayName": "E.Leclerc",
-    "formats": ["^\\d{12}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/e_leclerc.png",
-    "website": "https://www.e-leclerc.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "worten_resolve",
-    "displayName": "Worten Resolve",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/worten_resolve.png",
-    "website": "https://www.worten.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "sport_zone",
-    "displayName": "Sport Zone",
-    "formats": ["^\\d{9}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/sport_zone.png",
-    "website": "https://www.sportzone.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "fnac",
-    "displayName": "Fnac",
-    "formats": ["^\\d{13}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/fnac.png",
-    "website": "https://www.fnac.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "oney",
-    "displayName": "Oney",
-    "formats": ["^\\d{11}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/oney.png",
-    "website": "https://www.oney.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "universo",
-    "displayName": "Universo",
-    "formats": ["^\\d{16}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/universo.png",
-    "website": "https://universo.onyou.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "bp",
-    "displayName": "BP",
-    "formats": ["^\\d{12}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/bp.png",
-    "website": "https://www.bp.com/pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "lidl_plus",
-    "displayName": "Lidl Plus",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/lidl_card.png",
-    "website": "https://www.lidl.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "minipreco",
-    "displayName": "Minipreço",
-    "formats": ["^\\d{9}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/minipreco_card.png",
-    "website": "https://www.minipreco.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "intermarche",
-    "displayName": "Intermarché",
-    "formats": ["^\\d{13}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/intermarche_card.png",
-    "website": "https://www.intermarche.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "livraria_bertrand",
-    "displayName": "Livraria Bertrand",
-    "formats": ["^\\d{13}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/livraria_bertrand_card.png",
-    "website": "https://www.bertrand.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "repsol",
-    "displayName": "Repsol",
-    "formats": ["^\\d{16}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/repsol_card.png",
-    "website": "https://www.repsol.com/",
-    "category": "Simple"
-  },
-  {
-    "id": "nos",
-    "displayName": "NOS",
-    "formats": ["^\\d{12}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/nos_card.png",
-    "website": "https://www.nos.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "tap_miles_and_go",
-    "displayName": "TAP Miles&Go",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/tap_card.png",
-    "website": "https://www.tap.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "makro",
-    "displayName": "Makro",
-    "formats": ["^\\d{9}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/makro_card.png",
-    "website": "https://www.makro.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "springfield",
-    "displayName": "Springfield",
-    "formats": ["^\\d{13}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/springfield_card.png",
-    "website": "https://www.springfield.com/",
-    "category": "Simple"
-  },
-  {
-    "id": "recheio",
-    "displayName": "Recheio",
-    "formats": ["^\\d{11}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/recheio_card.png",
-    "website": "https://www.recheio.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "norauto",
-    "displayName": "Norauto",
-    "formats": ["^\\d{16}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/norauto_card.png",
-    "website": "https://www.norauto.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "multicare",
-    "displayName": "Multicare",
-    "formats": ["^\\d{12}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/multicare_card.png",
-    "website": "https://www.multicare.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "discovery",
-    "displayName": "Discovery",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/discovery_card.png",
-    "website": "https://www.discovery.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "staples",
-    "displayName": "Staples",
-    "formats": ["^\\d{9}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/staples_card.png",
-    "website": "https://www.staples.pt/",
-    "category": "Simple"
-  },
-  {
     "id": "acp",
     "displayName": "ACP",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/acp_card.png",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/acp_card.svg",
     "website": "https://www.acp.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "auchan",
-    "displayName": "Auchan",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/auchan_card.png",
-    "website": "https://www.auchan.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "kiabi",
-    "displayName": "Kiabi",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/kiabi_card.png",
-    "website": "https://www.kiabi.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "galp",
-    "displayName": "Galp",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/galp_card.png",
-    "website": "https://www.galp.com/",
-    "category": "Simple"
-  },
-  {
-    "id": "shell",
-    "displayName": "Shell",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/shell_card.png",
-    "website": "https://www.shell.com/",
-    "category": "Simple"
-  },
-  {
-    "id": "rituals",
-    "displayName": "Rituals",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/rituals_card.png",
-    "website": "https://www.rituals.com/",
-    "category": "Simple"
-  },
-  {
-    "id": "douglas_beauty_card",
-    "displayName": "Douglas Beauty Card",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/douglas_beauty_card.png",
-    "website": "https://www.douglas.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "benfica",
-    "displayName": "Benfica",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/benfica_card.png",
-    "website": "https://www.slbenfica.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "womens_secret",
-    "displayName": "Women’s Secret",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/womens_secret_card.png",
-    "website": "https://www.womensecret.com/",
-    "category": "Simple"
-  },
-  {
-    "id": "deborla",
-    "displayName": "DeBORLA",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/deborla_card.png",
-    "website": "https://www.deborla.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "seaside",
-    "displayName": "Seaside",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/seaside_card.png",
-    "website": "https://www.seaside.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "cex",
-    "displayName": "CeX",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/cex_card.png",
-    "website": "https://uk.webuy.com/",
-    "category": "Simple"
-  },
-  {
-    "id": "cortefiel",
-    "displayName": "Cortefiel",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/cortefiel_card.png",
-    "website": "https://www.cortefiel.com/",
-    "category": "Simple"
-  },
-  {
-    "id": "c_and_a",
-    "displayName": "C&A",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/c_and_a_card.png",
-    "website": "https://www.c-and-a.com/",
-    "category": "Simple"
-  },
-  {
-    "id": "lyoness",
-    "displayName": "Lyoness",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/lyoness_card.png",
-    "website": "https://www.lyoness.com/",
-    "category": "Simple"
-  },
-  {
-    "id": "espaco_casa",
-    "displayName": "Espaço Casa",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/espaco_casa_card.png",
-    "website": "https://www.espacocasa.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "feu_vert",
-    "displayName": "Feu Vert",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/feu_vert_card.png",
-    "website": "https://www.feuvert.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "hm_club",
-    "displayName": "H&M Club",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/hm_club_card.png",
-    "website": "https://www2.hm.com/",
-    "category": "Simple"
-  },
-  {
-    "id": "o_boticario",
-    "displayName": "O Boticário",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/o_boticario_card.png",
-    "website": "https://www.boticario.com.br/",
-    "category": "Simple"
-  },
-  {
-    "id": "sauda",
-    "displayName": "Saúda - Farmácias Portuguesas",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/sauda_card.png",
-    "website": "https://farmaciasportuguesas.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "deco_plus",
-    "displayName": "DECO+",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/deco_plus_card.png",
-    "website": "https://www.deco.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "mundo_ageas_seguros",
-    "displayName": "Mundo Ageas Seguros",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/mundo_ageas_seguros_card.png",
-    "website": "https://www.ageas.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "leroy_merlin",
-    "displayName": "Leroy Merlin",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/leroy_merlin_card.png",
-    "website": "https://www.leroymerlin.pt/",
     "category": "Simple"
   },
   {
     "id": "agriloja",
     "displayName": "Agriloja",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/agriloja_card.png",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/agriloja_card.svg",
     "website": "https://www.agriloja.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "aki",
+    "displayName": "AKI",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/aki_card.svg",
+    "website": "https://www.aki.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "almedina",
+    "displayName": "Almedina",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/almedina_card.svg",
+    "website": "https://www.almedina.net/",
+    "category": "Simple"
+  },
+  {
+    "id": "aqui_e_fresco",
+    "displayName": "Aqui é Fresco",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/aqui_e_fresco_card.svg",
+    "website": "https://aquiefresco.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "auchan",
+    "displayName": "Auchan",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/auchan_card.svg",
+    "website": "https://www.auchan.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "benfica",
+    "displayName": "Benfica",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/benfica_card.svg",
+    "website": "https://www.slbenfica.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "bertrand",
+    "displayName": "Bertrand",
+    "formats": [
+      "^\\d{12}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/bertrand_card.svg",
+    "website": "https://www.bp.com/pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "bp",
+    "displayName": "BP",
+    "formats": [
+      "^\\d{12}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/bp_card.svg",
+    "website": "https://www.bp.com/pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "brio",
+    "displayName": "Brio",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/brio_card.svg",
+    "website": "https://www.brio.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "c_and_a",
+    "displayName": "C&A",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/c_and_a_card.svg",
+    "website": "https://www.c-and-a.com/",
     "category": "Simple"
   },
   {
     "id": "calzedonia",
     "displayName": "Calzedonia",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/calzedonia_card.png",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/calzedonia_card.svg",
     "website": "https://www.calzedonia.com/",
     "category": "Simple"
   },
   {
     "id": "celeiro",
     "displayName": "Celeiro",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/celeiro_card.png",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/celeiro_card.svg",
     "website": "https://www.celeiro.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "cex",
+    "displayName": "CeX",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/cex_card.svg",
+    "website": "https://uk.webuy.com/",
     "category": "Simple"
   },
   {
     "id": "chicco",
     "displayName": "Chicco",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/chicco_card.png",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/chicco_card.svg",
     "website": "https://www.chicco.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "homa",
-    "displayName": "Hôma",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/homa_card.png",
-    "website": "https://www.homa.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "intimissimi",
-    "displayName": "Intimissimi",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/intimissimi_card.png",
-    "website": "https://www.intimissimi.com/",
-    "category": "Simple"
-  },
-  {
-    "id": "makro",
-    "displayName": "Makro",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/makro_card.png",
-    "website": "https://www.makro.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "natura",
-    "displayName": "Natura",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/natura_card.png",
-    "website": "https://www.naturaselection.com/",
-    "category": "Simple"
-  },
-  {
-    "id": "sephora",
-    "displayName": "Sephora",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/sephora_card.png",
-    "website": "https://www.sephora.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "united_colors_of_benetton",
-    "displayName": "United Colors of Benetton",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/united_colors_of_benetton_card.png",
-    "website": "https://www.benetton.com/",
-    "category": "Simple"
-  },
-  {
-    "id": "lanidor",
-    "displayName": "Lanidor",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/lanidor_card.png",
-    "website": "https://www.lanidor.com/",
-    "category": "Simple"
-  },
-  {
-    "id": "foreva",
-    "displayName": "Foreva",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/foreva_card.png",
-    "website": "https://www.foreva.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "salsa_star",
-    "displayName": "Salsa Star",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/salsa_star_card.png",
-    "website": "https://www.salsajeans.com/",
-    "category": "Simple"
-  },
-  {
-    "id": "almedina",
-    "displayName": "Almedina",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/almedina_card.png",
-    "website": "https://www.almedina.net/",
-    "category": "Simple"
-  },
-  {
-    "id": "fotosport",
-    "displayName": "Fotosport",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/fotosport_card.png",
-    "website": "https://www.fotosport.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "coviran_clube_familia",
-    "displayName": "Coviran Clube Família",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/coviran_clube_familia_card.png",
-    "website": "https://www.coviran.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "aqui_e_fresco",
-    "displayName": "Aqui é Fresco",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/aqui_e_fresco_card.png",
-    "website": "https://aquiefresco.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "supersmart",
-    "displayName": "SuperSmart",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/supersmart_card.png",
-    "website": "https://www.supersmart.com/pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "decathlon",
-    "displayName": "Decathlon",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/decathlon_card.png",
-    "website": "https://www.decathlon.pt/",
-    "category": "Simple"
-  },
-  {
-    "id": "freeport_must",
-    "displayName": "Freeport MUST",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/freeport_must_card.png",
-    "website": "https://www.freeportfashionoutlet.pt/",
     "category": "Simple"
   },
   {
     "id": "conforama",
     "displayName": "Conforama",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/conforama_card.png",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/conforama_card.svg",
     "website": "https://www.conforama.pt/",
     "category": "Simple"
   },
   {
-    "id": "aki",
-    "displayName": "AKI",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/aki_card.png",
-    "website": "https://www.aki.pt/",
+    "id": "continente",
+    "displayName": "Continente",
+    "formats": [
+      "^\\d{13}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/continente_card.svg",
+    "website": "https://www.continente.pt/",
     "category": "Simple"
   },
   {
-    "id": "brio",
-    "displayName": "Brio",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/brio_card.png",
-    "website": "https://www.brio.pt/",
+    "id": "cortefiel",
+    "displayName": "Cortefiel",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/cortefiel_card.svg",
+    "website": "https://www.cortefiel.com/",
+    "category": "Simple"
+  },
+  {
+    "id": "coviran_clube_familia",
+    "displayName": "Coviran Clube Família",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/coviran_clube_familia_card.svg",
+    "website": "https://www.coviran.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "deborla",
+    "displayName": "DeBORLA",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/deborla_card.svg",
+    "website": "https://www.deborla.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "decathlon",
+    "displayName": "Decathlon",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/decathlon_card.svg",
+    "website": "https://www.decathlon.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "deco_plus",
+    "displayName": "DECO+",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/deco_plus_card.svg",
+    "website": "https://www.deco.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "discovery",
+    "displayName": "Discovery",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/discovery_card.svg",
+    "website": "https://www.discovery.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "douglas_beauty_card",
+    "displayName": "Douglas Beauty Card",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/douglas_beauty_card.svg",
+    "website": "https://www.douglas.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "e_leclerc",
+    "displayName": "E.Leclerc",
+    "formats": [
+      "^\\d{12}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/e_leclerc_card.svg",
+    "website": "https://www.e-leclerc.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "espaco_casa",
+    "displayName": "Espaço Casa",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/espaco_casa_card.svg",
+    "website": "https://www.espacocasa.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "feu_vert",
+    "displayName": "Feu Vert",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/feu_vert_card.svg",
+    "website": "https://www.feuvert.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "fnac",
+    "displayName": "Fnac",
+    "formats": [
+      "^\\d{13}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/fnac_card.svg",
+    "website": "https://www.fnac.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "foreva",
+    "displayName": "Foreva",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/foreva_card.svg",
+    "website": "https://www.foreva.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "fotosport",
+    "displayName": "Fotosport",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/fotosport_card.svg",
+    "website": "https://www.fotosport.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "freeport_must",
+    "displayName": "Freeport MUST",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/freeport_must_card.svg",
+    "website": "https://www.freeportfashionoutlet.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "galp",
+    "displayName": "Galp",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/galp_card.svg",
+    "website": "https://www.galp.com/",
+    "category": "Simple"
+  },
+  {
+    "id": "hm_club",
+    "displayName": "H&M Club",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/hm_club_card.svg",
+    "website": "https://www2.hm.com/",
+    "category": "Simple"
+  },
+  {
+    "id": "homa",
+    "displayName": "Hôma",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/homa_card.svg",
+    "website": "https://www.homa.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "ikea",
+    "displayName": "IKEA",
+    "formats": [
+      "^\\d{16}$",
+      "^\\d{19}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/ikea_card.svg",
+    "website": "https://www.ikea.com/pt/pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "intermarche",
+    "displayName": "Intermarché",
+    "formats": [
+      "^\\d{13}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/intermarche_card.svg",
+    "website": "https://www.intermarche.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "intimissimi",
+    "displayName": "Intimissimi",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/intimissimi_card.svg",
+    "website": "https://www.intimissimi.com/",
+    "category": "Simple"
+  },
+  {
+    "id": "kiabi",
+    "displayName": "Kiabi",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/kiabi_card.svg",
+    "website": "https://www.kiabi.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "lanidor",
+    "displayName": "Lanidor",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/lanidor_card.svg",
+    "website": "https://www.lanidor.com/",
+    "category": "Simple"
+  },
+  {
+    "id": "leroy_merlin",
+    "displayName": "Leroy Merlin",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/leroy_merlin_card.svg",
+    "website": "https://www.leroymerlin.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "lidl_plus",
+    "displayName": "Lidl Plus",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/lidl_card.svg",
+    "website": "https://www.lidl.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "lyoness",
+    "displayName": "Lyoness",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/lyoness_card.svg",
+    "website": "https://www.lyoness.com/",
+    "category": "Simple"
+  },
+  {
+    "id": "makro",
+    "displayName": "Makro",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/makro_card.svg",
+    "website": "https://www.makro.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "minipreco",
+    "displayName": "Minipreço",
+    "formats": [
+      "^\\d{9}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/minipreco_card.svg",
+    "website": "https://www.minipreco.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "multicare",
+    "displayName": "Multicare",
+    "formats": [
+      "^\\d{12}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/multicare_card.svg",
+    "website": "https://www.multicare.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "mundo_ageas_seguros",
+    "displayName": "Mundo Ageas Seguros",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/mundo_ageas_seguros_card.svg",
+    "website": "https://www.ageas.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "natura",
+    "displayName": "Natura",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/natura_card.svg",
+    "website": "https://www.naturaselection.com/",
+    "category": "Simple"
+  },
+  {
+    "id": "norauto",
+    "displayName": "Norauto",
+    "formats": [
+      "^\\d{16}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/norauto_card.svg",
+    "website": "https://www.norauto.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "nos",
+    "displayName": "NOS",
+    "formats": [
+      "^\\d{12}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/nos_card.svg",
+    "website": "https://www.nos.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "o_boticario",
+    "displayName": "O Boticário",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/o_boticario_card.svg",
+    "website": "https://www.boticario.com.br/",
+    "category": "Simple"
+  },
+  {
+    "id": "oney",
+    "displayName": "Oney",
+    "formats": [
+      "^\\d{11}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/oney_card.svg",
+    "website": "https://www.oney.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "pingo_doce",
+    "displayName": "Pingo Doce",
+    "formats": [
+      "^\\d{13}$",
+      "^\\d{9}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/pingo_doce_card.svg",
+    "website": "https://www.pingodoce.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "recheio",
+    "displayName": "Recheio",
+    "formats": [
+      "^\\d{11}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/recheio_card.svg",
+    "website": "https://www.recheio.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "repsol",
+    "displayName": "Repsol",
+    "formats": [
+      "^\\d{16}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/repsol_card.svg",
+    "website": "https://www.repsol.com/",
     "category": "Simple"
   },
   {
     "id": "revpoints",
     "displayName": "Revolut RevPoints",
-    "formats": ["^\\d{10}$"],
-    "assetImagePath": "lib/assets/images/loyalty_cards/revpoints_card.png",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/revpoints_card.svg",
     "website": "https://www.revolut.com/pt-PT/",
+    "category": "Simple"
+  },
+  {
+    "id": "rituals",
+    "displayName": "Rituals",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/rituals_card.svg",
+    "website": "https://www.rituals.com/",
+    "category": "Simple"
+  },
+  {
+    "id": "salsa_star",
+    "displayName": "Salsa Star",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/salsa_star_card.svg",
+    "website": "https://www.salsajeans.com/",
+    "category": "Simple"
+  },
+  {
+    "id": "sauda",
+    "displayName": "Saúda - Farmácias Portuguesas",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/sauda_card.svg",
+    "website": "https://farmaciasportuguesas.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "seaside",
+    "displayName": "Seaside",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/seaside_card.svg",
+    "website": "https://www.seaside.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "sephora",
+    "displayName": "Sephora",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/sephora_card.svg",
+    "website": "https://www.sephora.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "shell",
+    "displayName": "Shell",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/shell_card.svg",
+    "website": "https://www.shell.com/",
+    "category": "Simple"
+  },
+  {
+    "id": "sport_zone",
+    "displayName": "Sport Zone",
+    "formats": [
+      "^\\d{9}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/sport_zone_card.svg",
+    "website": "https://www.sportzone.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "springfield",
+    "displayName": "Springfield",
+    "formats": [
+      "^\\d{13}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/springfield_card.svg",
+    "website": "https://www.springfield.com/",
+    "category": "Simple"
+  },
+  {
+    "id": "staples",
+    "displayName": "Staples",
+    "formats": [
+      "^\\d{9}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/staples_card.svg",
+    "website": "https://www.staples.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "supersmart",
+    "displayName": "SuperSmart",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/supersmart_card.svg",
+    "website": "https://www.supersmart.com/pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "tap_miles_and_go",
+    "displayName": "TAP Miles&Go",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/tap_card.svg",
+    "website": "https://www.tap.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "united_colors_of_benetton",
+    "displayName": "United Colors of Benetton",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/united_colors_of_benetton_card.svg",
+    "website": "https://www.benetton.com/",
+    "category": "Simple"
+  },
+  {
+    "id": "universo",
+    "displayName": "Universo",
+    "formats": [
+      "^\\d{16}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/universo_card.svg",
+    "website": "https://universo.onyou.pt/",
+    "category": "Simple"
+  },
+  {
+    "id": "womens_secret",
+    "displayName": "Women’s Secret",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/womens_secret_card.svg",
+    "website": "https://www.womensecret.com/",
+    "category": "Simple"
+  },
+  {
+    "id": "worten_resolve",
+    "displayName": "Worten Resolve",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/worten_resolve_card.svg",
+    "website": "https://www.worten.pt/",
     "category": "Simple"
   }
 ]
