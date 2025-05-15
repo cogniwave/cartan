@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/src/blocs/cards/cards_bloc.dart';
 import 'package:cartan/src/models/merchant.dart';
 import 'package:cartan/src/models/loyalty_card.dart';
 import 'package:cartan/src/widgets/cards/manual_entry_view.dart';
 import 'package:cartan/src/widgets/cards/scanner_view.dart';
-import 'package:cartan/src/repositories/loyalty_card_repository.dart';
 import 'package:cartan/utils/card_format_validator.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cartan/utils/app_snackbar.dart';
 import 'package:cartan/src/themes/app_themes.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -18,7 +18,7 @@ class ScanCardScreen extends StatefulWidget {
   const ScanCardScreen({super.key, required this.merchant});
 
   @override
-  _ScanCardScreenState createState() => _ScanCardScreenState();
+  State<ScanCardScreen> createState() => _ScanCardScreenState();
 }
 
 class _ScanCardScreenState extends State<ScanCardScreen>
@@ -79,17 +79,17 @@ class _ScanCardScreenState extends State<ScanCardScreen>
     if (_isValid) _tabController.animateTo(1);
   }
 
-  Future<void> _saveCard() async {
+  void _saveCard() {
     if (!_isValid) return;
-    final repo =
-    Provider.of<LoyaltyCardRepository>(context, listen: false);
-    await repo.saveCard(LoyaltyCard(
+
+    // Dispatch AddCard event instead of saving directly
+    final newCard = LoyaltyCard(
       merchant: widget.merchant,
       memberId: _codeController.text.trim(),
-    ));
-    if (!mounted) return;
-    AppSnackBar.showSuccess(
-        context, localizations.card_added_successfully);
+    );
+    context.read<CardsBloc>().add(AddCard(newCard));
+
+    AppSnackBar.showSuccess(localizations.card_added_successfully);
     Navigator.pop(context, true);
   }
 
@@ -162,7 +162,6 @@ class _ScanCardScreenState extends State<ScanCardScreen>
               labelColor: custom.accentAlt,
               unselectedLabelColor: theme.colorScheme.primary,
               indicatorColor: custom.accentAlt,
-              dividerColor: Colors.transparent,
               tabs: [
                 Tab(text: localizations.scan_barcode),
                 Tab(text: localizations.enter_manually),

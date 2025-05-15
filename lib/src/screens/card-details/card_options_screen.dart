@@ -1,3 +1,4 @@
+import 'package:cartan/src/services/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
@@ -41,15 +42,17 @@ class CardOptionsScreen extends StatelessWidget {
               ),
               onPressed: () async {
                 try {
-                  await Provider.of<LoyaltyCardRepository>(context, listen: false).deleteCard(cardId);
+                  final repository = Provider.of<LoyaltyCardRepository>(context, listen: false);
 
-                  Navigator.pop(context);
-                  AppSnackBar.showSuccess(context, localizations.card_deleted_successfully);
+                  await repository.deleteCard(cardId);
 
-                  Navigator.pop(context, true);
+                  NavigationService().pop();
+                  AppSnackBar.showSuccess(localizations.card_deleted_successfully);
+
+                  NavigationService().pop(true);
                 } catch (e) {
-                  Navigator.pop(context);
-                  AppSnackBar.showError(context, localizations.error_deleting_card);
+                  NavigationService().pop();
+                  AppSnackBar.showError(localizations.error_deleting_card);
                 }
               },
               child: Text(localizations.confirm),

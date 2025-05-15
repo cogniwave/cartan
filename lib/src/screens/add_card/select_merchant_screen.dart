@@ -1,3 +1,4 @@
+import 'package:cartan/src/services/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cartan/src/repositories/merchants_repository.dart';
@@ -101,7 +102,7 @@ class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
                               ),
                             ).then((result) {
                               if (result == true) {
-                                Navigator.pop(context, true);
+                                NavigationService().pop(true);
                               }
                             });
                           },

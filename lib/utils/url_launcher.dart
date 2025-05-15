@@ -24,12 +24,12 @@ class UrlLauncher {
           mode: LaunchMode.externalApplication,
         );
         if (!launched) {
-          AppSnackBar.showError(context, localizations.error);
+          AppSnackBar.showError(localizations.error);
         }
       }
     } catch (e, stack) {
       bugsnag.notify(e, stack);
-      AppSnackBar.showError(context, localizations.error);
+      AppSnackBar.showError(localizations.error);
     }
   }
 
@@ -61,7 +61,7 @@ class UrlLauncher {
             );
 
             if (!appleLaunched) {
-              AppSnackBar.showError(context, localizations.no_map_apps_installed);
+              AppSnackBar.showError(localizations.no_map_apps_installed);
             }
           } else {
             final googleUrl = Uri.parse("https://www.google.com/maps/search/?api=1&query=$encodedQuery");
@@ -71,13 +71,13 @@ class UrlLauncher {
             );
 
             if (!googleLaunched) {
-              AppSnackBar.showError(context, localizations.no_map_apps_installed);
+              AppSnackBar.showError(localizations.no_map_apps_installed);
             }
           }
         }
       } catch (e) {
         bugsnag.notify(e, StackTrace.current);
-        AppSnackBar.showError(context, localizations.error);
+        AppSnackBar.showError(localizations.error);
       }
     }
   }

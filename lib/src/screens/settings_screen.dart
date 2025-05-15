@@ -82,11 +82,11 @@ class SettingsScreen extends StatelessWidget {
                 final Uri url = Uri.parse("https://www.google.pt");
                 try {
                   if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
-                    AppSnackBar.showError(context, localizations.error);
+                    AppSnackBar.showError(localizations.error);
                   }
                 } catch (e) {
                   bugsnag.notify(e, StackTrace.current);
-                  AppSnackBar.showError(context, localizations.error);
+                  AppSnackBar.showError(localizations.error);
                 }
               },
             ),
@@ -97,11 +97,11 @@ class SettingsScreen extends StatelessWidget {
                 final Uri url = Uri.parse("https://www.google.pt");
                 try {
                   if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
-                    AppSnackBar.showError(context, localizations.error);
+                    AppSnackBar.showError(localizations.error);
                   }
                 } catch (e) {
                   bugsnag.notify(e, StackTrace.current);
-                  AppSnackBar.showError(context, localizations.error);
+                  AppSnackBar.showError(localizations.error);
                 }
               },
             ),

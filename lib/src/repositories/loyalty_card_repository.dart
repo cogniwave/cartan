@@ -23,9 +23,13 @@ class LoyaltyCardRepository {
     for (var item in decoded) {
       final merchant = _merchantsRepo.getMerchantById(item['merchantId']);
       cards.add(LoyaltyCard.fromJson(item, merchant));
-        }
+    }
 
     return cards;
+  }
+
+  Future<void> addCard(LoyaltyCard card) async {
+    await saveCard(card);
   }
 
   Future<void> saveCard(LoyaltyCard card) async {
