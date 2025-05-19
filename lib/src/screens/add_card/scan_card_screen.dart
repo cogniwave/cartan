@@ -37,8 +37,8 @@ class _ScanCardScreenState extends State<ScanCardScreen>
   @override
   void initState() {
     super.initState();
-    _tabController =
-    TabController(length: 2, vsync: this)..addListener(() => setState(() {}));
+    _tabController = TabController(length: 2, vsync: this)
+      ..addListener(() => setState(() {}));
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _requestCameraPermission();
     });
@@ -65,11 +65,34 @@ class _ScanCardScreenState extends State<ScanCardScreen>
   }
 
   void _validateCode(String code) {
-    final valid =
-    CardFormatValidator().isValidFormat(code, widget.merchant.formats);
+    final memberId = code.trim();
+    // Validação de formato
+    final formatValid = CardFormatValidator().isValidFormat(memberId, widget.merchant.formats);
+    if (!formatValid) {
+      setState(() {
+        _isValid = false;
+        _errorMessage = localizations.invalid_card_format;
+      });
+      return;
+    }
+
+    // Validação de duplicados no bloc
+    final bloc = context.read<CardsBloc>();
+    final duplicate = bloc.state.cards.any((c) =>
+    c.merchant.id == widget.merchant.id &&
+        c.memberId == memberId);
+    if (duplicate) {
+      setState(() {
+        _isValid = false;
+        _errorMessage = localizations.card_already_exists;
+      });
+      return;
+    }
+
+    // Tudo OK
     setState(() {
-      _isValid = valid;
-      _errorMessage = valid ? null : localizations.invalid_card_format;
+      _isValid = true;
+      _errorMessage = null;
     });
   }
 
@@ -82,7 +105,6 @@ class _ScanCardScreenState extends State<ScanCardScreen>
   void _saveCard() {
     if (!_isValid) return;
 
-    // Dispatch AddCard event instead of saving directly
     final newCard = LoyaltyCard(
       merchant: widget.merchant,
       memberId: _codeController.text.trim(),
@@ -152,7 +174,6 @@ class _ScanCardScreenState extends State<ScanCardScreen>
           ],
         ),
       ),
-
       body: Column(
         children: [
           Container(

@@ -258,5 +258,9 @@
   "feedback_submission_error": "Failed to send feedback. Please try again later.",
   "@feedback_submission_error": {
     "description": "Error message shown when feedback submission to the server fails."
+  },
+  "card_already_exists": "A card for this merchant with that number already exists.",
+  "@card_already_exists": {
+    "description": "Error message shown when the user tries to add a loyalty card that already exists for the same merchant."
   }
 }

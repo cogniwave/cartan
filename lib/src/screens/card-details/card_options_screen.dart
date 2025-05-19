@@ -75,47 +75,21 @@ class CardOptionsScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(140),
-        child: SafeArea(
-          child: Container(
-            color: theme.colorScheme.surface,
-            child: Stack(
-              children: [
-                Positioned(
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  child: IconButton(
-                    icon: Icon(AntIcons.leftOutlined, color: theme.colorScheme.primary),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ),
-
-                Positioned(
-                  left: 56,
-                  top: 0,
-                  bottom: 0,
-                  child: Center(
-                    child: Text(
-                      merchant.displayName,
-                      style: TextStyle(color: theme.colorScheme.primary, fontSize: 22),
-                    ),
-                  ),
-                ),
-
-                Positioned(
-                  right: 82,
-                  top: 44,
-                  child: SvgPicture.asset(
-                    merchant.assetImagePath,
-                    width: 100,
-                    height: 70,
-                  ),
-                ),
-              ],
+      backgroundColor: theme.colorScheme.surface,
+      appBar: AppBar(
+        backgroundColor: theme.colorScheme.surface,
+        elevation: 0,
+        iconTheme: IconThemeData(color: theme.colorScheme.primary),
+        title: Row(
+          children: [
+            SvgPicture.asset(
+              merchant.assetImagePath,
+              width: 70,
+              height: 40,
             ),
-          ),
+            const SizedBox(width: 8),
+            Text(merchant.displayName),
+          ],
         ),
       ),
       body: SingleChildScrollView(
