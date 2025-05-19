@@ -256,11 +256,11 @@
   "@invalid_email": {
     "description": "Validation error shown when the supplied email does not match a valid format."
   },
-  "message_required": "Por favor, insira o seu feedback.",
+  "message_required": "Por favor, escreva a sua mensagem.",
   "@message_required": {
     "description": "Validation error shown when the feedback message field is empty."
   },
-  "feedback_submission_error": "Não foi possível enviar o feedback. Tente novamente mais tarde.",
+  "feedback_submission_error": "Não foi possível enviar a sua mensagem. Tente novamente mais tarde.",
   "@feedback_submission_error": {
     "description": "Error message shown when feedback submission to the server fails."
   }
