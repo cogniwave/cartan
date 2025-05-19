@@ -42,6 +42,7 @@ dependencies:
   equatable: ^2.0.7
   flutter_svg: ^2.1.0
   http: ^1.4.0
+  flutter_launcher_icons: ^0.14.3
 
 dev_dependencies:
   flutter_test:
@@ -55,3 +56,8 @@ flutter:
     - .env
     - lib/assets/data/merchants.json
     - lib/assets/images/loyalty_cards/
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "lib/assets/images/icons/app_icon_white.jpg"
