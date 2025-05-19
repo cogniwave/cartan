@@ -1,8 +1,8 @@
+import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:cartan/src/services/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cartan/src/repositories/merchants_repository.dart';
-import 'package:cartan/src/widgets/common/app_bar.dart';
 import 'scan_card_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -16,104 +16,132 @@ class SelectMerchantScreen extends StatefulWidget {
 
 class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
   String _searchQuery = '';
+  bool _isSearching = false;
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _startSearch() {
+    setState(() {
+      _isSearching = true;
+    });
+  }
+
+  void _stopSearch() {
+    setState(() {
+      _isSearching = false;
+      _searchQuery = '';
+      _searchController.clear();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final merchantsRepo = Provider.of<MerchantsRepository>(context);
     final localizations = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
+      appBar: AppBar(
+        backgroundColor: theme.dividerTheme.color,
+        title: _isSearching
+            ? TextField(
+          controller: _searchController,
+          autofocus: true,
+          decoration: InputDecoration(
+            hintText: localizations.search,
+            border: InputBorder.none,
+            enabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            hintStyle: TextStyle(color: theme.colorScheme.onSurface.withValues(alpha:0.6)),
+          ),
+          style: TextStyle(color: theme.colorScheme.onSurface),
+          onChanged: (value) {
+            setState(() {
+              _searchQuery = value.toLowerCase();
+            });
+          },
+        )
+            : Text(localizations.select_merchant),
+        actions: [
+          if (_isSearching)
+            IconButton(
+              icon: Icon(AntIcons.closeOutlined),
+              onPressed: _stopSearch,
+            )
+          else
+            IconButton(
+              icon: Icon(AntIcons.searchOutlined),
+              onPressed: _startSearch,
+            ),
+        ],
+      ),
       body: SafeArea(
-        child: Column(
-          children: [
-            CustomAppBar(
-              title: Text(localizations.select_merchant),
-            ),
+        child: FutureBuilder(
+          future: merchantsRepo.initialize(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-            // search
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: localizations.search,
-                  prefixIcon: const Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _searchQuery = value.toLowerCase();
-                  });
-                },
-              ),
-            ),
+            var merchants = merchantsRepo.getAllMerchants();
 
-            Expanded(
-              child: FutureBuilder(
-                future: merchantsRepo.initialize(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
+            merchants.sort((a, b) => a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase()));
 
-                  var merchants = merchantsRepo.getAllMerchants();
+            if (_searchQuery.isNotEmpty) {
+              merchants = merchants.where((merchant) {
+                return merchant.displayName.toLowerCase().contains(_searchQuery);
+              }).toList();
+            }
 
-                  merchants.sort((a, b) => a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase()));
-
-                  if (_searchQuery.isNotEmpty) {
-                    merchants = merchants.where((merchant) {
-                      return merchant.displayName.toLowerCase().contains(_searchQuery);
-                    }).toList();
-                  }
-
-                  return ListView.builder(
-                    padding: const EdgeInsets.only(top: 16),
-                    itemCount: merchants.length,
-                    itemBuilder: (context, index) {
-                      final merchant = merchants[index];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: ListTile(
-                          leading: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: SizedBox(
-                              width: 80,
-                              height: 50,
-                              child: SvgPicture.asset(
-                                merchant.assetImagePath,
-                                fit: BoxFit.fill,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return SvgPicture.asset(
-                                    'lib/assets/images/loyalty_cards/card.svg',
-                                    fit: BoxFit.fill,
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                          title: Text(merchant.displayName),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ScanCardScreen(merchant: merchant),
-                              ),
-                            ).then((result) {
-                              if (result == true) {
-                                NavigationService().pop(true);
-                              }
-                            });
+            return ListView.builder(
+              padding: const EdgeInsets.only(top: 16),
+              itemCount: merchants.length,
+              itemBuilder: (context, index) {
+                final merchant = merchants[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: ListTile(
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: SizedBox(
+                        width: 80,
+                        height: 50,
+                        child: SvgPicture.asset(
+                          merchant.assetImagePath,
+                          fit: BoxFit.fill,
+                          errorBuilder: (context, error, stackTrace) {
+                            return SvgPicture.asset(
+                              'lib/assets/images/loyalty_cards/card.svg',
+                              fit: BoxFit.fill,
+                            );
                           },
                         ),
-                      );
+                      ),
+                    ),
+                    title: Text(merchant.displayName),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ScanCardScreen(merchant: merchant),
+                        ),
+                      ).then((result) {
+                        if (result == true) {
+                          NavigationService().pop(true);
+                        }
+                      });
                     },
-                  );
-                },
-              ),
-            ),
-          ],
+                  ),
+                );
+              },
+            );
+          },
         ),
       ),
     );
