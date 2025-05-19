@@ -133,10 +133,6 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
               // TabBar barcode / QR
               Container(
                 margin: EdgeInsets.symmetric(horizontal: isLandscape ? 24 : 16),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.surface,
-                  borderRadius: BorderRadius.circular(20),
-                ),
                 child: TabBar(
                   controller: _tabController,
                   labelColor: customColors.accentAlt,
@@ -144,6 +140,7 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
                   indicatorColor: customColors.accentAlt,
                   indicatorSize: TabBarIndicatorSize.label,
                   dividerColor: Colors.transparent,
+                  splashFactory: NoSplash.splashFactory,
                   tabs: [
                     Tab(text: localizations.barcode),
                     Tab(text: localizations.qr_code),

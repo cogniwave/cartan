@@ -162,6 +162,7 @@ class _ScanCardScreenState extends State<ScanCardScreen>
               labelColor: custom.accentAlt,
               unselectedLabelColor: theme.colorScheme.primary,
               indicatorColor: custom.accentAlt,
+              dividerColor: Colors.transparent,
               tabs: [
                 Tab(text: localizations.scan_barcode),
                 Tab(text: localizations.enter_manually),
