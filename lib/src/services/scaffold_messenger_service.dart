@@ -66,7 +66,11 @@ class ScaffoldMessengerService {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
-      margin: const EdgeInsets.all(16),
+      margin: EdgeInsets.only(
+        left: 16,
+        right: 16,
+        bottom: MediaQuery.of(scaffoldMessengerKey.currentContext!).size.height * 0.8,
+      ),
       duration: duration,
       action: SnackBarAction(
         label: actionLabel,
