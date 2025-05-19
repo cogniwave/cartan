@@ -74,7 +74,10 @@ class ManualEntryView extends StatelessWidget {
                 ),
               ),
               keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(_extractExpectedDigits()),
+              ],
             ),
             const SizedBox(height: 12),
 
