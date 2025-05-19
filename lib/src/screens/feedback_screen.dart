@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:cartan/src/services/navigation_service.dart';
 import 'package:cartan/utils/app_snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:http/http.dart' as http;
 
 class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen({super.key});
@@ -77,27 +81,26 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       return;
     }
 
-    // Show loading indicator
-    setState(() {
-      _isSubmitting = true;
-    });
-
     try {
-      // Simulate API call with a delay
-      await Future.delayed(const Duration(seconds: 1));
+      // Send feedback to Slack
+      final response = await http.post(
+        Uri.parse(dotenv.env['SLACK_WEBHOOK_URL']!),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'text': 'Novo Feedback:\n\n'
+              'Nome: ${_nameCtrl.text}\n'
+              'Email: ${_emailCtrl.text}\n'
+              'Mensagem: ${_messageCtrl.text}'
+        }),
+      );
 
-      // Send feedback to backend
-      //   await FirebaseFirestore.instance.collection('feedback').add({
-      //     'name': _nameCtrl.text,
-      //     'email': _emailCtrl.text,
-      //     'message': _messageCtrl.text,
-      //     'timestamp': FieldValue.serverTimestamp(),
-      //   });
+      if (response.statusCode != 200) {
+        throw Exception('Failed to send feedback');
+      }
 
       if (!mounted) return;
 
       AppSnackBar.showSuccess(localizations.feedback_sent);
-
       NavigationService().pop();
     } catch (e) {
       if (!mounted) return;
