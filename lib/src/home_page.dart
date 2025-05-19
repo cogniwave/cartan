@@ -91,10 +91,12 @@ class HomePage extends StatelessWidget {
                     cards: cards,
                     onCardTap: (card) => _onCardTap(context, card),
                   ),
-                  Positioned(
-                    right: 16,
-                    bottom: 16,
-                    child: addCardButton,
+                  SafeArea(
+                    minimum: const EdgeInsets.all(16),
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: addCardButton,
+                    ),
                   ),
                 ],
               );
