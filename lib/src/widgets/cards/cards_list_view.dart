@@ -23,8 +23,19 @@ class CardsListView extends StatelessWidget {
           thickness: theme.dividerTheme.thickness,
         ),
         Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.only(bottom: 80),
+          child: GridView.builder(
+            padding: const EdgeInsets.only(
+              left: 16,
+              right: 16,
+              bottom: 80,
+              top: 16,
+            ),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 4,
+              mainAxisSpacing: 12,
+              childAspectRatio: 1.6,
+            ),
             itemCount: cards.length,
             itemBuilder: (context, index) {
               final card = cards[index];
