@@ -1,4 +1,5 @@
 import 'package:cartan/src/services/navigation_service.dart';
+import 'package:cartan/src/widgets/common/search_results.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cartan/src/repositories/merchants_repository.dart';
@@ -47,10 +48,19 @@ class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
 
             merchants.sort((a, b) => a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase()));
 
-            if (_searchQuery.isNotEmpty) {
-              merchants = merchants.where((merchant) {
-                return merchant.displayName.toLowerCase().contains(_searchQuery);
-              }).toList();
+            // Filter merchants based on search query
+            final filteredMerchants = _searchQuery.isEmpty
+                ? merchants
+                : merchants.where((merchant) =>
+                merchant.displayName.toLowerCase().contains(_searchQuery)
+            ).toList();
+
+            // Show message when no merchants match the search query
+            if (filteredMerchants.isEmpty && _searchQuery.isNotEmpty) {
+              return SearchResults.buildNoResultsFound(
+                message: localizations.no_results_found,
+                theme: theme,
+              );
             }
 
             return ListView.builder(

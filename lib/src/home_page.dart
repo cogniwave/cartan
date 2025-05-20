@@ -1,4 +1,3 @@
-import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -12,8 +11,9 @@ import 'package:cartan/src/widgets/common/searchable_app_bar.dart';
 import 'package:cartan/src/widgets/cards/cards_grid_view.dart';
 import 'package:cartan/src/widgets/cards/cards_list_view.dart';
 import 'package:cartan/src/widgets/cards/empty_cards_view.dart';
+import 'package:cartan/src/widgets/common/search_results.dart';
 
-// Define view type enum
+// View type enum
 enum CardViewType {
   grid,
   list;
@@ -147,26 +147,9 @@ class _HomePageState extends State<HomePage> {
                       }
 
                       if (filteredCards.isEmpty && _searchQuery.isNotEmpty) {
-                        return Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  AntIcons.warningOutlined,
-                                  size: 64,
-                                  color: theme.colorScheme.primary.withValues(alpha: 0.5),
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  localizations.no_results_found,
-                                  style: theme.textTheme.headlineSmall,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            ),
-                          ),
+                        return SearchResults.buildNoResultsFound(
+                          message: localizations.no_results_found,
+                          theme: theme,
                         );
                       }
 
