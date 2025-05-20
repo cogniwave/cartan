@@ -13,7 +13,7 @@ import 'package:cartan/src/widgets/cards/cards_grid_view.dart';
 import 'package:cartan/src/widgets/cards/cards_list_view.dart';
 import 'package:cartan/src/widgets/cards/empty_cards_view.dart';
 
-// Define our view type enum
+// Define view type enum
 enum CardViewType {
   grid,
   list;
@@ -73,7 +73,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final local = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final addCardButton = AddCardButton(
       onPressed: () => _onAddNewCard(context),
@@ -85,8 +85,8 @@ class _HomePageState extends State<HomePage> {
           builder: (context, viewType) {
             return Scaffold(
               appBar: SearchableAppBar(
-                title: local.cards,
-                searchHint: local.search,
+                title: localizations.cards,
+                searchHint: localizations.search,
                 titleStyle: TextStyle(
                   color: theme.colorScheme.primary,
                   fontWeight: FontWeight.bold,
@@ -160,7 +160,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 const SizedBox(height: 16),
                                 Text(
-                                  local.no_results_found,
+                                  localizations.no_results_found,
                                   style: theme.textTheme.headlineSmall,
                                   textAlign: TextAlign.center,
                                 ),

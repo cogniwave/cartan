@@ -24,7 +24,7 @@ class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: theme.colorScheme.surface,
       appBar: SearchableAppBar(
         title: localizations.select_merchant,
         searchHint: localizations.search,

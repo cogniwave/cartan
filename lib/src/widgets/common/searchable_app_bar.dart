@@ -1,3 +1,4 @@
+import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:flutter/material.dart';
 
 class SearchableAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -78,12 +79,12 @@ class _SearchableAppBarState extends State<SearchableAppBar> {
       actions: [
         if (_isSearching)
           IconButton(
-            icon: Icon(Icons.close, color: theme.colorScheme.primary),
+            icon: Icon(AntIcons.closeOutlined, color: theme.colorScheme.primary),
             onPressed: _stopSearch,
           )
         else
           IconButton(
-            icon: Icon(Icons.search, color: theme.colorScheme.primary),
+            icon: Icon(AntIcons.searchOutlined, color: theme.colorScheme.primary),
             onPressed: _startSearch,
           ),
         ...(_isSearching ? [] : widget.trailingActions),
