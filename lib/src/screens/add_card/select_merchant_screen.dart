@@ -1,8 +1,8 @@
-import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:cartan/src/services/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cartan/src/repositories/merchants_repository.dart';
+import 'package:cartan/src/widgets/common/searchable_app_bar.dart';
 import 'scan_card_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -16,28 +16,6 @@ class SelectMerchantScreen extends StatefulWidget {
 
 class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
   String _searchQuery = '';
-  bool _isSearching = false;
-  final TextEditingController _searchController = TextEditingController();
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  void _startSearch() {
-    setState(() {
-      _isSearching = true;
-    });
-  }
-
-  void _stopSearch() {
-    setState(() {
-      _isSearching = false;
-      _searchQuery = '';
-      _searchController.clear();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,39 +25,15 @@ class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
+      appBar: SearchableAppBar(
+        title: localizations.select_merchant,
+        searchHint: localizations.search,
         backgroundColor: theme.dividerTheme.color,
-        title: _isSearching
-            ? TextField(
-          controller: _searchController,
-          autofocus: true,
-          decoration: InputDecoration(
-            hintText: localizations.search,
-            border: InputBorder.none,
-            enabledBorder: InputBorder.none,
-            focusedBorder: InputBorder.none,
-            hintStyle: TextStyle(color: theme.colorScheme.onSurface.withValues(alpha:0.6)),
-          ),
-          style: TextStyle(color: theme.colorScheme.onSurface),
-          onChanged: (value) {
-            setState(() {
-              _searchQuery = value.toLowerCase();
-            });
-          },
-        )
-            : Text(localizations.select_merchant),
-        actions: [
-          if (_isSearching)
-            IconButton(
-              icon: Icon(AntIcons.closeOutlined),
-              onPressed: _stopSearch,
-            )
-          else
-            IconButton(
-              icon: Icon(AntIcons.searchOutlined),
-              onPressed: _startSearch,
-            ),
-        ],
+        onSearch: (value) {
+          setState(() {
+            _searchQuery = value.toLowerCase();
+          });
+        },
       ),
       body: SafeArea(
         child: FutureBuilder(
