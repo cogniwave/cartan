@@ -4,8 +4,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class DocViewerService {
-  static const String _privacyPolicyUrl = 'https://raw.githubusercontent.com/SEU_USUARIO/SEU_REPO/main/docs/privacy_policy.pdf';
-  static const String _termsOfServiceUrl = 'https://raw.githubusercontent.com/SEU_USUARIO/SEU_REPO/main/docs/terms_of_service.pdf';
+  static const String _privacyPolicyUrl = 'https://raw.githubusercontent.com/cogniwave/cartan/main/docs/privacy_policy.pdf';
+  static const String _termsOfServiceUrl = 'https://raw.githubusercontent.com/cogniwave/cartan/main/docs/terms_of_service.pdf';
 
   static String get _privacyPolicyGoogleViewerUrl => 'https://docs.google.com/viewer?url=${Uri.encodeComponent(_privacyPolicyUrl)}&embedded=true';
   static String get _termsOfServiceGoogleViewerUrl => 'https://docs.google.com/viewer?url=${Uri.encodeComponent(_termsOfServiceUrl)}&embedded=true';
