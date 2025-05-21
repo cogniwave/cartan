@@ -1,14 +1,18 @@
-import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class DocViewerService {
-  static const String _privacyPolicyUrl = 'https://raw.githubusercontent.com/cogniwave/cartan/main/docs/privacy_policy.pdf';
-  static const String _termsOfServiceUrl = 'https://raw.githubusercontent.com/cogniwave/cartan/main/docs/terms_of_service.pdf';
 
-  static String get _privacyPolicyGoogleViewerUrl => 'https://docs.google.com/viewer?url=${Uri.encodeComponent(_privacyPolicyUrl)}&embedded=true';
-  static String get _termsOfServiceGoogleViewerUrl => 'https://docs.google.com/viewer?url=${Uri.encodeComponent(_termsOfServiceUrl)}&embedded=true';
+  static String get _privacyPolicyUrl => dotenv.env['PRIVACY_POLICY_URL']!;
+  static String get _termsOfServiceUrl => dotenv.env['TERMS_OF_SERVICE_URL']!;
+
+  static String get _privacyPolicyGoogleViewerUrl =>
+      'https://docs.google.com/viewer?url=${Uri.encodeComponent(_privacyPolicyUrl)}&embedded=true';
+
+  static String get _termsOfServiceGoogleViewerUrl =>
+      'https://docs.google.com/viewer?url=${Uri.encodeComponent(_termsOfServiceUrl)}&embedded=true';
 
   static void openPrivacyPolicy(BuildContext context, {required String title, Function(Exception)? onError}) {
     _openDocInWebView(context, _privacyPolicyGoogleViewerUrl, title, onError);
@@ -99,19 +103,6 @@ class _DocViewerScreenState extends State<_DocViewerScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-        actions: [
-          IconButton(
-            icon: Icon(AntIcons.exportOutlined),
-            onPressed: () {
-              DocViewerService.openDocExternally(
-                widget.url.contains('docs.google.com')
-                    ? widget.url.split('url=')[1].split('&')[0]
-                    : widget.url,
-                widget.onError,
-              );
-            },
-          ),
-        ],
       ),
       body: Stack(
         children: [
