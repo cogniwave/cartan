@@ -89,6 +89,7 @@ class Cartan extends StatelessWidget {
       builder: (context, themeProvider, localeProvider, _) {
         return MaterialApp(
           title: FlavorConfig.instance.values.appName,
+          debugShowCheckedModeBanner: false,
           theme: themeProvider.themeData,
           scaffoldMessengerKey: ScaffoldMessengerService().scaffoldMessengerKey,
           navigatorKey: NavigationService().navigatorKey,

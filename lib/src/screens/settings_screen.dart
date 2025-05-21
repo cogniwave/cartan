@@ -5,12 +5,12 @@ import 'package:bugsnag_flutter/bugsnag_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:cartan/utils/app_snackbar.dart';
 import 'package:cartan/utils/theme_provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:cartan/src/widgets/font_size/font_size_subtitle.dart';
 import 'package:cartan/src/widgets/language/language_subtitle.dart';
 import 'font_size_screen.dart';
 import 'feedback_screen.dart';
 import 'language_screen.dart';
+import 'package:cartan/src/services/doc_viewer_service.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -79,31 +79,29 @@ class SettingsScreen extends StatelessWidget {
             ListTile(
               title: Text(localizations.privacy_policy),
               leading: Icon(AntIcons.fileProtectOutlined),
-              onTap: () async {
-                final Uri url = Uri.parse("https://www.google.pt");
-                try {
-                  if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+              onTap: () {
+                DocViewerService.openPrivacyPolicy(
+                  context,
+                  title: localizations.privacy_policy,
+                  onError: (e) {
+                    bugsnag.notify(e, StackTrace.current);
                     AppSnackBar.showError(localizations.error);
-                  }
-                } catch (e) {
-                  bugsnag.notify(e, StackTrace.current);
-                  AppSnackBar.showError(localizations.error);
-                }
+                  },
+                );
               },
             ),
             ListTile(
               title: Text(localizations.terms_of_service),
               leading: Icon(AntIcons.fileDoneOutlined),
-              onTap: () async {
-                final Uri url = Uri.parse("https://www.google.pt");
-                try {
-                  if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+              onTap: () {
+                DocViewerService.openTermsOfService(
+                  context,
+                  title: localizations.terms_of_service,
+                  onError: (e) {
+                    bugsnag.notify(e, StackTrace.current);
                     AppSnackBar.showError(localizations.error);
-                  }
-                } catch (e) {
-                  bugsnag.notify(e, StackTrace.current);
-                  AppSnackBar.showError(localizations.error);
-                }
+                  },
+                );
               },
             ),
             ListTile(
