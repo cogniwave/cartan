@@ -267,5 +267,9 @@
   "card_already_exists": "Já existe um cartão deste comerciante com esse número.",
   "@card_already_exists": {
     "description": "Error message shown when the user tries to add a loyalty card that already exists for the same merchant."
+  },
+  "no_results_found": "Sem resultados",
+  "@no_results_found": {
+    "description": "Message shown when there's no match for search query."
   }
 }
