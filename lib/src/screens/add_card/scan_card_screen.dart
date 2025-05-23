@@ -66,7 +66,6 @@ class _ScanCardScreenState extends State<ScanCardScreen>
 
   void _validateCode(String code) {
     final memberId = code.trim();
-    // Validação de formato
     final formatValid = CardFormatValidator().isValidFormat(memberId, widget.merchant.formats);
     if (!formatValid) {
       setState(() {
@@ -76,7 +75,6 @@ class _ScanCardScreenState extends State<ScanCardScreen>
       return;
     }
 
-    // Validação de duplicados no bloc
     final bloc = context.read<CardsBloc>();
     final duplicate = bloc.state.cards.any((c) =>
     c.merchant.id == widget.merchant.id &&

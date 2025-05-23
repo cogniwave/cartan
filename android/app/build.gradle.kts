@@ -39,7 +39,7 @@ android {
             dimension = "env"
             versionCode = project.findProperty("flutter.versionCode")?.toString()?.toInt() ?: 1
             versionName = project.findProperty("flutter.versionName")?.toString() ?: "1.0"
-            resValue("string", "app_name", "Flavor")
+            resValue("string", "app_name", "Cartan")
         }
         create("staging") {
             dimension = "env"
