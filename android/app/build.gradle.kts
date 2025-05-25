@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.cartan"
-    compileSdk = 35
+    compileSdk = flutter.targetSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -37,22 +37,22 @@ android {
     productFlavors {
         create("production") {
             dimension = "env"
-            versionCode = project.findProperty("flutter.versionCode")?.toString()?.toInt() ?: 1
-            versionName = project.findProperty("flutter.versionName")?.toString() ?: "1.0"
+            versionCode = project.findProperty("versionCode")?.toString()?.toInt() ?: 1
+            versionName = project.findProperty("versionName")?.toString() ?: "1.0"
             resValue("string", "app_name", "Cartan")
         }
         create("staging") {
             dimension = "env"
             applicationIdSuffix = ".staging"
-            versionCode = project.findProperty("flutter.versionCode")?.toString()?.toInt() ?: 1
-            versionName = project.findProperty("flutter.versionName")?.toString() ?: "1.0"
+            versionCode = project.findProperty("versionCode")?.toString()?.toInt() ?: 1
+            versionName = project.findProperty("versionName")?.toString() ?: "1.0"
             resValue("string", "app_name", "Flavor Staging")
         }
         create("dev") {
             dimension = "env"
             applicationIdSuffix = ".dev"
-            versionCode = project.findProperty("flutter.versionCode")?.toString()?.toInt() ?: 1
-            versionName = project.findProperty("flutter.versionName")?.toString() ?: "1.0"
+            versionCode = project.findProperty("versionCode")?.toString()?.toInt() ?: 1
+            versionName = project.findProperty("versionName")?.toString() ?: "1.0"
             resValue("string", "app_name", "Flavor Dev")
         }
     }

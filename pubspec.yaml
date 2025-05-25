@@ -1,7 +1,7 @@
 name: cartan
 description: "A new Flutter project."
 publish_to: 'none'
-version: 0.1.0
+version: 1.0.0
 homepage: https://cartan.pt
 repository: https://github.com/cogniwave/cartan
 issue_tracker: https://github.com/cogniwave/cartan/issues
@@ -23,7 +23,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_dotenv: ^5.2.1
-  intl: ^0.19.0
+  intl: ^0.20.2
   antdesign_icons: ^0.0.3
   bugsnag_flutter: ^4.1.2
   package_info_plus: ^8.3.0
