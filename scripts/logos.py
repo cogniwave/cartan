@@ -117,6 +117,7 @@ def convert_to_svg(input_path: str, output_path: str) -> None:
 
 
 def resize_svg(svg_path: str, new_width: int):
+    log("   Resizing SVG...")
     svg_tree = etree.parse(svg_path)
     root = svg_tree.getroot()
 
@@ -152,23 +153,30 @@ def resize_svg(svg_path: str, new_width: int):
     if root.get('viewBox') is None:
         root.set('viewBox', f'0 0 {width} {height}')
 
+    log("   SVG resized")
+
     return svg_tree
 
 
 def optimize_svg_string(svg_str: str) -> str:
-    options = scour.sanitizeOptions()
-    options.remove_metadata = True
-    options.remove_descriptions = True
-    options.remove_titles = True
-    options.strip_comments = True
-    options.shorten_ids = True
-    options.enable_viewboxing = True
-    options.indent_type = None
-    options.newlines = False
-    return scour.scourString(svg_str, options)
+    log("   Optimizing SVG...")
+    options = scour.sanitizeOptions({
+        "remove_metadata": True,
+        "remove_descriptions": True,
+        "remove_titles": True,
+        "strip_comments": True,
+        "shorten_ids": True,
+        "enable_viewboxing": True,
+        "indent_type": None,
+        "newlines": False,
+    })
+    result = scour.scourString(svg_str, options)
+    log("   SVG otpmized")
+    return result
 
 
 def resize_and_optimize(path: str, new_width: int = 100) -> None:
+    log(f"Resizing and optimizing {path}...")
     svg_tree = resize_svg(path, new_width)
 
     # Convert XML tree back to string
@@ -180,6 +188,9 @@ def resize_and_optimize(path: str, new_width: int = 100) -> None:
     # Write optimized SVG to file
     with open(path, 'w', encoding='utf-8') as f:
         f.write(optimized_svg)
+    
+    log(f"SVG ready")
+
 
 
 @click.command("find-company-logos")
@@ -215,7 +226,9 @@ def find_company_logos(path: str | None) -> None:
         name_normalized = company.lower().replace(" ", "_")
 
         if (tmp_path := find_and_download_logo(company, name_normalized)):
-            convert_to_svg(tmp_path, join(OUTPUT_DIR, f"{name_normalized}.svg"))
+            output = join(OUTPUT_DIR, f"{name_normalized}.svg")
+            convert_to_svg(tmp_path, output)
+            resize_and_optimize(output)
             remove(tmp_path)
 
         print("\n")
