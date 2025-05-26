@@ -4,202 +4,162 @@
   "@title": {
     "description": "The name of the application, displayed as the app title."
   },
-
   "cards": "Cartões",
   "@cards": {
     "description": "The title used in the AppBar for the cards section."
   },
-
   "empty_cards": "Ainda não tens cartões associados",
-  "@emptyCards": {
+  "@empty_cards": {
     "description": "Message displayed on the Home page when no cards are associated."
   },
-
   "add": "Adicionar",
   "@add": {
     "description": "Label for the button used to add a new card."
   },
-
   "help": "Ajuda",
   "@help": {
     "description": "Label for the help option in the menu."
   },
-
   "settings": "Definições",
   "@settings": {
     "description": "Label for the settings option in the menu."
   },
-
   "success": "Operação realizada com sucesso!",
   "@success": {
     "description": "Feedback message displayed in a SnackBar when an operation succeeds."
   },
-
   "error": "Ocorreu um erro ao processar a sua solicitação.",
   "@error": {
     "description": "Error message displayed in a SnackBar when an operation fails."
   },
-
   "close": "Fechar",
   "@close": {
     "description": "Label for the button used to close the SnackBar."
   },
-
   "language": "Idioma",
   "@language": {
     "description": "Menu option for app language."
   },
-
   "dark_mode": "Modo escuro",
   "@dark_mode": {
     "description": "Menu option for dark mode."
   },
-
   "font_size": "Tamanho da letra",
   "@font_size": {
     "description": "Menu option for app text size."
   },
-
   "terms_of_service": "Termos de utilização",
   "@terms_of_service": {
     "description": "Menu option for app Terms of Service."
   },
-
   "privacy_policy": "Política de privacidade",
   "@privacy_policy": {
     "description": "Menu option for app Privacy Policy."
   },
-
   "feedback": "Feedback",
   "@feedback": {
     "description": "Menu option for user Feedback."
   },
-
   "large_font": "Grande",
   "@large_font": {
     "description": "Option for selecting a large font size."
   },
-
   "normal_font": "Normal",
   "@normal_font": {
     "description": "Option for selecting the normal font size."
   },
-
   "small_font": "Pequena",
   "@small_font": {
     "description": "Option for selecting a small font size."
   },
-
   "select_merchant": "Selecionar loja",
   "@select_merchant": {
     "description": "Label for selecting a store or merchant."
   },
-
   "scan_barcode": "Digitalizar código",
   "@scan_barcode": {
     "description": "Option to scan the barcode on a loyalty card."
   },
-
   "enter_manually": "Inserir manualmente",
   "@enter_manually": {
     "description": "Option to manually enter the card number."
   },
-
   "position_barcode_in_frame": "Posicione o código de barras dentro da moldura",
   "@position_barcode_in_frame": {
     "description": "Instruction to help user align barcode for scanning."
   },
-
   "scanning_hint": "Certifique-se de que o código de barras está bem iluminado e claramente visível",
   "@scanning_hint": {
     "description": "Tip to improve barcode scanning success."
   },
-
   "card_number": "Número do cartão",
   "@card_number": {
     "description": "Label for the field where the card number is entered."
   },
-
   "add_card": "Adicionar cartão",
   "@add_card": {
     "description": "Button or label to confirm adding a new loyalty card."
   },
-
   "format_hint": "Insira o número mostrado no seu cartão de fidelidade",
   "@format_hint": {
     "description": "Hint text explaining the expected card number format."
   },
-
   "invalid_card_format": "Formato de cartão inválido",
   "@invalid_card_format": {
     "description": "Error message shown when the card number format is incorrect."
   },
-
   "card_added_successfully": "Cartão adicionado com sucesso",
   "@card_added_successfully": {
     "description": "Message confirming that the card has been successfully added."
   },
-
   "barcode": "Código de barras",
   "@barcode": {
     "description": "Label for the barcode tab."
   },
-
   "qr_code": "QR Code",
   "@qr_code": {
     "description": "Label for the QR code tab."
   },
-
   "zoom": "Ampliar",
   "@zoom": {
     "description": "Label for the zoom button to enlarge the code."
   },
-
   "back": "Voltar",
   "@back": {
     "description": "Label for the back button on fullscreen code mode."
   },
-
   "nearest_places": "Locais mais próximos",
   "@nearest_places": {
     "description": "Label for the nearest places section."
   },
-
   "website": "Website",
   "@website": {
     "description": "Label for the website link."
   },
-
   "remove": "Remover",
   "@remove": {
     "description": "Label for the remove action."
   },
-
   "confirm_delete": "Eliminar cartão",
   "@confirm_delete": {
     "description": "Title of the dialog asking for confirmation before deleting a card."
   },
-
   "confirm_delete_message": "Tem a certeza de que pretende remover este cartão? Esta ação não pode ser anulada.",
   "@confirm_delete_message": {
     "description": "Message shown in the dialog asking for delete confirmation."
   },
-
   "cancel": "Cancelar",
   "@cancel": {
     "description": "Label for the cancel button."
   },
-
   "confirm": "Confirmar",
   "@confirm": {
     "description": "Label for the confirm button."
   },
-
   "card_deleted_successfully": "Cartão eliminado com sucesso.",
   "@card_deleted_successfully": {
     "description": "Message shown when a card is successfully deleted."
   },
-
   "error_deleting_card": "Ocorreu um erro ao eliminar o cartão.",
   "@error_deleting_card": {
     "description": "Error message shown when card deletion fails."
@@ -217,7 +177,7 @@
     "description": "Message informing the user that camera permission is needed."
   },
   "open_settings": "Abrir definições da aplicação",
-  "@open_app_settings": {
+  "@open_settings": {
     "description": "Button label to open the device settings for the app."
   },
   "digits": "dígitos",
@@ -237,7 +197,7 @@
     "description": "Label for the message field in feedback form"
   },
   "submit": "Submeter feedback",
-  "@send": {
+  "@submit": {
     "description": "Label for the send feedback button"
   },
   "feedback_sent": "Obrigado pelo seu feedback!",

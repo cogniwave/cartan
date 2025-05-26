@@ -13,3 +13,6 @@ find-logos:
 
 convert-existing: 
 	python logos.py convert-existing-img
+
+optimize: 
+	python logos.py optimize

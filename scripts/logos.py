@@ -6,6 +6,8 @@ from subprocess import run
 import click
 from json import load, JSONDecodeError
 from base64 import b64decode
+from lxml import etree
+from scour import scour
 from filetype import guess
 from selenium.webdriver import Chrome
 from selenium.webdriver.chrome.service import Service
@@ -114,6 +116,83 @@ def convert_to_svg(input_path: str, output_path: str) -> None:
         log(f"Failed to convert {input_path} to SVG: {e}", "error")
 
 
+def resize_svg(svg_path: str, new_width: int):
+    log("   Resizing SVG...")
+    svg_tree = etree.parse(svg_path)
+    root = svg_tree.getroot()
+
+    def parse_dimension(dim: str) -> float | None:
+        if dim is None:
+            return None
+        
+        if dim.endswith('px'):
+            return float(dim.replace('px', ''))
+        
+        pt_value = float(dim.replace('pt', ''))
+        # Convert pt to px: 1pt = 1.333px
+        return pt_value * 1.3333
+    
+
+    width = parse_dimension(root.get('width'))
+    height = parse_dimension(root.get('height'))
+
+    if width is None or height is None:
+        viewBox = root.get('viewBox')
+        if viewBox:
+            _, _, width, height = map(float, viewBox.split())
+        else:
+            raise ValueError("SVG missing width/height and viewBox")
+
+    # Calculate new size keeping aspect ratio
+    scale = new_width / width
+    new_height = height * scale
+
+    root.set('width', f'{new_width}px')
+    root.set('height', f'{new_height}px')
+
+    if root.get('viewBox') is None:
+        root.set('viewBox', f'0 0 {width} {height}')
+
+    log("   SVG resized")
+
+    return svg_tree
+
+
+def optimize_svg_string(svg_str: str) -> str:
+    log("   Optimizing SVG...")
+    options = scour.sanitizeOptions({
+        "remove_metadata": True,
+        "remove_descriptions": True,
+        "remove_titles": True,
+        "strip_comments": True,
+        "shorten_ids": True,
+        "enable_viewboxing": True,
+        "indent_type": None,
+        "newlines": False,
+    })
+    result = scour.scourString(svg_str, options)
+    log("   SVG otpmized")
+    return result
+
+
+def resize_and_optimize(path: str, new_width: int = 100) -> None:
+    log(f"Resizing and optimizing {path}...")
+    svg_tree = resize_svg(path, new_width)
+
+    # Convert XML tree back to string
+    svg_str = etree.tostring(svg_tree.getroot(), encoding='unicode')
+
+    # Optimize SVG string
+    optimized_svg = optimize_svg_string(svg_str)
+
+    # Write optimized SVG to file
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write(optimized_svg)
+    
+    log(f"SVG ready")
+
+
+
 @click.command("find-company-logos")
 @click.option('--path', type=str, required=False, help='Path to the JSON with the companies list. Optional')
 def find_company_logos(path: str | None) -> None:
@@ -147,12 +226,15 @@ def find_company_logos(path: str | None) -> None:
         name_normalized = company.lower().replace(" ", "_")
 
         if (tmp_path := find_and_download_logo(company, name_normalized)):
-            convert_to_svg(tmp_path, join(OUTPUT_DIR, f"{name_normalized}.svg"))
+            output = join(OUTPUT_DIR, f"{name_normalized}.svg")
+            convert_to_svg(tmp_path, output)
+            resize_and_optimize(output)
             remove(tmp_path)
 
         print("\n")
 
     print("[>] Finished script execution")
+
 
 @click.command("convert-existing-img")
 @click.option('--directory', type=str, required=False, help='Path to a directory in which all files will be converted to SVG. Defaults to lib/assets/images/loyalty_cards')
@@ -176,10 +258,33 @@ def convert_existing_img(directory: str | None) -> None:
 
     print("[>] Finished script execution")
 
+@click.command("optimize")
+@click.option('--directory', type=str, required=False, help='Path to a directory in which all files will be converted to SVG. Defaults to lib/assets/images/loyalty_cards')
+@click.option('--width', type=int, required=False, help="New width to resize to")
+def optimize(directory: str | None, width: int | None) -> None:
+    """
+    Resizes SVG (keeping aspect ration) and reduces size to be as optimal as possible
+    """
+    if not directory:
+        directory = OUTPUT_DIR
+        
+    print(f"[>] Optimizing SVGs in ${directory}")
+    
+    if not width:
+        width = 100
+
+    for root, _, files in walk(directory):
+        for filename in files:
+            log(f"Processing {filename}")
+            resize_and_optimize(join(root, filename), width)
+
+    print("[>] Finished script execution")
+
 if __name__ == "__main__":
     try: 
         cli.add_command(find_company_logos)
         cli.add_command(convert_existing_img)
+        cli.add_command(optimize)
 
         cli()
     finally: 

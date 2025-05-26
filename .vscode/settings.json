@@ -1,0 +1,8 @@
+{
+  "editor.defaultFormatter": "Dart-Code.dart-code",
+  "dart.flutterGenerateLocalizationsOnSave": "manualIfDirty",
+  "dart.flutterHotReloadOnSave": "all",
+  "dart.hotReloadOnSave": "all",
+  "dart.lineLength": 120,
+  "cSpell.words": ["BUGSNAG", "Cartan"]
+}

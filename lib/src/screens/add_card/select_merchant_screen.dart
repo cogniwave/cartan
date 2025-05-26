@@ -49,52 +49,37 @@ class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
             merchants.sort((a, b) => a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase()));
 
             // Filter merchants based on search query
-            final filteredMerchants = _searchQuery.isEmpty
-                ? merchants
-                : merchants.where((merchant) =>
-                merchant.displayName.toLowerCase().contains(_searchQuery)
-            ).toList();
+            final filteredMerchants =
+                _searchQuery.isEmpty
+                    ? merchants
+                    : merchants.where((merchant) => merchant.displayName.toLowerCase().contains(_searchQuery)).toList();
 
             // Show message when no merchants match the search query
             if (filteredMerchants.isEmpty && _searchQuery.isNotEmpty) {
-              return SearchResults.buildNoResultsFound(
-                message: localizations.no_results_found,
-                theme: theme,
-              );
+              return SearchResults.buildNoResultsFound(message: localizations.no_results_found, theme: theme);
             }
 
             return ListView.builder(
-              padding: const EdgeInsets.only(top: 16),
+              padding: const EdgeInsets.only(top: 16, left: 0),
               itemCount: merchants.length,
               itemBuilder: (context, index) {
                 final merchant = merchants[index];
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: ListTile(
-                    leading: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: SizedBox(
-                        width: 80,
-                        height: 50,
-                        child: SvgPicture.asset(
-                          merchant.assetImagePath,
-                          fit: BoxFit.fill,
-                          errorBuilder: (context, error, stackTrace) {
-                            return SvgPicture.asset(
-                              'lib/assets/images/loyalty_cards/card.svg',
-                              fit: BoxFit.fill,
-                            );
-                          },
-                        ),
-                      ),
+                    leading: SvgPicture.asset(
+                      width: 100,
+                      alignment: Alignment.centerLeft,
+                      merchant.assetImagePath,
+                      errorBuilder: (context, error, stackTrace) {
+                        return SvgPicture.asset('lib/assets/images/loyalty_cards/card.svg');
+                      },
                     ),
                     title: Text(merchant.displayName),
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => ScanCardScreen(merchant: merchant),
-                        ),
+                        MaterialPageRoute(builder: (context) => ScanCardScreen(merchant: merchant)),
                       ).then((result) {
                         if (result == true) {
                           NavigationService().pop(true);
