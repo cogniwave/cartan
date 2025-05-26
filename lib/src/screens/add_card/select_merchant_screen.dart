@@ -61,9 +61,9 @@ class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
 
             return ListView.builder(
               padding: const EdgeInsets.only(top: 16, left: 0),
-              itemCount: merchants.length,
+              itemCount: filteredMerchants.length,
               itemBuilder: (context, index) {
-                final merchant = merchants[index];
+                final merchant = filteredMerchants[index];
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: ListTile(
