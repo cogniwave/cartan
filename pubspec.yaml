@@ -1,5 +1,5 @@
 name: cartan
-description: "A new Flutter project."
+description: "A Flutter app to manage all your loyalty cards in one place."
 publish_to: 'none'
 version: 1.0.0
 homepage: https://cartan.pt
