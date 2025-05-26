@@ -1,4 +1,4 @@
-package com.example.cartan
+package com.cogniwave.cartan
 
 import io.flutter.embedding.android.FlutterActivity
 
