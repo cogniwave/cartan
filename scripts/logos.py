@@ -2,7 +2,7 @@ from typing import Literal
 from os import getcwd, walk, remove, mkdir
 from os.path import join, splitext, dirname, abspath, exists
 from requests import get
-from subprocess import run
+from subprocess import run, CalledProcessError
 import click
 from json import load, JSONDecodeError
 from base64 import b64decode
@@ -19,11 +19,12 @@ import base64
 import re
 import tempfile
 import os
-from xml.etree import ElementTree as ET
+from lxml import etree as ET
 
 BASE_DIR = dirname(abspath(__file__))
 OUTPUT_DIR = join(getcwd(), "../lib/assets/images/loyalty_cards")
 tmp = join(BASE_DIR, ".tmp")
+INKSCAPE_PATH = r"C:\Program Files\Inkscape\bin\inkscape.exe"
 
 browser: Chrome | None = None
 
@@ -57,36 +58,156 @@ def setup_browser():
 
 def extract_base64_image(svg_content):
     """Extract base64 image data from SVG content."""
-    match = re.search(r'href="data:image/(png|jpeg|jpg);base64,([^"]+)"', svg_content)
-    if not match:
-        match = re.search(r'xlink:href="data:image/(png|jpeg|jpg);base64,([^"]+)"', svg_content)
-    if not match:
-        return None, None
-    image_type = match.group(1)
-    base64_data = match.group(2)
-    return image_type, base64_data
+    # Procura por padrões mais amplos de base64
+    patterns = [
+        r'href="data:image/(png|jpeg|jpg|gif|webp);base64,([^"]+)"',
+        r'xlink:href="data:image/(png|jpeg|jpg|gif|webp);base64,([^"]+)"'
+    ]
+
+    for pattern in patterns:
+        match = re.search(pattern, svg_content)
+        if match:
+            image_type = match.group(1)
+            base64_data = match.group(2)
+            return image_type, base64_data
+
+    return None, None
 
 def save_base64_image(image_type, base64_data, filename):
     """Save base64 data as image file."""
-    image_data = base64.b64decode(base64_data)
-    with open(filename, 'wb') as f:
-        f.write(image_data)
+    try:
+        # Clean base64 data more aggressively
+        original_data = base64_data
+        log(f"   Original base64 length: {len(original_data)}")
+
+        # Remove all whitespace and newlines
+        base64_data = re.sub(r'\s', '', base64_data)
+
+        # Remove any non-base64 characters but keep padding
+        base64_data = re.sub(r'[^A-Za-z0-9+/=]', '', base64_data)
+
+        # Handle padding issues - remove all existing padding and recalculate
+        base64_data = base64_data.rstrip('=')
+
+        # Add correct padding
+        remainder = len(base64_data) % 4
+        if remainder:
+            base64_data += '=' * (4 - remainder)
+
+        log(f"   Cleaned base64 length: {len(base64_data)}")
+
+        # Try multiple decoding strategies
+        image_data = None
+
+        # Strategy 1: Standard decode with validation
+        try:
+            image_data = base64.b64decode(base64_data, validate=True)
+            log("   Successfully decoded with validation")
+        except Exception as e1:
+            log(f"   Validation decode failed: {e1}")
+
+            # Strategy 2: Decode without validation
+            try:
+                image_data = base64.b64decode(base64_data)
+                log("   Successfully decoded without validation")
+            except Exception as e2:
+                log(f"   Standard decode failed: {e2}")
+
+                # Strategy 3: Try with original data (sometimes works better)
+                try:
+                    # Clean original but keep structure
+                    cleaned_original = re.sub(r'[^A-Za-z0-9+/=\n\r]', '', original_data)
+                    image_data = base64.b64decode(cleaned_original)
+                    log("   Successfully decoded original data")
+                except Exception as e3:
+                    log(f"   Original decode failed: {e3}")
+                    return False
+
+        if image_data is None:
+            log("   All decoding strategies failed", "error")
+            return False
+
+        # Validate image data size
+        if len(image_data) < 50:  # Very small files are likely invalid
+            log(f"   Image data too small ({len(image_data)} bytes)", "error")
+            return False
+
+        # Check for common image headers
+        image_headers = {
+            b'\x89PNG': 'PNG',
+            b'\xFF\xD8\xFF': 'JPEG',
+            b'GIF87a': 'GIF87a',
+            b'GIF89a': 'GIF89a',
+            b'RIFF': 'WEBP'
+        }
+
+        detected_format = None
+        for header, format_name in image_headers.items():
+            if image_data.startswith(header):
+                detected_format = format_name
+                break
+
+        if detected_format:
+            log(f"   Detected {detected_format} format")
+        else:
+            log("   Warning: Could not detect image format")
+
+        with open(filename, 'wb') as f:
+            f.write(image_data)
+        log(f"   Saved base64 image to {filename} ({len(image_data)} bytes)")
+        return True
+
+    except Exception as e:
+        log(f"   Error saving base64 image: {e}", "error")
+        return False
 
 def replace_image_with_vector(svg_content, vector_svg_content):
     """Replace embedded image in SVG with vector paths."""
     try:
+        # Parse both SVGs
         orig_svg = ET.fromstring(svg_content)
         vector_svg = ET.fromstring(vector_svg_content)
 
+        # Get original SVG dimensions and viewBox
+        orig_width = orig_svg.get('width', '100')
+        orig_height = orig_svg.get('height', '64')
+        orig_viewbox = orig_svg.get('viewBox', '')
+        orig_preserve_aspect = orig_svg.get('preserveAspectRatio', '')
+
         # Remove embedded image elements from original SVG
-        for image in orig_svg.findall(".//{http://www.w3.org/2000/svg}image"):
-            orig_svg.remove(image)
+        ns = {'svg': 'http://www.w3.org/2000/svg'}
 
-        # Append vector paths from traced SVG to original SVG
-        for elem in vector_svg:
-            orig_svg.append(elem)
+        # Find and remove all image elements
+        orig_svg   = ET.fromstring(svg_content.encode('utf-8'))
+        vector_svg = ET.fromstring(vector_svg_content.encode('utf-8'))
 
-        return ET.tostring(orig_svg, encoding='unicode')
+        for image in orig_svg.findall('.//svg:image', namespaces=ns):
+            parent = image.getparent()
+            if parent is not None:
+                parent.remove(image)
+
+        # Copy vector paths from traced SVG to original
+        # Get all path elements from the vector SVG
+        vector_paths = vector_svg.findall(".//svg:path", namespaces)
+        vector_groups = vector_svg.findall(".//svg:g", namespaces)
+
+        # Add paths to original SVG
+        for path in vector_svg.findall('.//svg:path',  namespaces=ns):
+            orig_svg.append(path)
+
+        # Add groups to original SVG
+        for group in vector_svg.findall('.//svg:g', namespaces=ns):
+            orig_svg.append(group)
+
+        # Preserve original dimensions
+        orig_svg.set('width', orig_width)
+        orig_svg.set('height', orig_height)
+        if orig_viewbox:
+            orig_svg.set('viewBox', orig_viewbox)
+        if orig_preserve_aspect:
+            orig_svg.set('preserveAspectRatio', orig_preserve_aspect)
+
+        return ET.tostring(orig_svg, encoding='unicode', pretty_print=False)
     except Exception as e:
         log(f"Error replacing image with vector: {e}", "error")
         return svg_content
@@ -111,25 +232,33 @@ def convert_base64_to_vector(svg_path):
             vector_path = os.path.join(tmpdir, 'traced.svg')
 
             # Save base64 image to temporary file
-            save_base64_image(image_type, base64_data, raster_path)
-            log(f"   Extracted raster image")
+            if not save_base64_image(image_type, base64_data, raster_path):
+                return False
+
+            # Check if Inkscape is available
+            if not os.path.exists(INKSCAPE_PATH):
+                log(f"   Inkscape not found at {INKSCAPE_PATH}", "error")
+                return False
 
             # Trace with inkscape
-            log("   Tracing bitmap with Inkscape...")
-            run([
-                "inkscape",  # MUDANÇA: usar inkscape do PATH
-                raster_path,
-                "--trace-bitmap",
-                f"--export-filename={vector_path}"
-            ], check=True)
-            subprocess.run([
-                INKSCAPE_PATH,
-                raster_path,
-                "--trace-bitmap",
-                f"--export-filename={vector_path}"
-            ], check=True)
+            log("   Tracing bitmap with Inkscape…")
+            try:
+                run([
+                    INKSCAPE_PATH,
+                    raster_path,
+                    "--batch-process",
+                    "--actions=import-image;select-all;bitmap-trace;export-filename=" + vector_path + ";quit"
+                ], check=True, capture_output=True, text=True)
+                log("   Successfully traced to vector")
+            except CalledProcessError as e:
+                log(f"   Inkscape tracing failed: {e}", "error")
+                log(f"   Inkscape stderr: {e.stderr}", "error")
+                return False
 
-            log("   Successfully traced to vector")
+            # Check if traced file was created
+            if not os.path.exists(vector_path):
+                log("   Traced SVG file not created", "error")
+                return False
 
             # Read traced vector content
             with open(vector_path, 'r', encoding='utf-8') as vf:
@@ -201,8 +330,6 @@ def convert_to_svg(input_path: str, output_path: str) -> None:
     """
     Converts a given image file to SVG format.
     """
-    INKSCAPE_PATH = r"C:\Program Files\Inkscape\bin\inkscape.exe"
-
     try:
         log("Converting logo to SVG...")
         run([
@@ -218,7 +345,7 @@ def convert_to_svg(input_path: str, output_path: str) -> None:
 
 def resize_svg(svg_path: str, target_width: int = 100, target_height: int = 64):
     """
-    Smart resize: resize SVG with smart crop
+    Smart resize: resize SVG with SMART crop
     """
     log("   Smart resizing SVG...")
     svg_tree = etree.parse(svg_path)
@@ -393,7 +520,7 @@ def optimize(directory: str | None, width: int | None, height: int | None, suffi
     if not suffix:
         suffix = "_card"
 
-    print(f"[>] Smart optimizing SVGs in {directory} to {width}x{height}")
+    print(f"[>] Smart optimizing SVGs in {directory} to {width}x{height} with suffix '{suffix}'")
 
     for root, _, files in walk(directory):
         for filename in files:
