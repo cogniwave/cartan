@@ -18,6 +18,10 @@ class SelectMerchantScreen extends StatefulWidget {
 class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
   String _searchQuery = '';
 
+  void _startSearch() {
+    // Called when title is tapped. Search logic is already handled in SearchableAppBar
+  }
+
   @override
   Widget build(BuildContext context) {
     final merchantsRepo = Provider.of<MerchantsRepository>(context);
@@ -50,9 +54,9 @@ class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
 
             // Filter merchants based on search query
             final filteredMerchants =
-                _searchQuery.isEmpty
-                    ? merchants
-                    : merchants.where((merchant) => merchant.displayName.toLowerCase().contains(_searchQuery)).toList();
+            _searchQuery.isEmpty
+                ? merchants
+                : merchants.where((merchant) => merchant.displayName.toLowerCase().contains(_searchQuery)).toList();
 
             // Show message when no merchants match the search query
             if (filteredMerchants.isEmpty && _searchQuery.isNotEmpty) {

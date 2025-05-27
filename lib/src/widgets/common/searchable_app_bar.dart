@@ -57,34 +57,46 @@ class _SearchableAppBarState extends State<SearchableAppBar> {
     final theme = Theme.of(context);
 
     return AppBar(
-      backgroundColor: widget.backgroundColor ?? theme.appBarTheme.backgroundColor,
-      title: _isSearching
-          ? TextField(
-        controller: _searchController,
-        autofocus: true,
-        decoration: InputDecoration(
-          hintText: widget.searchHint,
-          border: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          hintStyle: TextStyle(color: theme.colorScheme.onSurface.withValues(alpha:0.6)),
-        ),
-        style: widget.searchStyle ?? TextStyle(color: theme.colorScheme.onSurface),
-        onChanged: widget.onSearch,
-      )
-          : Text(
-        widget.title,
-        style: widget.titleStyle,
-      ),
+      backgroundColor:
+          widget.backgroundColor ?? theme.appBarTheme.backgroundColor,
+      title:
+          _isSearching
+              ? TextField(
+                controller: _searchController,
+                autofocus: true,
+                decoration: InputDecoration(
+                  hintText: widget.searchHint,
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  hintStyle: TextStyle(
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
+                ),
+                style:
+                    widget.searchStyle ??
+                    TextStyle(color: theme.colorScheme.onSurface),
+                onChanged: widget.onSearch,
+              )
+              : GestureDetector(
+                onTap: _startSearch,
+                child: Text(widget.title, style: widget.titleStyle),
+              ),
       actions: [
         if (_isSearching)
           IconButton(
-            icon: Icon(AntIcons.closeOutlined, color: theme.colorScheme.primary),
+            icon: Icon(
+              AntIcons.closeOutlined,
+              color: theme.colorScheme.primary,
+            ),
             onPressed: _stopSearch,
           )
         else
           IconButton(
-            icon: Icon(AntIcons.searchOutlined, color: theme.colorScheme.primary),
+            icon: Icon(
+              AntIcons.searchOutlined,
+              color: theme.colorScheme.primary,
+            ),
             onPressed: _startSearch,
           ),
         ...(_isSearching ? [] : widget.trailingActions),
