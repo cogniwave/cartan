@@ -19,12 +19,15 @@ import base64
 import re
 import tempfile
 import os
-from lxml import etree as ET
+from PIL import Image
 
 BASE_DIR = dirname(abspath(__file__))
 OUTPUT_DIR = join(getcwd(), "../lib/assets/images/loyalty_cards")
 tmp = join(BASE_DIR, ".tmp")
-INKSCAPE_PATH = r"C:\Program Files\Inkscape\bin\inkscape.exe"
+
+# Potrace path
+POTRACE_PATH = r"C:\Program Files\potrace\potrace.exe"  # Windows
+# POTRACE_PATH = "/usr/bin/potrace"  # Linux/Mac
 
 browser: Chrome | None = None
 
@@ -54,230 +57,6 @@ def setup_browser():
     browser = Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 
-# ===== Conversion BASE64→VECTOR =====
-
-def extract_base64_image(svg_content):
-    """Extract base64 image data from SVG content."""
-    # Procura por padrões mais amplos de base64
-    patterns = [
-        r'href="data:image/(png|jpeg|jpg|gif|webp);base64,([^"]+)"',
-        r'xlink:href="data:image/(png|jpeg|jpg|gif|webp);base64,([^"]+)"'
-    ]
-
-    for pattern in patterns:
-        match = re.search(pattern, svg_content)
-        if match:
-            image_type = match.group(1)
-            base64_data = match.group(2)
-            return image_type, base64_data
-
-    return None, None
-
-def save_base64_image(image_type, base64_data, filename):
-    """Save base64 data as image file."""
-    try:
-        # Clean base64 data more aggressively
-        original_data = base64_data
-        log(f"   Original base64 length: {len(original_data)}")
-
-        # Remove all whitespace and newlines
-        base64_data = re.sub(r'\s', '', base64_data)
-
-        # Remove any non-base64 characters but keep padding
-        base64_data = re.sub(r'[^A-Za-z0-9+/=]', '', base64_data)
-
-        # Handle padding issues - remove all existing padding and recalculate
-        base64_data = base64_data.rstrip('=')
-
-        # Add correct padding
-        remainder = len(base64_data) % 4
-        if remainder:
-            base64_data += '=' * (4 - remainder)
-
-        log(f"   Cleaned base64 length: {len(base64_data)}")
-
-        # Try multiple decoding strategies
-        image_data = None
-
-        # Strategy 1: Standard decode with validation
-        try:
-            image_data = base64.b64decode(base64_data, validate=True)
-            log("   Successfully decoded with validation")
-        except Exception as e1:
-            log(f"   Validation decode failed: {e1}")
-
-            # Strategy 2: Decode without validation
-            try:
-                image_data = base64.b64decode(base64_data)
-                log("   Successfully decoded without validation")
-            except Exception as e2:
-                log(f"   Standard decode failed: {e2}")
-
-                # Strategy 3: Try with original data (sometimes works better)
-                try:
-                    # Clean original but keep structure
-                    cleaned_original = re.sub(r'[^A-Za-z0-9+/=\n\r]', '', original_data)
-                    image_data = base64.b64decode(cleaned_original)
-                    log("   Successfully decoded original data")
-                except Exception as e3:
-                    log(f"   Original decode failed: {e3}")
-                    return False
-
-        if image_data is None:
-            log("   All decoding strategies failed", "error")
-            return False
-
-        # Validate image data size
-        if len(image_data) < 50:  # Very small files are likely invalid
-            log(f"   Image data too small ({len(image_data)} bytes)", "error")
-            return False
-
-        # Check for common image headers
-        image_headers = {
-            b'\x89PNG': 'PNG',
-            b'\xFF\xD8\xFF': 'JPEG',
-            b'GIF87a': 'GIF87a',
-            b'GIF89a': 'GIF89a',
-            b'RIFF': 'WEBP'
-        }
-
-        detected_format = None
-        for header, format_name in image_headers.items():
-            if image_data.startswith(header):
-                detected_format = format_name
-                break
-
-        if detected_format:
-            log(f"   Detected {detected_format} format")
-        else:
-            log("   Warning: Could not detect image format")
-
-        with open(filename, 'wb') as f:
-            f.write(image_data)
-        log(f"   Saved base64 image to {filename} ({len(image_data)} bytes)")
-        return True
-
-    except Exception as e:
-        log(f"   Error saving base64 image: {e}", "error")
-        return False
-
-def replace_image_with_vector(svg_content, vector_svg_content):
-    """Replace embedded image in SVG with vector paths."""
-    try:
-        # Parse both SVGs
-        orig_svg = ET.fromstring(svg_content)
-        vector_svg = ET.fromstring(vector_svg_content)
-
-        # Get original SVG dimensions and viewBox
-        orig_width = orig_svg.get('width', '100')
-        orig_height = orig_svg.get('height', '64')
-        orig_viewbox = orig_svg.get('viewBox', '')
-        orig_preserve_aspect = orig_svg.get('preserveAspectRatio', '')
-
-        # Remove embedded image elements from original SVG
-        ns = {'svg': 'http://www.w3.org/2000/svg'}
-
-        # Find and remove all image elements
-        orig_svg   = ET.fromstring(svg_content.encode('utf-8'))
-        vector_svg = ET.fromstring(vector_svg_content.encode('utf-8'))
-
-        for image in orig_svg.findall('.//svg:image', namespaces=ns):
-            parent = image.getparent()
-            if parent is not None:
-                parent.remove(image)
-
-        # Copy vector paths from traced SVG to original
-        # Get all path elements from the vector SVG
-        vector_paths = vector_svg.findall(".//svg:path", namespaces)
-        vector_groups = vector_svg.findall(".//svg:g", namespaces)
-
-        # Add paths to original SVG
-        for path in vector_svg.findall('.//svg:path',  namespaces=ns):
-            orig_svg.append(path)
-
-        # Add groups to original SVG
-        for group in vector_svg.findall('.//svg:g', namespaces=ns):
-            orig_svg.append(group)
-
-        # Preserve original dimensions
-        orig_svg.set('width', orig_width)
-        orig_svg.set('height', orig_height)
-        if orig_viewbox:
-            orig_svg.set('viewBox', orig_viewbox)
-        if orig_preserve_aspect:
-            orig_svg.set('preserveAspectRatio', orig_preserve_aspect)
-
-        return ET.tostring(orig_svg, encoding='unicode', pretty_print=False)
-    except Exception as e:
-        log(f"Error replacing image with vector: {e}", "error")
-        return svg_content
-
-def convert_base64_to_vector(svg_path):
-    """Convert SVG with embedded base64 image to vector SVG."""
-    log("   Checking for embedded base64 images...")
-
-    try:
-        with open(svg_path, 'r', encoding='utf-8') as f:
-            svg_content = f.read()
-
-        image_type, base64_data = extract_base64_image(svg_content)
-        if not base64_data:
-            log("   No base64 embedded image found - SVG is already vector")
-            return True
-
-        log("   Found embedded base64 image - converting to vector...")
-
-        with tempfile.TemporaryDirectory() as tmpdir:
-            raster_path = os.path.join(tmpdir, f'image.{image_type}')
-            vector_path = os.path.join(tmpdir, 'traced.svg')
-
-            # Save base64 image to temporary file
-            if not save_base64_image(image_type, base64_data, raster_path):
-                return False
-
-            # Check if Inkscape is available
-            if not os.path.exists(INKSCAPE_PATH):
-                log(f"   Inkscape not found at {INKSCAPE_PATH}", "error")
-                return False
-
-            # Trace with inkscape
-            log("   Tracing bitmap with Inkscape…")
-            try:
-                run([
-                    INKSCAPE_PATH,
-                    raster_path,
-                    "--batch-process",
-                    "--actions=import-image;select-all;bitmap-trace;export-filename=" + vector_path + ";quit"
-                ], check=True, capture_output=True, text=True)
-                log("   Successfully traced to vector")
-            except CalledProcessError as e:
-                log(f"   Inkscape tracing failed: {e}", "error")
-                log(f"   Inkscape stderr: {e.stderr}", "error")
-                return False
-
-            # Check if traced file was created
-            if not os.path.exists(vector_path):
-                log("   Traced SVG file not created", "error")
-                return False
-
-            # Read traced vector content
-            with open(vector_path, 'r', encoding='utf-8') as vf:
-                vector_svg_content = vf.read()
-
-            # Replace base64 image in original SVG with vector paths
-            new_svg = replace_image_with_vector(svg_content, vector_svg_content)
-
-            # Write new vectorized SVG
-            with open(svg_path, 'w', encoding='utf-8') as out_f:
-                out_f.write(new_svg)
-
-            log("   Successfully converted base64 to vector SVG")
-            return True
-
-    except Exception as e:
-        log(f"   Error converting base64 SVG to vector: {e}", "error")
-        return False
-
 def find_and_download_logo(company_name: str, name_normalized: str) -> str | None:
     """
     Downloads the logo of a given company from the web.
@@ -299,7 +78,6 @@ def find_and_download_logo(company_name: str, name_normalized: str) -> str | Non
     if not src:
         log("Couldn't find logo", "error")
         return None
-
 
     tmp_path = join(tmp, f"{name_normalized}.png")
 
@@ -325,23 +103,60 @@ def find_and_download_logo(company_name: str, name_normalized: str) -> str | Non
 
     return tmp_path
 
-
 def convert_to_svg(input_path: str, output_path: str) -> None:
     """
-    Converts a given image file to SVG format.
+    Converts a given image file to SVG format using Potrace.
     """
     try:
-        log("Converting logo to SVG...")
-        run([
-            INKSCAPE_PATH,
-            "--export-filename",
-            output_path,
-            input_path,
-        ], check=True, shell=True)
-        log("Logo converted successfully!")
+        log("Converting logo to SVG with Potrace...")
+
+        # Check if Potrace is available
+        if not os.path.exists(POTRACE_PATH):
+            log(f"Potrace not found at {POTRACE_PATH}", "error")
+            log("Download from: http://potrace.sourceforge.net/", "info")
+            return
+
+        # Convert image to BMP format for Potrace
+        bmp_path = input_path.rsplit('.', 1)[0] + '.bmp'
+
+        try:
+            with Image.open(input_path) as img:
+                # Convert to grayscale for better tracing
+                if img.mode != 'L':
+                    img = img.convert('L')
+                img.save(bmp_path, 'BMP')
+            log("   Converted to BMP for Potrace")
+        except Exception as e:
+            log(f"   Error converting to BMP: {e}", "error")
+            return
+
+        # Use Potrace to convert to SVG with optimized parameters
+        try:
+            run([
+                POTRACE_PATH,
+                bmp_path,
+                "-s",  # SVG output
+                "-o", output_path,
+                "-t", "2",  # Corner threshold
+                "-O", "0.2",  # Curve optimization
+                "-u", "10",  # Output precision
+                "--svg"
+            ], check=True, capture_output=True, text=True, timeout=30)
+
+            log("Logo converted to SVG successfully with Potrace!")
+
+            # Clean up temporary BMP file
+            if os.path.exists(bmp_path):
+                os.remove(bmp_path)
+
+        except CalledProcessError as e:
+            log(f"Potrace conversion failed: {e}", "error")
+            # Clean up temporary BMP file
+            if os.path.exists(bmp_path):
+                os.remove(bmp_path)
+
     except Exception as e:
         log(f"Failed to convert {input_path} to SVG: {e}", "error")
-
 
 def resize_svg(svg_path: str, target_width: int = 100, target_height: int = 64):
     """
@@ -412,15 +227,15 @@ def optimize_svg_string(svg_str: str) -> str:
         "newlines": False,
     })
     result = scour.scourString(svg_str, options)
-    log("   SVG otpmized")
+    log("   SVG optimized")
     return result
 
-
 def resize_and_optimize(path: str, target_width: int = 100, target_height: int = 64) -> None:
+    """
+    Resize and optimize SVG file.
+    Note: Potrace already generates clean vector SVGs, so no base64 conversion needed.
+    """
     log(f"Smart resizing and optimizing {path}...")
-
-    # Convert base64 --> vector before resize
-    convert_base64_to_vector(path)
 
     svg_tree = resize_svg(path, target_width, target_height)
 
@@ -478,7 +293,6 @@ def find_company_logos(path: str | None) -> None:
 
     print("[>] Finished script execution")
 
-
 @click.command("convert-existing-img")
 @click.option('--directory', type=str, required=False, help='Path to a directory in which all files will be converted to SVG. Defaults to lib/assets/images/loyalty_cards')
 def convert_existing_img(directory: str | None) -> None:
@@ -488,7 +302,7 @@ def convert_existing_img(directory: str | None) -> None:
     if not directory:
         directory = OUTPUT_DIR
 
-    print(f"[>] Converting images in ${directory} to svg")
+    print(f"[>] Converting images in {directory} to svg with Potrace")
 
     image_extensions = ('*.jpg', '*.jpeg', '*.png', '*.gif', '*.bmp', '*.tiff', '*.webp')
 
@@ -496,7 +310,8 @@ def convert_existing_img(directory: str | None) -> None:
         for ext in image_extensions:
             for filename in fileFilter(files, ext):
                 file_path = join(root, filename)
-                convert_to_svg(file_path, splitext(file_path)[0] + ".svg")
+                svg_path = splitext(file_path)[0] + ".svg"
+                convert_to_svg(file_path, svg_path)
                 remove(file_path)
 
     print("[>] Finished script execution")
