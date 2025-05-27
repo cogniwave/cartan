@@ -26,11 +26,9 @@ class ManualEntryView extends StatelessWidget {
   });
 
   int _extractExpectedDigits() {
-    assert(formats.isNotEmpty, 'formats must not be empty');
     final pattern = formats.first;
     final match = RegExp(r'\\d\{(\d+)\}').firstMatch(pattern);
-    assert(match != null, 'Expected a \\d{n} pattern in formats');
-    return int.parse(match!.group(1)!);
+    return match != null ? int.parse(match.group(1)!) : 0;
   }
 
   @override
@@ -38,7 +36,8 @@ class ManualEntryView extends StatelessWidget {
     final localizations = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
-    final expected = _extractExpectedDigits();
+    final hasSpecificFormat = formats.isNotEmpty;
+    final expectedDigits = hasSpecificFormat ? _extractExpectedDigits() : null;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
@@ -54,9 +53,7 @@ class ManualEntryView extends StatelessWidget {
                   height: 100,
                   child: FittedBox(
                     fit: BoxFit.fill,
-                    child: SvgPicture.asset(
-                      assetImagePath,
-                    ),
+                    child: SvgPicture.asset(assetImagePath),
                   ),
                 ),
               ),
@@ -73,28 +70,30 @@ class ManualEntryView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              keyboardType: TextInputType.number,
-              inputFormatters: [
+              keyboardType: TextInputType.text,
+              inputFormatters: hasSpecificFormat
+                  ? <TextInputFormatter>[
                 FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(_extractExpectedDigits()),
-              ],
+                LengthLimitingTextInputFormatter(expectedDigits),
+              ]
+                  : <TextInputFormatter>[],
             ),
+
             const SizedBox(height: 12),
 
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  localizations.format_hint,
-                  style: theme.textTheme.bodySmall,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '($expected ${localizations.digits})',
-                  style: theme.textTheme.bodySmall,
-                ),
-              ],
-            ),
+            if (hasSpecificFormat)
+              Text(
+                localizations.format_hint,
+                style: theme.textTheme.bodySmall,
+              ),
+
+            if (hasSpecificFormat) ...[
+              const SizedBox(height: 4),
+              Text(
+                '($expectedDigits ${localizations.digits})',
+                style: theme.textTheme.bodySmall,
+              ),
+            ],
 
             const SizedBox(height: 46),
 
@@ -103,7 +102,8 @@ class ManualEntryView extends StatelessWidget {
                 icon: const Icon(AntIcons.formOutlined),
                 label: Text(localizations.add_card),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: theme.extension<CustomColors>()!.accent,
+                  backgroundColor:
+                  theme.extension<CustomColors>()!.accent,
                   foregroundColor: theme.colorScheme.primary,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 24,

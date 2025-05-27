@@ -66,19 +66,26 @@ class _ScanCardScreenState extends State<ScanCardScreen>
 
   void _validateCode(String code) {
     final memberId = code.trim();
-    final formatValid = CardFormatValidator().isValidFormat(memberId, widget.merchant.formats);
+
+    final formats = widget.merchant.formats;
+    final formatValid = CardFormatValidator().isValidFormat(memberId, formats);
+
     if (!formatValid) {
       setState(() {
         _isValid = false;
-        _errorMessage = localizations.invalid_card_format;
+        _errorMessage =
+            formats.isEmpty
+                ? localizations.invalid_card_not_empty_alphanumeric
+                : localizations.invalid_card_format;
       });
       return;
     }
 
+    // Duplicates val
     final bloc = context.read<CardsBloc>();
-    final duplicate = bloc.state.cards.any((c) =>
-    c.merchant.id == widget.merchant.id &&
-        c.memberId == memberId);
+    final duplicate = bloc.state.cards.any(
+      (c) => c.merchant.id == widget.merchant.id && c.memberId == memberId,
+    );
     if (duplicate) {
       setState(() {
         _isValid = false;
@@ -122,7 +129,11 @@ class _ScanCardScreenState extends State<ScanCardScreen>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(AntIcons.cameraOutlined, size: 64, color: theme.colorScheme.secondary),
+            Icon(
+              AntIcons.cameraOutlined,
+              size: 64,
+              color: theme.colorScheme.secondary,
+            ),
             const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -161,9 +172,7 @@ class _ScanCardScreenState extends State<ScanCardScreen>
                 height: 30,
                 child: FittedBox(
                   fit: BoxFit.fill,
-                  child: SvgPicture.asset(
-                    widget.merchant.assetImagePath,
-                  ),
+                  child: SvgPicture.asset(widget.merchant.assetImagePath),
                 ),
               ),
             ),

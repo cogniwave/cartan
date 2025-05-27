@@ -231,5 +231,9 @@
   "no_results_found": "Sem resultados",
   "@no_results_found": {
     "description": "Message shown when there's no match for search query."
+  },
+  "invalid_card_not_empty_alphanumeric": "Campo alfanumérico e não pode estar vazio.",
+  "@invalid_card_not_empty_alphanumeric": {
+    "description": "Error when no specific format is defined and code is invalid"
   }
 }
