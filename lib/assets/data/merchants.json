@@ -82,6 +82,16 @@
     "category": "Simple"
   },
   {
+    "id": "burger_king",
+    "displayName": "Burger King",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/burger_king_card.svg",
+    "website": "https://www.burger_king.pt/",
+    "category": "Simple"
+  },
+  {
     "id": "brio",
     "displayName": "Brio",
     "formats": [
@@ -335,6 +345,16 @@
     "category": "Simple"
   },
   {
+    "id": "kfc",
+    "displayName": "KFC",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/kfc_card.svg",
+    "website": "https://www.kfc.pt/",
+    "category": "Simple"
+  },
+  {
     "id": "kiabi",
     "displayName": "Kiabi",
     "formats": [
@@ -377,6 +397,16 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/lyoness_card.svg",
     "website": "https://www.lyoness.com/",
+    "category": "Simple"
+  },
+  {
+    "id": "mcdonalds",
+    "displayName": "MacDonald's",
+    "formats": [
+      "^\\d{10}$"
+    ],
+    "assetImagePath": "lib/assets/images/loyalty_cards/mcdonalds_card.svg",
+    "website": "https://www.mcdonalds.pt/",
     "category": "Simple"
   },
   {

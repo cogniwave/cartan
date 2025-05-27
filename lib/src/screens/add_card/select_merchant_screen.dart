@@ -76,7 +76,7 @@ class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
                       alignment: Alignment.centerLeft,
                       merchant.assetImagePath,
                       errorBuilder: (context, error, stackTrace) {
-                        return SvgPicture.asset('lib/assets/images/loyalty_cards/card.svg');
+                        return SvgPicture.asset('lib/assets/images/loyalty_cards/default_card.svg');
                       },
                     ),
                     title: Text(merchant.displayName),
