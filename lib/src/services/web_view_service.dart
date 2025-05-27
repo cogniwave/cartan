@@ -3,26 +3,19 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class DocViewerService {
-
+class WebViewService {
   static String get _privacyPolicyUrl => dotenv.env['PRIVACY_POLICY_URL']!;
   static String get _termsOfServiceUrl => dotenv.env['TERMS_OF_SERVICE_URL']!;
 
-  static String get _privacyPolicyGoogleViewerUrl =>
-      'https://docs.google.com/viewer?url=${Uri.encodeComponent(_privacyPolicyUrl)}&embedded=true';
-
-  static String get _termsOfServiceGoogleViewerUrl =>
-      'https://docs.google.com/viewer?url=${Uri.encodeComponent(_termsOfServiceUrl)}&embedded=true';
-
   static void openPrivacyPolicy(BuildContext context, {required String title, Function(Exception)? onError}) {
-    _openDocInWebView(context, _privacyPolicyGoogleViewerUrl, title, onError);
+    _openInWebView(context, _privacyPolicyUrl, title, onError);
   }
 
   static void openTermsOfService(BuildContext context, {required String title, Function(Exception)? onError}) {
-    _openDocInWebView(context, _termsOfServiceGoogleViewerUrl, title, onError);
+    _openInWebView(context, _termsOfServiceUrl, title, onError);
   }
 
-  static void _openDocInWebView(
+  static void _openInWebView(
       BuildContext context,
       String url,
       String title,
@@ -30,12 +23,12 @@ class DocViewerService {
       ) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => _DocViewerScreen(url: url, title: title, onError: onError),
+        builder: (context) => _WebViewScreen(url: url, title: title, onError: onError),
       ),
     );
   }
 
-  static Future<bool> openDocExternally(String url, Function(Exception)? onError) async {
+  static Future<bool> openUrlExternally(String url, Function(Exception)? onError) async {
     try {
       final Uri uri = Uri.parse(url);
       return await launchUrl(uri, mode: LaunchMode.externalApplication);
@@ -48,22 +41,22 @@ class DocViewerService {
   }
 }
 
-class _DocViewerScreen extends StatefulWidget {
+class _WebViewScreen extends StatefulWidget {
   final String url;
   final String title;
   final Function(Exception)? onError;
 
-  const _DocViewerScreen({
+  const _WebViewScreen({
     required this.url,
     required this.title,
     this.onError,
   });
 
   @override
-  _DocViewerScreenState createState() => _DocViewerScreenState();
+  _WebViewScreenState createState() => _WebViewScreenState();
 }
 
-class _DocViewerScreenState extends State<_DocViewerScreen> {
+class _WebViewScreenState extends State<_WebViewScreen> {
   late WebViewController _controller;
   bool _isLoading = true;
 

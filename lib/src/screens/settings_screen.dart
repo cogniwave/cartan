@@ -10,7 +10,7 @@ import 'package:cartan/src/widgets/language/language_subtitle.dart';
 import 'font_size_screen.dart';
 import 'feedback_screen.dart';
 import 'language_screen.dart';
-import 'package:cartan/src/services/doc_viewer_service.dart';
+import 'package:cartan/src/services/web_view_service.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -80,7 +80,7 @@ class SettingsScreen extends StatelessWidget {
               title: Text(localizations.privacy_policy),
               leading: Icon(AntIcons.fileProtectOutlined),
               onTap: () {
-                DocViewerService.openPrivacyPolicy(
+                WebViewService.openPrivacyPolicy(
                   context,
                   title: localizations.privacy_policy,
                   onError: (e) {
@@ -94,7 +94,7 @@ class SettingsScreen extends StatelessWidget {
               title: Text(localizations.terms_of_service),
               leading: Icon(AntIcons.fileDoneOutlined),
               onTap: () {
-                DocViewerService.openTermsOfService(
+                WebViewService.openTermsOfService(
                   context,
                   title: localizations.terms_of_service,
                   onError: (e) {
