@@ -15,19 +15,16 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from fnmatch import filter as fileFilter
-import base64
-import re
-import tempfile
 import os
-from PIL import Image
+import shutil
 
 BASE_DIR = dirname(abspath(__file__))
 OUTPUT_DIR = join(getcwd(), "../lib/assets/images/loyalty_cards")
 tmp = join(BASE_DIR, ".tmp")
 
-# Potrace path
-POTRACE_PATH = r"C:\Program Files\potrace\potrace.exe"  # Windows
-# POTRACE_PATH = "/usr/bin/potrace"  # Linux/Mac
+# Inkscape path (add to PATH or specify full path)
+# INKSCAPE_PATH = "inkscape"  # If in PATH
+INKSCAPE_PATH = r"C:\Program Files\Inkscape\bin\inkscape.exe"  # Windows full path
 
 browser: Chrome | None = None
 
@@ -37,16 +34,13 @@ def cli():
     pass
 
 def log(message: str, type: Literal["error", "info"] = "info") -> None:
-    if (type == "error"):
+    if type == "error":
         print(f"    [!] {message}")
     else:
         print(f"    [>] {message}")
 
-
 def setup_browser():
-    """
-    Set up a headless browser using Selenium.
-    """
+    """Set up a headless browser using Selenium."""
     options = Options()
     options.add_argument('--headless')
     options.add_argument('--disable-gpu')
@@ -56,207 +50,257 @@ def setup_browser():
     global browser
     browser = Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
-
 def find_and_download_logo(company_name: str, name_normalized: str) -> str | None:
-    """
-    Downloads the logo of a given company from the web.
-    """
-    query = f"https://www.google.com/search?q={company_name.replace(" ", "+")}+logo&tbm=isch"
+    """Downloads the logo of a given company from the web."""
+    query = f"https://www.google.com/search?q={company_name.replace(' ', '+')}+logo&tbm=isch"
 
     log(f"Looking for logo... ({query})")
 
     browser.get(query)
 
-    # Locate the first image in the search results
-    src = (
-        browser
-        .find_element(By.ID, "search")
-        .find_element(By.TAG_NAME, "img")
-        .get_attribute("src")
-    )
+    try:
+        # Locate the first image in the search results
+        src = (
+            browser
+            .find_element(By.ID, "search")
+            .find_element(By.TAG_NAME, "img")
+            .get_attribute("src")
+        )
+    except Exception:
+        log("Couldn't find logo", "error")
+        return None
 
     if not src:
         log("Couldn't find logo", "error")
         return None
 
-    tmp_path = join(tmp, f"{name_normalized}.png")
-
     # Convert base64 to image
     if src.startswith("data:image"):
-        # Validate and fix Base64 string padding
-        if len(src) % 4 != 0:
-            src += '=' * (4 - len(src) % 4)
+        try:
+            # Extract base64 data
+            base64_data = src.split(",")[1]
+            # Fix padding if needed
+            if len(base64_data) % 4 != 0:
+                base64_data += '=' * (4 - len(base64_data) % 4)
 
-        decoded = b64decode(src.split(",")[1])
-        tmp_path = join(tmp, f"{name_normalized}.{guess(decoded).extension}")
-        with open(tmp_path, 'wb') as f:
-            f.write(decoded)
+            decoded = b64decode(base64_data)
+            file_type = guess(decoded)
+            extension = file_type.extension if file_type else "png"
+            tmp_path = join(tmp, f"{name_normalized}.{extension}")
+
+            with open(tmp_path, 'wb') as f:
+                f.write(decoded)
+
+            return tmp_path
+        except Exception as e:
+            log(f"Error processing base64 image: {e}", "error")
+            return None
+
+    # Download regular image
+    try:
+        response = get(src, stream=True)
+        response.raise_for_status()
+
+        # Determine file extension
+        content = response.content
+        file_type = guess(content)
+        extension = file_type.extension if file_type else "png"
+        tmp_path = join(tmp, f"{name_normalized}.{extension}")
+
+        with open(tmp_path, "wb") as img_file:
+            img_file.write(content)
 
         return tmp_path
-
-    # Download and save image
-    response = get(src, stream=True)
-    tmp_path = join(tmp, f"{name_normalized}.{guess(img_file).extension}")
-    with open(tmp_path, "wb") as img_file:
-        for chunk in response.iter_content(1024):
-            img_file.write(chunk)
-
-    return tmp_path
+    except Exception as e:
+        log(f"Error downloading image: {e}", "error")
+        return None
 
 def convert_to_svg(input_path: str, output_path: str) -> None:
-    """
-    Converts a given image file to SVG format using Potrace.
-    """
+    """Convert image to SVG using Inkscape CLI with automatic tracing."""
+    log(f"Converting {input_path} to SVG using Inkscape...")
+
     try:
-        log("Converting logo to SVG with Potrace...")
+        # Step 1: Import and trace the bitmap
+        cmd = [
+            INKSCAPE_PATH,
+            input_path,
+            "--actions",
+            "select-all;trace-bitmap;EditSelectAll;EditDelete",
+            "--export-filename",
+            output_path
+        ]
 
-        # Check if Potrace is available
-        if not os.path.exists(POTRACE_PATH):
-            log(f"Potrace not found at {POTRACE_PATH}", "error")
-            log("Download from: http://potrace.sourceforge.net/", "info")
-            return
+        result = run(cmd, capture_output=True, text=True, check=True)
 
-        # Convert image to BMP format for Potrace
-        bmp_path = input_path.rsplit('.', 1)[0] + '.bmp'
+        # Check if the SVG was created and has content
+        if exists(output_path):
+            with open(output_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+                if '<path' in content or '<g' in content or '<rect' in content or '<circle' in content:
+                    log("Successfully converted to SVG")
+                else:
+                    log("SVG created but appears empty, trying alternative method...", "error")
+                    # Try simpler conversion without deleting original
+                    cmd_alt = [
+                        INKSCAPE_PATH,
+                        input_path,
+                        "--actions",
+                        "select-all;trace-bitmap",
+                        "--export-filename",
+                        output_path
+                    ]
+                    run(cmd_alt, capture_output=True, text=True, check=True)
+                    log("Alternative conversion completed")
+        else:
+            raise Exception("SVG file was not created")
 
-        try:
-            with Image.open(input_path) as img:
-                # Convert to grayscale for better tracing
-                if img.mode != 'L':
-                    img = img.convert('L')
-                img.save(bmp_path, 'BMP')
-            log("   Converted to BMP for Potrace")
-        except Exception as e:
-            log(f"   Error converting to BMP: {e}", "error")
-            return
-
-        # Use Potrace to convert to SVG with optimized parameters
-        try:
-            run([
-                POTRACE_PATH,
-                bmp_path,
-                "-s",  # SVG output
-                "-o", output_path,
-                "-t", "2",  # Corner threshold
-                "-O", "0.2",  # Curve optimization
-                "-u", "10",  # Output precision
-                "--svg"
-            ], check=True, capture_output=True, text=True, timeout=30)
-
-            log("Logo converted to SVG successfully with Potrace!")
-
-            # Clean up temporary BMP file
-            if os.path.exists(bmp_path):
-                os.remove(bmp_path)
-
-        except CalledProcessError as e:
-            log(f"Potrace conversion failed: {e}", "error")
-            # Clean up temporary BMP file
-            if os.path.exists(bmp_path):
-                os.remove(bmp_path)
-
-    except Exception as e:
-        log(f"Failed to convert {input_path} to SVG: {e}", "error")
+    except CalledProcessError as e:
+        log(f"Inkscape conversion failed: {e.stderr}", "error")
+        raise
+    except FileNotFoundError:
+        log("Inkscape not found. Please install Inkscape and add it to PATH or set INKSCAPE_PATH", "error")
+        raise
 
 def resize_svg(svg_path: str, target_width: int = 100, target_height: int = 64):
-    """
-    Smart resize: resize SVG with SMART crop
-    """
-    log("   Smart resizing SVG...")
-    svg_tree = etree.parse(svg_path)
-    root = svg_tree.getroot()
+    """Smart resize: resize SVG with smart crop."""
+    log("Smart resizing SVG...")
 
-    def parse_dimension(dim: str) -> float | None:
-        if dim is None:
-            return None
-        if dim.endswith('px'):
-            return float(dim.replace('px', ''))
-        if dim.endswith('pt'):
-            pt_value = float(dim.replace('pt', ''))
-            return pt_value * 1.3333
-        try:
-            return float(dim)
-        except ValueError:
-            return None
+    try:
+        svg_tree = etree.parse(svg_path)
+        root = svg_tree.getroot()
 
-    orig_width = parse_dimension(root.get('width'))
-    orig_height = parse_dimension(root.get('height'))
+        def parse_dimension(dim: str) -> float | None:
+            if dim is None:
+                return None
+            if dim.endswith('px'):
+                return float(dim.replace('px', ''))
+            if dim.endswith('pt'):
+                pt_value = float(dim.replace('pt', ''))
+                return pt_value * 1.3333
+            try:
+                return float(dim)
+            except ValueError:
+                return None
 
-    if orig_width is None or orig_height is None:
-        viewBox = root.get('viewBox')
-        if viewBox:
-            parts = viewBox.split()
-            if len(parts) >= 4:
-                _, _, orig_width, orig_height = map(float, parts[:4])
+        # Get original dimensions
+        orig_width = parse_dimension(root.get('width'))
+        orig_height = parse_dimension(root.get('height'))
+
+        # Try to get dimensions from viewBox if width/height not available
+        if orig_width is None or orig_height is None:
+            viewBox = root.get('viewBox')
+            if viewBox:
+                parts = viewBox.split()
+                if len(parts) >= 4:
+                    _, _, orig_width, orig_height = map(float, parts[:4])
+
+            # If still no dimensions, try to calculate from content
+            if orig_width is None or orig_height is None:
+                # Set reasonable defaults based on common image sizes
+                orig_width = orig_width or 512
+                orig_height = orig_height or 512
+                log(f"Using default dimensions: {orig_width}x{orig_height}")
+
+        # Calculate aspect ratios
+        orig_ratio = orig_width / orig_height
+        target_ratio = target_width / target_height
+
+        # Set new dimensions
+        root.set('width', f'{target_width}px')
+        root.set('height', f'{target_height}px')
+
+        # Calculate viewBox for smart cropping
+        if orig_ratio > target_ratio:
+            # Image is wider - crop sides
+            new_height = orig_height
+            new_width = orig_height * target_ratio
+            x_offset = (orig_width - new_width) / 2
+            y_offset = 0
         else:
-            raise ValueError("SVG missing width/height and viewBox")
+            # Image is taller - crop top/bottom
+            new_width = orig_width
+            new_height = orig_width / target_ratio
+            x_offset = 0
+            y_offset = (orig_height - new_height) / 2
 
-    orig_ratio = orig_width / orig_height
-    target_ratio = target_width / target_height
+        # Ensure we don't have negative offsets
+        x_offset = max(0, x_offset)
+        y_offset = max(0, y_offset)
 
-    root.set('width', f'{target_width}px')
-    root.set('height', f'{target_height}px')
+        root.set('viewBox', f'{x_offset} {y_offset} {new_width} {new_height}')
+        root.set('preserveAspectRatio', 'xMidYMid slice')
 
-    if orig_ratio > target_ratio:
-        new_height = orig_height
-        new_width = orig_height * target_ratio
-        x_offset = (orig_width - new_width) / 2
-        y_offset = 0
-    else:
-        new_width = orig_width
-        new_height = orig_width / target_ratio
-        x_offset = 0
-        y_offset = (orig_height - new_height) / 2
+        log(f"SVG smart resized (crop: {x_offset:.1f},{y_offset:.1f} size: {new_width:.1f}x{new_height:.1f})")
+        return svg_tree
 
-    root.set('viewBox', f'{x_offset} {y_offset} {new_width} {new_height}')
-    root.set('preserveAspectRatio', 'xMidYMid slice')
-
-    log(f"   SVG smart resized (crop: {x_offset:.1f},{y_offset:.1f} size: {new_width:.1f}x{new_height:.1f})")
-    return svg_tree
+    except Exception as e:
+        log(f"Error resizing SVG: {e}", "error")
+        raise
 
 def optimize_svg_string(svg_str: str) -> str:
-    log("   Optimizing SVG...")
-    options = scour.sanitizeOptions({
-        "remove_metadata": True,
-        "remove_descriptions": True,
-        "remove_titles": True,
-        "strip_comments": True,
-        "shorten_ids": True,
-        "enable_viewboxing": True,
-        "indent_type": None,
-        "newlines": False,
-    })
-    result = scour.scourString(svg_str, options)
-    log("   SVG optimized")
-    return result
+    """Optimize SVG string using scour."""
+    log("Optimizing SVG...")
+
+    try:
+        options = scour.sanitizeOptions({
+            "remove_metadata": True,
+            "remove_descriptions": True,
+            "remove_titles": True,
+            "strip_comments": True,
+            "shorten_ids": True,
+            "enable_viewboxing": True,
+            "indent_type": None,
+            "newlines": False,
+        })
+        result = scour.scourString(svg_str, options)
+        log("SVG optimized")
+        return result
+    except Exception as e:
+        log(f"Error optimizing SVG: {e}", "error")
+        return svg_str  # Return original if optimization fails
 
 def resize_and_optimize(path: str, target_width: int = 100, target_height: int = 64) -> None:
-    """
-    Resize and optimize SVG file.
-    Note: Potrace already generates clean vector SVGs, so no base64 conversion needed.
-    """
+    """Resize and optimize SVG file."""
     log(f"Smart resizing and optimizing {path}...")
 
-    svg_tree = resize_svg(path, target_width, target_height)
+    try:
+        # First check if SVG has actual content
+        with open(path, 'r', encoding='utf-8') as f:
+            content = f.read()
 
-    # Convert XML tree back to string
-    svg_str = etree.tostring(svg_tree.getroot(), encoding='unicode')
+        # Check if SVG is essentially empty
+        if not any(tag in content for tag in ['<path', '<g', '<rect', '<circle', '<polygon', '<line', '<text']):
+            log("SVG appears to be empty, skipping optimization", "error")
+            return
 
-    # Optimize SVG string
-    optimized_svg = optimize_svg_string(svg_str)
+        svg_tree = resize_svg(path, target_width, target_height)
 
-    # Write optimized SVG to file
-    with open(path, 'w', encoding='utf-8') as f:
-        f.write(optimized_svg)
+        # Convert XML tree back to string
+        svg_str = etree.tostring(svg_tree.getroot(), encoding='unicode')
 
-    log(f"SVG ready")
+        # Only optimize if we have substantial content
+        if len(svg_str) > 200:  # Basic threshold to avoid optimizing empty SVGs
+            optimized_svg = optimize_svg_string(svg_str)
+        else:
+            log("SVG too small to optimize safely, keeping original")
+            optimized_svg = svg_str
+
+        # Write optimized SVG to file
+        with open(path, 'w', encoding='utf-8') as f:
+            f.write(optimized_svg)
+
+        log("SVG ready")
+
+    except Exception as e:
+        log(f"Error processing SVG: {e}", "error")
+        # Don't raise - keep the original file if optimization fails
 
 @click.command("find-company-logos")
 @click.option('--path', type=str, required=False, help='Path to the JSON with the companies list. Optional')
 def find_company_logos(path: str | None) -> None:
     """
-    Looks up company logos, downloads them as SVG, or as another image format and then converts to SVG. The companies
-    are determined by the JSON specified by --path
+    Looks up company logos, downloads them as SVG, or as another image format and then converts to SVG.
+    The companies are determined by the JSON specified by --path
     """
     if not path:
         path = join(BASE_DIR, "companies.json")
@@ -265,16 +309,19 @@ def find_company_logos(path: str | None) -> None:
         with open(path) as file:
             companies: list[str] = load(file)
     except JSONDecodeError:
-        log("Invalid JSON configuration file.")
+        log("Invalid JSON configuration file.", "error")
         return
     except FileNotFoundError:
-        log(f"Could not find {path}. Make sure to specify full path")
+        log(f"Could not find {path}. Make sure to specify full path", "error")
         return
 
     print("[>] Finding logos for:", ", ".join(companies))
 
     if not exists(tmp):
         mkdir(tmp)
+
+    if not exists(OUTPUT_DIR):
+        mkdir(OUTPUT_DIR)
 
     setup_browser()
 
@@ -283,26 +330,38 @@ def find_company_logos(path: str | None) -> None:
 
         name_normalized = company.lower().replace(" ", "_")
 
-        if (tmp_path := find_and_download_logo(company, name_normalized)):
-            output = join(OUTPUT_DIR, f"{name_normalized}.svg")
-            convert_to_svg(tmp_path, output)
-            resize_and_optimize(output)
-            remove(tmp_path)
+        try:
+            if tmp_path := find_and_download_logo(company, name_normalized):
+                output = join(OUTPUT_DIR, f"{name_normalized}.svg")
+                convert_to_svg(tmp_path, output)
 
-        print("\n")
+                if exists(output):
+                    resize_and_optimize(output)
+                    log(f"Successfully processed logo for {company}")
+                else:
+                    log(f"Failed to create SVG for {company}", "error")
+
+                # Clean up temporary file
+                if exists(tmp_path):
+                    remove(tmp_path)
+            else:
+                log(f"Could not download logo for {company}", "error")
+
+        except Exception as e:
+            log(f"Error processing {company}: {e}", "error")
+
+        print()
 
     print("[>] Finished script execution")
 
 @click.command("convert-existing-img")
 @click.option('--directory', type=str, required=False, help='Path to a directory in which all files will be converted to SVG. Defaults to lib/assets/images/loyalty_cards')
 def convert_existing_img(directory: str | None) -> None:
-    """
-    Convert existing image files to SVG format and saves them in {OUTPUT_DIR}
-    """
+    """Convert existing image files to SVG format using Inkscape and saves them in {OUTPUT_DIR}"""
     if not directory:
         directory = OUTPUT_DIR
 
-    print(f"[>] Converting images in {directory} to svg with Potrace")
+    print(f"[>] Converting images in {directory} to SVG using Inkscape")
 
     image_extensions = ('*.jpg', '*.jpeg', '*.png', '*.gif', '*.bmp', '*.tiff', '*.webp')
 
@@ -311,20 +370,31 @@ def convert_existing_img(directory: str | None) -> None:
             for filename in fileFilter(files, ext):
                 file_path = join(root, filename)
                 svg_path = splitext(file_path)[0] + ".svg"
-                convert_to_svg(file_path, svg_path)
-                remove(file_path)
+
+                log(f"Processing {filename}")
+
+                try:
+                    convert_to_svg(file_path, svg_path)
+
+                    # Only remove original if conversion was successful
+                    if exists(svg_path):
+                        remove(file_path)
+                        log(f"Successfully converted {filename} to SVG")
+                    else:
+                        log(f"Failed to convert {filename}", "error")
+
+                except Exception as e:
+                    log(f"Error converting {filename}: {e}", "error")
 
     print("[>] Finished script execution")
 
 @click.command("optimize")
-@click.option('--directory', type=str, required=False, help='Path to a directory in which all files will be converted to SVG. Defaults to lib/assets/images/loyalty_cards')
+@click.option('--directory', type=str, required=False, help='Path to a directory in which all files will be optimized. Defaults to lib/assets/images/loyalty_cards')
 @click.option('--width', type=int, required=False, help="Target width (default: 100)")
 @click.option('--height', type=int, required=False, help="Target height (default: 64)")
 @click.option('--suffix', type=str, required=False, help="Suffix to add to filename (default: _card)")
 def optimize(directory: str | None, width: int | None, height: int | None, suffix: str | None) -> None:
-    """
-    Smart resize: fills entire target dimensions by cropping excess content and optimizes SVG
-    """
+    """Smart resize: fills entire target dimensions by cropping excess content and optimizes SVG"""
     if not directory:
         directory = OUTPUT_DIR
 
@@ -347,12 +417,15 @@ def optimize(directory: str | None, width: int | None, height: int | None, suffi
                 new_filename = f"{name_without_ext}{suffix}.svg"
                 new_file_path = join(root, new_filename)
 
-                resize_and_optimize(file_path, width, height)
+                try:
+                    resize_and_optimize(file_path, width, height)
 
-                if file_path != new_file_path:
-                    import shutil
-                    shutil.move(file_path, new_file_path)
-                    log(f"Renamed to {new_filename}")
+                    if file_path != new_file_path:
+                        shutil.move(file_path, new_file_path)
+                        log(f"Renamed to {new_filename}")
+
+                except Exception as e:
+                    log(f"Error processing {filename}: {e}", "error")
 
     print("[>] Finished script execution")
 
