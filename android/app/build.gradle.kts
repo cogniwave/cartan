@@ -27,8 +27,11 @@ android {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
+    // Note: Although the namespace is 'pt.cogniwave.cartan',
+    // the applicationId must remain 'com.cogniwave.cartan'.
+    // Play Store does not allow changing the applicationId after the initial release.
     defaultConfig {
-        applicationId = "pt.cogniwave.cartan"
+        applicationId = "com.cogniwave.cartan"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
@@ -59,28 +62,32 @@ android {
         }
     }
 
+    packaging {
+        resources {
+            excludes += listOf(
+                "/META-INF/{AL2.0,LGPL2.1}",
+                "/META-INF/versions/**",
+                "DebugProbesKt.bin"
+            )
+        }
+    }
+
     flavorDimensions.add("env")
 
     productFlavors {
         create("production") {
             dimension = "env"
-            versionCode = project.findProperty("flutter.versionCode")?.toString()?.toInt() ?: 1
-            versionName = project.findProperty("flutter.versionName")?.toString() ?: "1.0"
             resValue("string", "app_name", "Cartan")
         }
         create("staging") {
             dimension = "env"
             applicationIdSuffix = ".staging"
-            versionCode = project.findProperty("flutter.versionCode")?.toString()?.toInt() ?: 1
-            versionName = project.findProperty("flutter.versionName")?.toString() ?: "1.0"
-            resValue("string", "app_name", "Flavor Staging")
+            resValue("string", "app_name", "Cartan Staging")
         }
         create("dev") {
             dimension = "env"
             applicationIdSuffix = ".dev"
-            versionCode = project.findProperty("flutter.versionCode")?.toString()?.toInt() ?: 1
-            versionName = project.findProperty("flutter.versionName")?.toString() ?: "1.0"
-            resValue("string", "app_name", "Flavor Dev")
+            resValue("string", "app_name", "Cartan Dev")
         }
     }
 }
