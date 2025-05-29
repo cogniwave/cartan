@@ -235,5 +235,9 @@
   "invalid_card_not_empty_alphanumeric": "Card number must be alphanumeric and not empty.",
   "@invalid_card_not_empty_alphanumeric": {
     "description": "Error when no specific format is defined and code is invalid"
+  },
+  "card_type": "Card type",
+  "@card_type": {
+    "description": "Label for selecting card type"
   }
 }

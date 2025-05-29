@@ -1,3 +1,4 @@
+import 'package:cartan/src/screens/add_card/card_types_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -49,7 +50,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> _onAddNewCard(BuildContext context) async {
     final result = await Navigator.push<bool>(
       context,
-      MaterialPageRoute(builder: (_) => const SelectMerchantScreen()),
+      MaterialPageRoute(builder: (_) => const CardTypeScreen()),
     );
 
     if (result == true && context.mounted) {
