@@ -1,3 +1,4 @@
+import 'package:cartan/src/repositories/providers_repository.dart';
 import 'package:cartan/src/services/navigation_service.dart';
 import 'package:cartan/src/services/scaffold_messenger_service.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:bugsnag_flutter/bugsnag_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'dart:async';
+
 import 'src/home_page.dart';
 import 'src/blocs/cards/cards_bloc.dart';
 import 'utils/flavor_config.dart';
@@ -15,7 +17,6 @@ import 'utils/theme_provider.dart';
 import 'utils/locale_provider.dart';
 import 'utils/font_size_provider.dart';
 import 'package:cartan/src/widgets/font_size/font_size_scaler.dart';
-import 'package:cartan/src/repositories/merchants_repository.dart';
 import 'package:cartan/src/repositories/loyalty_card_repository.dart';
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -58,15 +59,16 @@ Future<void> initializeApp() async {
           ChangeNotifierProvider(create: (_) => ThemeProvider()),
           ChangeNotifierProvider(create: (_) => LocaleProvider()),
           ChangeNotifierProvider(create: (_) => FontSizeProvider()),
-          Provider(create: (_) => MerchantsRepository()),
-          Provider(create: (context) => LoyaltyCardRepository(context.read<MerchantsRepository>())),
-          // Provide the CardsBloc for state management of loyalty cards
+
+          Provider(create: (_) => ProvidersRepository()),
+          Provider(create: (context) => LoyaltyCardRepository(
+            context.read<ProvidersRepository>(),
+          )),
+
           BlocProvider<CardsBloc>(
-            create:
-                (ctx) => CardsBloc(
-                  cardRepo: ctx.read<LoyaltyCardRepository>(),
-                  merchantsRepo: ctx.read<MerchantsRepository>(),
-                )..add(const LoadCards()),
+            create: (ctx) => CardsBloc(
+              cardRepo: ctx.read<LoyaltyCardRepository>(),
+            )..add(const LoadCards()),
           ),
         ],
         child: const Cartan(),
@@ -96,7 +98,10 @@ class Cartan extends StatelessWidget {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               final theme = Theme.of(context);
               final localizations = AppLocalizations.of(context)!;
-              ScaffoldMessengerService().initialize(theme: theme, localizations: localizations);
+              ScaffoldMessengerService().initialize(
+                theme: theme,
+                localizations: localizations,
+              );
             });
 
             return FontSizeScaler(child: child!);

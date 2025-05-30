@@ -5,19 +5,16 @@ import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:cartan/utils/app_snackbar.dart';
 import 'package:cartan/utils/url_launcher.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
-import 'package:cartan/src/models/merchant.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cartan/src/models/loyalty_card.dart';
-import 'package:cartan/src/repositories/loyalty_card_repository.dart';
+import 'package:cartan/src/blocs/cards/cards_bloc.dart';
 
 class CardOptionsScreen extends StatelessWidget {
   final LoyaltyCard card;
-  final Merchant merchant;
 
   const CardOptionsScreen({
     super.key,
     required this.card,
-    required this.merchant,
   });
 
   void _showDeleteDialog(BuildContext context, String cardId) {
@@ -42,9 +39,7 @@ class CardOptionsScreen extends StatelessWidget {
               ),
               onPressed: () async {
                 try {
-                  final repository = Provider.of<LoyaltyCardRepository>(context, listen: false);
-
-                  await repository.deleteCard(cardId);
+                  context.read<CardsBloc>().add(DeleteCard(cardId));
 
                   NavigationService().pop();
                   AppSnackBar.showSuccess(localizations.card_deleted_successfully);
@@ -83,12 +78,12 @@ class CardOptionsScreen extends StatelessWidget {
         title: Row(
           children: [
             SvgPicture.asset(
-              merchant.assetImagePath,
+              card.provider.assetImagePath,
               width: 70,
               height: 40,
             ),
             const SizedBox(width: 8),
-            Text(merchant.displayName),
+            Text(card.provider.displayName),
           ],
         ),
       ),
@@ -116,27 +111,33 @@ class CardOptionsScreen extends StatelessWidget {
                 ),
               ),
             ),
+
+            if (card.provider.isSimCard) ...[
+              _buildSimCardDetails(context, theme, localizations),
+              const SizedBox(height: 16),
+            ],
+
             Divider(
               color: theme.dividerTheme.color,
               thickness: theme.dividerTheme.thickness,
             ),
 
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             ListTile(
               title: Text(localizations.nearest_places),
-              leading: Icon(AntIcons.environmentOutlined),
+              leading: const Icon(AntIcons.environmentOutlined),
               onTap: () => UrlLauncher.launchExternalUrl(
                 context,
-                merchant.displayName,
+                card.provider.displayName,
                 urlType: 'map',
               ),
             ),
             ListTile(
               title: Text(localizations.website),
-              leading: Icon(AntIcons.globalOutlined),
+              leading: const Icon(AntIcons.globalOutlined),
               onTap: () => UrlLauncher.launchExternalUrl(
                 context,
-                merchant.website,
+                card.provider.website,
                 urlType: 'web',
               ),
             ),
@@ -147,7 +148,7 @@ class CardOptionsScreen extends StatelessWidget {
             ListTile(
               title: Text(localizations.remove),
               textColor: theme.colorScheme.error,
-              leading: Icon(AntIcons.deleteOutlined),
+              leading: const Icon(AntIcons.deleteOutlined),
               iconColor: theme.colorScheme.error,
               onTap: () {
                 _showDeleteDialog(context, card.id);
@@ -155,6 +156,66 @@ class CardOptionsScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildSimCardDetails(BuildContext context, ThemeData theme, AppLocalizations localizations) {
+    final List<Widget> details = [];
+
+    if (card.iccid != null) {
+      details.add(_buildDetailRow('ICCID', card.iccid!, theme));
+    }
+    if (card.msisdn != null) {
+      details.add(_buildDetailRow('MSISDN', card.msisdn!, theme));
+    }
+    if (card.pin != null) {
+      details.add(_buildDetailRow('PIN', card.pin!, theme));
+    }
+    if (card.puk != null) {
+      details.add(_buildDetailRow('PUK', card.puk!, theme));
+    }
+
+    if (details.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'SIM Card Details',
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: theme.colorScheme.onSurface,
+          ),
+        ),
+        const SizedBox(height: 8),
+        ...details,
+      ],
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value, ThemeData theme) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 80,
+            child: Text(
+              '$label:',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: theme.textTheme.bodyMedium,
+            ),
+          ),
+        ],
       ),
     );
   }

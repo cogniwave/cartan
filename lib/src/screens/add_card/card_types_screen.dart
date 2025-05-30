@@ -1,6 +1,8 @@
+import 'package:cartan/src/screens/add_card/select_provider_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/src/repositories/providers_repository.dart';
 
 class CardTypeScreen extends StatelessWidget {
   const CardTypeScreen({super.key});
@@ -29,7 +31,14 @@ class CardTypeScreen extends StatelessWidget {
               icon: AntIcons.giftOutlined,
               title: 'Pontos',
               onTap: () {
-                // TODO: Navigate to points card creation screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const SelectProviderScreen(
+                      category: ProviderCategory.loyalty,
+                    ),
+                  ),
+                );
               },
             ),
             _buildCardTypeItem(
@@ -37,7 +46,14 @@ class CardTypeScreen extends StatelessWidget {
               icon: AntIcons.mobileOutlined,
               title: 'SIM Card',
               onTap: () {
-                // TODO: Navigate to SIM card creation screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const SelectProviderScreen(
+                      category: ProviderCategory.sim,
+                    ),
+                  ),
+                );
               },
             ),
             _buildCardTypeItem(

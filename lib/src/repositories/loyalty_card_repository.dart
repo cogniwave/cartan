@@ -1,13 +1,14 @@
 import 'dart:convert';
+import 'package:bugsnag_flutter/bugsnag_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cartan/src/models/loyalty_card.dart';
-import 'merchants_repository.dart';
+import 'providers_repository.dart';
 
 class LoyaltyCardRepository {
-  final MerchantsRepository _merchantsRepo;
+  final ProvidersRepository _providersRepo;
   final String _storageKey = 'loyalty_cards';
 
-  LoyaltyCardRepository(this._merchantsRepo);
+  LoyaltyCardRepository(this._providersRepo);
 
   Future<List<LoyaltyCard>> getAllCards() async {
     final prefs = await SharedPreferences.getInstance();
@@ -21,8 +22,25 @@ class LoyaltyCardRepository {
     final cards = <LoyaltyCard>[];
 
     for (var item in decoded) {
-      final merchant = _merchantsRepo.getMerchantById(item['merchantId']);
-      cards.add(LoyaltyCard.fromJson(item, merchant));
+      try {
+        // Provider category
+        final providerCategory = item['providerCategory'] as String;
+        final category = providerCategory.toLowerCase() == 'loyalty'
+            ? ProviderCategory.loyalty
+            : ProviderCategory.sim;
+
+        // Ensure repository initialized for this category
+        if (!_providersRepo.isInitialized(category)) {
+          await _providersRepo.initialize(category);
+        }
+
+        final provider = _providersRepo.getProviderById(item['providerId'], category);
+        cards.add(LoyaltyCard.fromJson(item, provider: provider));
+      } catch (e) {
+        // Log error and continue with next card
+        bugsnag.notify(e, StackTrace.current);
+        continue;
+      }
     }
 
     return cards;

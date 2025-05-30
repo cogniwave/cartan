@@ -24,7 +24,7 @@ class LoyaltyCardItem extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: SvgPicture.asset(
-            card.merchant.assetImagePath,
+            card.provider.assetImagePath,
             width: double.infinity,
             height: 200,
             fit: BoxFit.fill,

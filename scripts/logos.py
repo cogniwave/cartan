@@ -19,7 +19,7 @@ import os
 import shutil
 
 BASE_DIR = dirname(abspath(__file__))
-OUTPUT_DIR = join(getcwd(), "../lib/assets/images/loyalty_cards")
+OUTPUT_DIR = join(getcwd(), "../lib/assets/images/sim_cards")
 tmp = join(BASE_DIR, ".tmp")
 
 # Inkscape path (add to PATH or specify full path)

@@ -1,4 +1,5 @@
 import 'package:antdesign_icons/antdesign_icons.dart';
+import 'package:cartan/src/models/card_type_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -13,6 +14,7 @@ class ManualEntryView extends StatelessWidget {
   final bool isValid;
   final String assetImagePath;
   final List<String> formats;
+  final CardTypeData? cardTypeData;
 
   const ManualEntryView({
     super.key,
@@ -23,6 +25,7 @@ class ManualEntryView extends StatelessWidget {
     required this.isValid,
     required this.assetImagePath,
     required this.formats,
+    this.cardTypeData,
   });
 
   int _extractExpectedDigits() {

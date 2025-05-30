@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cartan/src/blocs/cards/cards_bloc.dart';
 import 'package:cartan/src/models/loyalty_card.dart';
-import 'package:cartan/src/screens/add_card/select_merchant_screen.dart';
 import 'package:cartan/src/screens/card-details/card_details_screen.dart';
 import 'package:cartan/src/screens/settings_screen.dart';
 import 'package:cartan/src/widgets/common/add_card_button.dart';
@@ -46,7 +45,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String _searchQuery = '';
 
-  // Navigate to merchant selection, then reload cards if added.
+  // Navigate to card type selection, then reload cards if added.
   Future<void> _onAddNewCard(BuildContext context) async {
     final result = await Navigator.push<bool>(
       context,
@@ -63,7 +62,7 @@ class _HomePageState extends State<HomePage> {
     await Navigator.push<bool>(
       context,
       MaterialPageRoute(
-        builder: (_) => CardDetailsScreen(card: card, merchant: card.merchant),
+        builder: (_) => CardDetailsScreen(card: card),
       ),
     ).then((result) {
       if (result == true && context.mounted) {
@@ -135,7 +134,7 @@ class _HomePageState extends State<HomePage> {
                           ? cards
                           : cards.where((card) =>
                       card.name.toLowerCase().contains(_searchQuery) ||
-                          card.merchant.displayName.toLowerCase().contains(_searchQuery)
+                          card.provider.displayName.toLowerCase().contains(_searchQuery)
                       ).toList();
 
                       if (cards.isEmpty) {

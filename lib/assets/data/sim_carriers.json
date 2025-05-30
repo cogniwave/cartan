@@ -1,0 +1,156 @@
+[
+  {
+    "id": "meo",
+    "displayName": "MEO",
+    "formats": ["^\\d{19,20}$"],
+    "assetImagePath": "lib/assets/images/sim_cards/meo_card.svg",
+    "website": "https://www.meo.pt/",
+    "category": "Sim",
+    "metadata": {
+      "iccid": "",
+      "msisdn": "",
+      "pin": "",
+      "puk": ""
+    }
+  },
+  {
+    "id": "nos",
+    "displayName": "NOS",
+    "formats": ["^\\d{19,20}$"],
+    "assetImagePath": "lib/assets/images/sim_cards/nos_card.svg",
+    "website": "https://www.nos.pt/",
+    "category": "Sim",
+    "metadata": {
+      "iccid": "",
+      "msisdn": "",
+      "pin": "",
+      "puk": ""
+    }
+  },
+  {
+    "id": "vodafone",
+    "displayName": "Vodafone",
+    "formats": ["^\\d{19,20}$"],
+    "assetImagePath": "lib/assets/images/sim_cards/vodafone_card.svg",
+    "website": "https://www.vodafone.pt/",
+    "category": "Sim",
+    "metadata": {
+      "iccid": "",
+      "msisdn": "",
+      "pin": "",
+      "puk": ""
+    }
+  },
+  {
+    "id": "nowo",
+    "displayName": "NOWO",
+    "formats": ["^\\d{19,20}$"],
+    "assetImagePath": "lib/assets/images/sim_cards/nowo_card.svg",
+    "website": "https://www.nowo.pt/",
+    "category": "Sim",
+    "metadata": {
+      "iccid": "",
+      "msisdn": "",
+      "pin": "",
+      "puk": ""
+    }
+  },
+  {
+    "id": "lycamobile",
+    "displayName": "Lycamobile",
+    "formats": ["^\\d{19,20}$"],
+    "assetImagePath": "lib/assets/images/sim_cards/lycamobile_card.svg",
+    "website": "https://www.lycamobile.pt/",
+    "category": "Sim",
+    "metadata": {
+      "iccid": "",
+      "msisdn": "",
+      "pin": "",
+      "puk": ""
+    }
+  },
+  {
+    "id": "digi",
+    "displayName": "DIGI Portugal",
+    "formats": ["^\\d{19,20}$"],
+    "assetImagePath": "lib/assets/images/sim_cards/digi_card.svg",
+    "website": "https://www.digimobil.pt/",
+    "category": "Sim",
+    "metadata": {
+      "iccid": "",
+      "msisdn": "",
+      "pin": "",
+      "puk": ""
+    }
+  },
+  {
+    "id": "yorn",
+    "displayName": "Yorn",
+    "formats": ["^\\d{19,20}$"],
+    "assetImagePath": "lib/assets/images/sim_cards/yorn_card.svg",
+    "website": "https://www.yorn.pt/",
+    "category": "Sim",
+    "metadata": {
+      "iccid": "",
+      "msisdn": "",
+      "pin": "",
+      "puk": ""
+    }
+  },
+  {
+    "id": "moche",
+    "displayName": "Moche",
+    "formats": ["^\\d{19,20}$"],
+    "assetImagePath": "lib/assets/images/sim_cards/moche_card.svg",
+    "website": "https://www.moche.pt/",
+    "category": "Sim",
+    "metadata": {
+      "iccid": "",
+      "msisdn": "",
+      "pin": "",
+      "puk": ""
+    }
+  },
+  {
+    "id": "wft",
+    "displayName": "WTF Mobile",
+    "formats": ["^\\d{19,20}$"],
+    "assetImagePath": "lib/assets/images/sim_cards/wtf_card.svg",
+    "website": "https://www.wtf.pt/",
+    "category": "Sim",
+    "metadata": {
+      "iccid": "",
+      "msisdn": "",
+      "pin": "",
+      "puk": ""
+    }
+  },
+  {
+    "id": "uzo",
+    "displayName": "UZO Mobile",
+    "formats": ["^\\d{19,20}$"],
+    "assetImagePath": "lib/assets/images/sim_cards/uzo_card.svg",
+    "website": "https://www.uzo.pt/",
+    "category": "Sim",
+    "metadata": {
+      "iccid": "",
+      "msisdn": "",
+      "pin": "",
+      "puk": ""
+    }
+  },
+  {
+    "id": "woo",
+    "displayName": "Woo",
+    "formats": ["^\\d{19,20}$"],
+    "assetImagePath": "lib/assets/images/sim_cards/woo_card.svg",
+    "website": "https://www.woo.pt/",
+    "category": "Sim",
+    "metadata": {
+      "iccid": "",
+      "msisdn": "",
+      "pin": "",
+      "puk": ""
+    }
+  }
+]

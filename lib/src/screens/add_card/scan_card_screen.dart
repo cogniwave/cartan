@@ -1,10 +1,11 @@
+import 'package:cartan/src/services/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cartan/src/blocs/cards/cards_bloc.dart';
-import 'package:cartan/src/models/merchant.dart';
+import 'package:cartan/src/models/provider_model.dart';
 import 'package:cartan/src/models/loyalty_card.dart';
 import 'package:cartan/src/widgets/cards/manual_entry_view.dart';
 import 'package:cartan/src/widgets/cards/scanner_view.dart';
@@ -12,10 +13,12 @@ import 'package:cartan/utils/card_format_validator.dart';
 import 'package:cartan/utils/app_snackbar.dart';
 import 'package:cartan/src/themes/app_themes.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:cartan/src/models/card_type_data.dart';
 
 class ScanCardScreen extends StatefulWidget {
-  final Merchant merchant;
-  const ScanCardScreen({super.key, required this.merchant});
+  final Provider provider;
+
+  const ScanCardScreen({super.key, required this.provider});
 
   @override
   State<ScanCardScreen> createState() => _ScanCardScreenState();
@@ -24,6 +27,13 @@ class ScanCardScreen extends StatefulWidget {
 class _ScanCardScreenState extends State<ScanCardScreen>
     with SingleTickerProviderStateMixin {
   final TextEditingController _codeController = TextEditingController();
+
+  // Controllers SIM card
+  final TextEditingController _iccidController = TextEditingController();
+  final TextEditingController _msisdnController = TextEditingController();
+  final TextEditingController _pinController = TextEditingController();
+  final TextEditingController _pukController = TextEditingController();
+
   late TabController _tabController;
 
   bool _isValid = false;
@@ -60,6 +70,10 @@ class _ScanCardScreenState extends State<ScanCardScreen>
   @override
   void dispose() {
     _codeController.dispose();
+    _iccidController.dispose();
+    _msisdnController.dispose();
+    _pinController.dispose();
+    _pukController.dispose();
     _tabController.dispose();
     super.dispose();
   }
@@ -67,24 +81,24 @@ class _ScanCardScreenState extends State<ScanCardScreen>
   void _validateCode(String code) {
     final memberId = code.trim();
 
-    final formats = widget.merchant.formats;
+    final formats = widget.provider.formats;
     final formatValid = CardFormatValidator().isValidFormat(memberId, formats);
 
     if (!formatValid) {
       setState(() {
         _isValid = false;
         _errorMessage =
-            formats.isEmpty
-                ? localizations.invalid_card_not_empty_alphanumeric
-                : localizations.invalid_card_format;
+        formats.isEmpty
+            ? localizations.invalid_card_not_empty_alphanumeric
+            : localizations.invalid_card_format;
       });
       return;
     }
 
-    // Duplicates val
+    // Check for duplicates
     final bloc = context.read<CardsBloc>();
     final duplicate = bloc.state.cards.any(
-      (c) => c.merchant.id == widget.merchant.id && c.memberId == memberId,
+          (c) => c.provider.id == widget.provider.id && c.memberId == memberId,
     );
     if (duplicate) {
       setState(() {
@@ -94,7 +108,6 @@ class _ScanCardScreenState extends State<ScanCardScreen>
       return;
     }
 
-    // Tudo OK
     setState(() {
       _isValid = true;
       _errorMessage = null;
@@ -110,14 +123,29 @@ class _ScanCardScreenState extends State<ScanCardScreen>
   void _saveCard() {
     if (!_isValid) return;
 
-    final newCard = LoyaltyCard(
-      merchant: widget.merchant,
-      memberId: _codeController.text.trim(),
-    );
+    LoyaltyCard newCard;
+
+    if (widget.provider.isSimCard) {
+      newCard = LoyaltyCard.forSim(
+        provider: widget.provider,
+        memberId: _codeController.text.trim(),
+        iccid: _iccidController.text.trim().isEmpty ? null : _iccidController.text.trim(),
+        msisdn: _msisdnController.text.trim().isEmpty ? null : _msisdnController.text.trim(),
+        pin: _pinController.text.trim().isEmpty ? null : _pinController.text.trim(),
+        puk: _pukController.text.trim().isEmpty ? null : _pukController.text.trim(),
+      );
+    } else {
+      newCard = LoyaltyCard.forLoyalty(
+        provider: widget.provider,
+        memberId: _codeController.text.trim(),
+      );
+    }
+
     context.read<CardsBloc>().add(AddCard(newCard));
 
+    NavigationService().navigatorKey.currentState
+        ?.popUntil((route) => route.isFirst);
     AppSnackBar.showSuccess(localizations.card_added_successfully);
-    Navigator.pop(context, true);
   }
 
   Widget _buildScannerTab(ThemeData theme) {
@@ -155,6 +183,18 @@ class _ScanCardScreenState extends State<ScanCardScreen>
     return ScannerView(onCodeDetected: _handleCodeDetected);
   }
 
+  CardTypeData? _buildCardTypeData() {
+    if (widget.provider.isSimCard) {
+      return CardTypeData.forSim(
+        iccidController: _iccidController,
+        msisdnController: _msisdnController,
+        pinController: _pinController,
+        pukController: _pukController,
+      );
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -172,12 +212,12 @@ class _ScanCardScreenState extends State<ScanCardScreen>
                 height: 30,
                 child: FittedBox(
                   fit: BoxFit.fill,
-                  child: SvgPicture.asset(widget.merchant.assetImagePath),
+                  child: SvgPicture.asset(widget.provider.assetImagePath),
                 ),
               ),
             ),
             const SizedBox(width: 8),
-            Text(widget.merchant.displayName),
+            Text(widget.provider.displayName),
           ],
         ),
       ),
@@ -210,8 +250,9 @@ class _ScanCardScreenState extends State<ScanCardScreen>
                     onChanged: _validateCode,
                     onSave: _saveCard,
                     isValid: _isValid,
-                    assetImagePath: widget.merchant.assetImagePath,
-                    formats: widget.merchant.formats,
+                    assetImagePath: widget.provider.assetImagePath,
+                    formats: widget.provider.formats,
+                    cardTypeData: _buildCardTypeData(),
                   ),
                 ],
               ),
