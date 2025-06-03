@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cartan/src/blocs/cards/cards_bloc.dart';
-import 'package:cartan/src/models/loyalty_card.dart';
+import 'package:cartan/src/models/card_model.dart';
 import 'package:cartan/src/screens/card-details/card_details_screen.dart';
 import 'package:cartan/src/screens/settings_screen.dart';
 import 'package:cartan/src/widgets/common/add_card_button.dart';
@@ -58,7 +58,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Navigate to card details, then reload cards if updated.
-  Future<void> _onCardTap(BuildContext context, LoyaltyCard card) async {
+  Future<void> _onCardTap(BuildContext context, CardModel card) async {
     await Navigator.push<bool>(
       context,
       MaterialPageRoute(

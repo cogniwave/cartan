@@ -6,7 +6,7 @@ import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cartan/src/blocs/cards/cards_bloc.dart';
 import 'package:cartan/src/models/provider_model.dart';
-import 'package:cartan/src/models/loyalty_card.dart';
+import 'package:cartan/src/models/card_model.dart';
 import 'package:cartan/src/widgets/cards/manual_entry_view.dart';
 import 'package:cartan/src/widgets/cards/scanner_view.dart';
 import 'package:cartan/utils/card_format_validator.dart';
@@ -14,6 +14,7 @@ import 'package:cartan/utils/app_snackbar.dart';
 import 'package:cartan/src/themes/app_themes.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cartan/src/models/card_type_data.dart';
+import 'package:cartan/src/models/card_configuration.dart';
 
 class ScanCardScreen extends StatefulWidget {
   final Provider provider;
@@ -26,13 +27,12 @@ class ScanCardScreen extends StatefulWidget {
 
 class _ScanCardScreenState extends State<ScanCardScreen>
     with SingleTickerProviderStateMixin {
-  final TextEditingController _codeController = TextEditingController();
+  final TextEditingController _cardNumberController = TextEditingController();
 
-  // Controllers SIM card
-  final TextEditingController _iccidController = TextEditingController();
-  final TextEditingController _msisdnController = TextEditingController();
-  final TextEditingController _pinController = TextEditingController();
-  final TextEditingController _pukController = TextEditingController();
+  // Configuration system
+  late CardConfiguration _cardConfig;
+  late List<FormFieldConfig> _additionalFields;
+  late Map<String, TextEditingController> _additionalControllers;
 
   late TabController _tabController;
 
@@ -49,9 +49,44 @@ class _ScanCardScreenState extends State<ScanCardScreen>
     super.initState();
     _tabController = TabController(length: 2, vsync: this)
       ..addListener(() => setState(() {}));
+
+    _initializeCardConfiguration();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _requestCameraPermission();
     });
+  }
+
+  void _initializeCardConfiguration() {
+    // Determine card type based on provider
+    String cardType = widget.provider.isSimProvider ? 'sim' : 'loyalty';
+
+    // Initialize configuration
+    _cardConfig = CardConfigurationFactory.getConfiguration(cardType);
+
+    // Initialize controllers map first
+    _additionalControllers = {};
+
+    // Create metadata map for SIM card fields
+    Map<String, dynamic>? metadata;
+    if (widget.provider.isSimProvider) {
+      metadata = {
+        'iccid': true,
+        'msisdn': true,
+        'pin': true,
+        'puk': true,
+      };
+    }
+
+    // Get additional fields from configuration
+    _additionalFields = _cardConfig.getFieldsFromMetadata(metadata);
+
+    // Initialize controllers for additional fields
+    for (var field in _additionalFields) {
+      _additionalControllers[field.key] = TextEditingController(
+        text: field.initialValue ?? '',
+      );
+    }
   }
 
   Future<void> _requestCameraPermission() async {
@@ -69,11 +104,11 @@ class _ScanCardScreenState extends State<ScanCardScreen>
 
   @override
   void dispose() {
-    _codeController.dispose();
-    _iccidController.dispose();
-    _msisdnController.dispose();
-    _pinController.dispose();
-    _pukController.dispose();
+    _cardNumberController.dispose();
+    // Dispose additional controllers
+    for (var controller in _additionalControllers.values) {
+      controller.dispose();
+    }
     _tabController.dispose();
     super.dispose();
   }
@@ -87,8 +122,7 @@ class _ScanCardScreenState extends State<ScanCardScreen>
     if (!formatValid) {
       setState(() {
         _isValid = false;
-        _errorMessage =
-        formats.isEmpty
+        _errorMessage = formats.isEmpty
             ? localizations.invalid_card_not_empty_alphanumeric
             : localizations.invalid_card_format;
       });
@@ -115,29 +149,41 @@ class _ScanCardScreenState extends State<ScanCardScreen>
   }
 
   void _handleCodeDetected(String code) {
-    _codeController.text = code;
+    _cardNumberController.text = code;
     _validateCode(code);
     if (_isValid) _tabController.animateTo(1);
   }
 
-  void _saveCard() {
-    if (!_isValid) return;
+  void _saveCard(Map<String, dynamic> allData) {
+    // Validate using configuration
+    if (!_cardConfig.validateData(allData)) {
+      AppSnackBar.showError('Please verify the entered data');
+      return;
+    }
 
-    LoyaltyCard newCard;
+    CardModel newCard;
 
-    if (widget.provider.isSimCard) {
-      newCard = LoyaltyCard.forSim(
+    if (widget.provider.isSimProvider) {
+      newCard = SimCard(
         provider: widget.provider,
-        memberId: _codeController.text.trim(),
-        iccid: _iccidController.text.trim().isEmpty ? null : _iccidController.text.trim(),
-        msisdn: _msisdnController.text.trim().isEmpty ? null : _msisdnController.text.trim(),
-        pin: _pinController.text.trim().isEmpty ? null : _pinController.text.trim(),
-        puk: _pukController.text.trim().isEmpty ? null : _pukController.text.trim(),
+        memberId: allData['cardNumber']?.toString().trim() ?? '',
+        iccid: allData['iccid']?.toString().trim().isEmpty == true
+            ? null
+            : allData['iccid']?.toString().trim(),
+        msisdn: allData['msisdn']?.toString().trim().isEmpty == true
+            ? null
+            : allData['msisdn']?.toString().trim(),
+        pin: allData['pin']?.toString().trim().isEmpty == true
+            ? null
+            : allData['pin']?.toString().trim(),
+        puk: allData['puk']?.toString().trim().isEmpty == true
+            ? null
+            : allData['puk']?.toString().trim(),
       );
     } else {
-      newCard = LoyaltyCard.forLoyalty(
+      newCard = LoyaltyCard(
         provider: widget.provider,
-        memberId: _codeController.text.trim(),
+        memberId: allData['cardNumber']?.toString().trim() ?? '',
       );
     }
 
@@ -184,15 +230,37 @@ class _ScanCardScreenState extends State<ScanCardScreen>
   }
 
   CardTypeData? _buildCardTypeData() {
-    if (widget.provider.isSimCard) {
+    if (widget.provider.isSimProvider) {
+      // Create metadata for SIM card fields
+      Map<String, dynamic> metadata = {
+        'iccid': true,
+        'msisdn': true,
+        'pin': true,
+        'puk': true,
+      };
+
       return CardTypeData.forSim(
-        iccidController: _iccidController,
-        msisdnController: _msisdnController,
-        pinController: _pinController,
-        pukController: _pukController,
+        id: widget.provider.id,
+        displayName: widget.provider.displayName,
+        formats: widget.provider.formats,
+        assetImagePath: widget.provider.assetImagePath,
+        metadata: metadata,
+        // Only pass controllers if they exist
+        msisdnController:
+        _additionalControllers.containsKey('msisdn') ? _additionalControllers['msisdn'] : null,
+        pinController:
+        _additionalControllers.containsKey('pin') ? _additionalControllers['pin'] : null,
+        pukController:
+        _additionalControllers.containsKey('puk') ? _additionalControllers['puk'] : null,
+      );
+    } else {
+      return CardTypeData.forLoyalty(
+        id: widget.provider.id,
+        displayName: widget.provider.displayName,
+        formats: widget.provider.formats,
+        assetImagePath: widget.provider.assetImagePath,
       );
     }
-    return null;
   }
 
   @override
@@ -245,9 +313,9 @@ class _ScanCardScreenState extends State<ScanCardScreen>
                 children: [
                   _buildScannerTab(theme),
                   ManualEntryView(
-                    controller: _codeController,
+                    cardNumberController: _cardNumberController,
                     errorMessage: _errorMessage,
-                    onChanged: _validateCode,
+                    onCardNumberChanged: _validateCode,
                     onSave: _saveCard,
                     isValid: _isValid,
                     assetImagePath: widget.provider.assetImagePath,

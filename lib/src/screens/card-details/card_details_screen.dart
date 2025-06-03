@@ -1,6 +1,7 @@
+import 'package:cartan/src/models/provider_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:cartan/src/models/loyalty_card.dart';
+import 'package:cartan/src/models/card_model.dart';
 import 'package:cartan/src/themes/app_themes.dart';
 import 'package:cartan/src/widgets/card_details/code_display.dart';
 import 'package:cartan/src/screens/card-details/fullscreen_code_page.dart';
@@ -8,7 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'card_options_screen.dart';
 
 class CardDetailsScreen extends StatefulWidget {
-  final LoyaltyCard card;
+  final CardModel card;
 
   const CardDetailsScreen({
     super.key,
@@ -123,7 +124,7 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
                 ),
               ),
 
-              if (widget.card.provider.isSimCard) ...[
+              if (widget.card.provider.isSimProvider) ...[
                 _buildSimCardInfo(theme, localizations),
                 SizedBox(height: isLandscape ? 8 : 16),
               ],
@@ -166,21 +167,24 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
   }
 
   Widget _buildSimCardInfo(ThemeData theme, AppLocalizations localizations) {
-    if (!widget.card.provider.isSimCard) return const SizedBox.shrink();
+    if (!widget.card.provider.isSimProvider || widget.card is! SimCard) {
+      return const SizedBox.shrink();
+    }
 
+    final simCard = widget.card as SimCard;
     final List<Widget> infoWidgets = [];
 
-    if (widget.card.iccid != null) {
-      infoWidgets.add(_buildInfoRow('ICCID', widget.card.iccid!, theme));
+    if (simCard.iccid != null) {
+      infoWidgets.add(_buildInfoRow('ICCID', simCard.iccid!, theme));
     }
-    if (widget.card.msisdn != null) {
-      infoWidgets.add(_buildInfoRow('MSISDN', widget.card.msisdn!, theme));
+    if (simCard.msisdn != null) {
+      infoWidgets.add(_buildInfoRow('MSISDN', simCard.msisdn!, theme));
     }
-    if (widget.card.pin != null) {
-      infoWidgets.add(_buildInfoRow('PIN', widget.card.pin!, theme));
+    if (simCard.pin != null) {
+      infoWidgets.add(_buildInfoRow('PIN', simCard.pin!, theme));
     }
-    if (widget.card.puk != null) {
-      infoWidgets.add(_buildInfoRow('PUK', widget.card.puk!, theme));
+    if (simCard.puk != null) {
+      infoWidgets.add(_buildInfoRow('PUK', simCard.puk!, theme));
     }
 
     if (infoWidgets.isEmpty) return const SizedBox.shrink();

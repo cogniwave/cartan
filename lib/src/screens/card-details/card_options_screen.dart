@@ -1,3 +1,4 @@
+import 'package:cartan/src/models/provider_model.dart';
 import 'package:cartan/src/services/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -6,11 +7,11 @@ import 'package:cartan/utils/app_snackbar.dart';
 import 'package:cartan/utils/url_launcher.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cartan/src/models/loyalty_card.dart';
+import 'package:cartan/src/models/card_model.dart';
 import 'package:cartan/src/blocs/cards/cards_bloc.dart';
 
 class CardOptionsScreen extends StatelessWidget {
-  final LoyaltyCard card;
+  final CardModel card;
 
   const CardOptionsScreen({
     super.key,
@@ -112,7 +113,7 @@ class CardOptionsScreen extends StatelessWidget {
               ),
             ),
 
-            if (card.provider.isSimCard) ...[
+            if (card.provider.isSimProvider) ...[
               _buildSimCardDetails(context, theme, localizations),
               const SizedBox(height: 16),
             ],
@@ -161,19 +162,22 @@ class CardOptionsScreen extends StatelessWidget {
   }
 
   Widget _buildSimCardDetails(BuildContext context, ThemeData theme, AppLocalizations localizations) {
+    if (card is! SimCard) return const SizedBox.shrink();
+
+    final simCard = card as SimCard;
     final List<Widget> details = [];
 
-    if (card.iccid != null) {
-      details.add(_buildDetailRow('ICCID', card.iccid!, theme));
+    if (simCard.iccid != null) {
+      details.add(_buildDetailRow('ICCID', simCard.iccid!, theme));
     }
-    if (card.msisdn != null) {
-      details.add(_buildDetailRow('MSISDN', card.msisdn!, theme));
+    if (simCard.msisdn != null) {
+      details.add(_buildDetailRow('MSISDN', simCard.msisdn!, theme));
     }
-    if (card.pin != null) {
-      details.add(_buildDetailRow('PIN', card.pin!, theme));
+    if (simCard.pin != null) {
+      details.add(_buildDetailRow('PIN', simCard.pin!, theme));
     }
-    if (card.puk != null) {
-      details.add(_buildDetailRow('PUK', card.puk!, theme));
+    if (simCard.puk != null) {
+      details.add(_buildDetailRow('PUK', simCard.puk!, theme));
     }
 
     if (details.isEmpty) return const SizedBox.shrink();

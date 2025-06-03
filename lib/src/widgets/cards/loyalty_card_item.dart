@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:cartan/src/models/loyalty_card.dart';
+import 'package:cartan/src/models/card_model.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class LoyaltyCardItem extends StatelessWidget {
-  final LoyaltyCard card;
+  final CardModel card;
   final VoidCallback? onTap;
 
   const LoyaltyCardItem({

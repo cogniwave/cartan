@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:cartan/src/models/loyalty_card.dart';
+import 'package:cartan/src/models/card_model.dart';
 import 'package:cartan/src/widgets/cards/loyalty_card_item.dart';
 
 class CardsGridView extends StatelessWidget {
-  final List<LoyaltyCard> cards;
-  final Function(LoyaltyCard) onCardTap;
+  final List<CardModel> cards;
+  final Function(CardModel) onCardTap;
 
   const CardsGridView({
     super.key,

@@ -25,12 +25,7 @@ class _SelectProviderScreenState extends State<SelectProviderScreen> {
 
 
   String get _defaultImagePath {
-    switch (widget.category) {
-      case ProviderCategory.loyalty:
-        return 'lib/assets/images/loyalty_cards/default_card.svg';
-      case ProviderCategory.sim:
-        return 'lib/assets/images/sim_cards/default_card.svg';
-    }
+        return 'lib/assets/images/default_card.svg';
   }
 
   String get _screenTitle {
@@ -40,6 +35,16 @@ class _SelectProviderScreenState extends State<SelectProviderScreen> {
         return localizations.select_merchant;
       case ProviderCategory.sim:
         return localizations.select_carrier;
+      case ProviderCategory.membership:
+        return localizations.select_merchant;
+      case ProviderCategory.rewards:
+        return localizations.select_merchant;
+      case ProviderCategory.informative:
+        return localizations.select_carrier;
+      case ProviderCategory.business:
+        return localizations.select_merchant;
+      case ProviderCategory.other:
+        return localizations.select_merchant;
     }
   }
 

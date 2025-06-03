@@ -1,16 +1,16 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:cartan/src/repositories/loyalty_card_repository.dart';
-import 'package:cartan/src/models/loyalty_card.dart';
+import 'package:cartan/src/repositories/cards_repository.dart';
+import 'package:cartan/src/models/card_model.dart';
 
 part 'cards_event.dart';
 part 'cards_state.dart';
 
 class CardsBloc extends Bloc<CardsEvent, CardsState> {
-  final LoyaltyCardRepository _cardRepo;
+  final CardsRepository _cardRepo;
 
   CardsBloc({
-    required LoyaltyCardRepository cardRepo,
+    required CardsRepository cardRepo,
   })  : _cardRepo = cardRepo,
         super(const CardsState()) {
     on<LoadCards>(_onLoadCards);

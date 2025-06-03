@@ -5,12 +5,12 @@ enum Status { loading, success, failure }
 final class CardsState extends Equatable {
   const CardsState({
     this.status = Status.loading,
-    this.cards = const <LoyaltyCard>[],
+    this.cards = const <CardModel>[],
     this.error,
   });
 
   final Status status;
-  final List<LoyaltyCard> cards;
+  final List<CardModel> cards;
   final String? error;
 
   @override
@@ -18,7 +18,7 @@ final class CardsState extends Equatable {
 
   CardsState copyWith({
     Status? status,
-    List<LoyaltyCard>? cards,
+    List<CardModel>? cards,
     String? error,
   }) {
     return CardsState(

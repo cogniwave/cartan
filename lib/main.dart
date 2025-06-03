@@ -17,7 +17,7 @@ import 'utils/theme_provider.dart';
 import 'utils/locale_provider.dart';
 import 'utils/font_size_provider.dart';
 import 'package:cartan/src/widgets/font_size/font_size_scaler.dart';
-import 'package:cartan/src/repositories/loyalty_card_repository.dart';
+import 'package:cartan/src/repositories/cards_repository.dart';
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
@@ -61,13 +61,13 @@ Future<void> initializeApp() async {
           ChangeNotifierProvider(create: (_) => FontSizeProvider()),
 
           Provider(create: (_) => ProvidersRepository()),
-          Provider(create: (context) => LoyaltyCardRepository(
+          Provider(create: (context) => CardsRepository(
             context.read<ProvidersRepository>(),
           )),
 
           BlocProvider<CardsBloc>(
             create: (ctx) => CardsBloc(
-              cardRepo: ctx.read<LoyaltyCardRepository>(),
+              cardRepo: ctx.read<CardsRepository>(),
             )..add(const LoadCards()),
           ),
         ],
