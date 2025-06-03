@@ -1,6 +1,7 @@
 import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:cartan/src/models/card_type_data.dart';
 import 'package:cartan/src/models/card_configuration.dart';
+import 'package:cartan/utils/app_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -89,17 +90,17 @@ class _ManualEntryViewState extends State<ManualEntryView> {
     // Simple mapping for localization keys
     switch (key) {
       case 'phone_number_label':
-        return 'Phone Number';
+        return localizations.phone_number;
       case 'phone_number_hint':
-        return 'Associated phone number';
+        return localizations.phone_number_hint;
       case 'pin_label':
-        return 'PIN';
+        return localizations.pin_label;
       case 'pin_hint':
-        return 'SIM card PIN (4-8 digits)';
+        return localizations.pin_hint;
       case 'puk_label':
-        return 'PUK';
+        return localizations.puk_label;
       case 'puk_hint':
-        return 'PUK code (8 digits)';
+        return localizations.puk_hint;
       default:
         return key; // Fallback
     }
@@ -150,7 +151,7 @@ class _ManualEntryViewState extends State<ManualEntryView> {
               LengthLimitingTextInputFormatter(field.maxLength!),
           ],
           validator: field.isRequired
-              ? (value) => value?.isEmpty == true ? 'Required field' : null
+              ? (value) => value?.isEmpty == true ? localizations.required_field : null
               : null,
         );
 
@@ -168,7 +169,7 @@ class _ManualEntryViewState extends State<ManualEntryView> {
           ),
           keyboardType: TextInputType.emailAddress,
           validator: field.isRequired
-              ? (value) => value?.isEmpty == true ? 'Required field' : null
+              ? (value) => value?.isEmpty == true ? localizations.required_field : null
               : null,
         );
 
@@ -186,7 +187,7 @@ class _ManualEntryViewState extends State<ManualEntryView> {
           ),
           maxLines: 3,
           validator: field.isRequired
-              ? (value) => value?.isEmpty == true ? 'Required field' : null
+              ? (value) => value?.isEmpty == true ? localizations.required_field : null
               : null,
         );
 
@@ -207,7 +208,7 @@ class _ManualEntryViewState extends State<ManualEntryView> {
               LengthLimitingTextInputFormatter(field.maxLength!),
           ],
           validator: field.isRequired
-              ? (value) => value?.isEmpty == true ? 'Required field' : null
+              ? (value) => value?.isEmpty == true ? localizations.required_field : null
               : null,
         );
     }
@@ -236,9 +237,7 @@ class _ManualEntryViewState extends State<ManualEntryView> {
     if (config.validateData(allData)) {
       widget.onSave(allData);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please verify the entered data')),
-      );
+      AppSnackBar.showSuccess(AppLocalizations.of(context)!.verify_entered_data);
     }
   }
 
@@ -293,7 +292,7 @@ class _ManualEntryViewState extends State<ManualEntryView> {
                     : <TextInputFormatter>[],
                 onChanged: widget.onCardNumberChanged,
                 validator: (value) =>
-                value?.isEmpty == true ? 'Required field' : null,
+                value?.isEmpty == true ? localizations.required_field : null,
               ),
 
               const SizedBox(height: 12),
@@ -314,13 +313,6 @@ class _ManualEntryViewState extends State<ManualEntryView> {
 
               // Additional fields based on card type
               if (additionalFields.isNotEmpty) ...[
-                const SizedBox(height: 32),
-                Text(
-                  'Additional Information',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
                 const SizedBox(height: 16),
 
                 ...additionalFields.map((field) => Padding(

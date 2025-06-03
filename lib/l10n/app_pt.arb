@@ -243,5 +243,37 @@
   "select_carrier": "Selecione operadora",
   "@select_carrier": {
     "description": "Label for selecting a carrier."
+  },
+  "phone_number": "Número de telefone",
+  "@phone_number": {
+    "description": "Label for phone number."
+  },
+  "phone_number_hint": "Número de telefone associado",
+  "@phone_number_hint": {
+    "description": "Label for phone number hint."
+  },
+  "pin_label": "PIN",
+  "@pin_label": {
+    "description": "Label for PIN number."
+  },
+  "pin_hint": "PIN do cartão SIM (4-8 digitos)",
+  "@pin_hint": {
+    "description": "Label for PIN hint."
+  },
+  "puk_label": "PUK",
+  "@puk_label": {
+    "description": "Label for PUK number."
+  },
+  "puk_hint": "Código PUK (8 digitos)",
+  "@puk_hint": {
+    "description": "Label for PUK hint."
+  },
+  "required_field": "Campo obrigatório",
+  "@required_field": {
+    "description": "Label for required field."
+  },
+  "verify_entered_data": "Por favor, verifique os dados introduzidos",
+  "@verify_entered_data": {
+    "description": "Label for errors in entered data snackbar."
   }
 }
