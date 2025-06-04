@@ -96,13 +96,13 @@
   "@card_number": {
     "description": "Label for the field where the card number is entered."
   },
+  "card_number_hint": "Enter card number",
+  "@card_number_hint": {
+    "description": "Hint for the field where the card number is entered."
+  },
   "add_card": "Add card",
   "@add_card": {
     "description": "Button or label to confirm adding a new loyalty card."
-  },
-  "format_hint": "Enter the number shown on your loyalty card",
-  "@format_hint": {
-    "description": "Hint text explaining the expected card number format."
   },
   "invalid_card_format": "Invalid card format",
   "@invalid_card_format": {
@@ -268,7 +268,15 @@
   "@puk_hint": {
     "description": "Label for PUK hint."
   },
-  "required_field": "Required field)",
+  "sim_card_information": "SIM card information",
+  "@sim_card_information": {
+    "description": "Label for SIM card information."
+  },
+  "sim_card_details": "SIM card details",
+  "@sim_card_details": {
+    "description": "Label for SIM card details."
+  },
+  "required_field": "Required field",
   "@required_field": {
     "description": "Label for required field."
   },

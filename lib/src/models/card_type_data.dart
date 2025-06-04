@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class CardTypeData {
   final String? id;
   final String? displayName;
@@ -9,27 +7,7 @@ class CardTypeData {
   final String? category;
   final Map<String, dynamic>? metadata;
 
-  // SIM Card controllers
-  final TextEditingController? iccidController;
-  final TextEditingController? msisdnController;
-  final TextEditingController? pinController;
-  final TextEditingController? pukController;
-
-  // Business card controllers
-  final TextEditingController? nameController;
-  final TextEditingController? companyController;
-  final TextEditingController? emailController;
-  final TextEditingController? phoneController;
-  final TextEditingController? addressController;
-
-  // Membership card controllers
-
-  // Information card controllers
-
-  // Rewards card controllers
-
   CardTypeData({
-    // Card info
     this.id,
     this.displayName,
     this.formats,
@@ -37,19 +15,6 @@ class CardTypeData {
     this.website,
     this.category,
     this.metadata,
-
-    // SIM Card
-    this.iccidController,
-    this.msisdnController,
-    this.pinController,
-    this.pukController,
-
-    // Business card
-    this.nameController,
-    this.companyController,
-    this.emailController,
-    this.phoneController,
-    this.addressController,
   });
 
   // Factory constructors
@@ -61,10 +26,6 @@ class CardTypeData {
     String? website,
     String? category,
     Map<String, dynamic>? metadata,
-    TextEditingController? iccidController,
-    TextEditingController? msisdnController,
-    TextEditingController? pinController,
-    TextEditingController? pukController,
   }) {
     return CardTypeData(
       id: id,
@@ -74,10 +35,6 @@ class CardTypeData {
       website: website,
       category: category ?? 'sim',
       metadata: metadata,
-      iccidController: iccidController,
-      msisdnController: msisdnController,
-      pinController: pinController,
-      pukController: pukController,
     );
   }
 
@@ -97,6 +54,106 @@ class CardTypeData {
       assetImagePath: assetImagePath,
       website: website,
       category: category ?? 'loyalty',
+      metadata: metadata,
+    );
+  }
+
+  factory CardTypeData.forBusiness({
+    String? id,
+    String? displayName,
+    List<String>? formats,
+    String? assetImagePath,
+    String? website,
+    String? category,
+    Map<String, dynamic>? metadata,
+  }) {
+    return CardTypeData(
+      id: id,
+      displayName: displayName,
+      formats: formats,
+      assetImagePath: assetImagePath,
+      website: website,
+      category: category ?? 'business',
+      metadata: metadata,
+    );
+  }
+
+  factory CardTypeData.forMembership({
+    String? id,
+    String? displayName,
+    List<String>? formats,
+    String? assetImagePath,
+    String? website,
+    String? category,
+    Map<String, dynamic>? metadata,
+  }) {
+    return CardTypeData(
+      id: id,
+      displayName: displayName,
+      formats: formats,
+      assetImagePath: assetImagePath,
+      website: website,
+      category: category ?? 'membership',
+      metadata: metadata,
+    );
+  }
+
+  factory CardTypeData.forRewards({
+    String? id,
+    String? displayName,
+    List<String>? formats,
+    String? assetImagePath,
+    String? website,
+    String? category,
+    Map<String, dynamic>? metadata,
+  }) {
+    return CardTypeData(
+      id: id,
+      displayName: displayName,
+      formats: formats,
+      assetImagePath: assetImagePath,
+      website: website,
+      category: category ?? 'rewards',
+      metadata: metadata,
+    );
+  }
+
+  factory CardTypeData.forInformative({
+    String? id,
+    String? displayName,
+    List<String>? formats,
+    String? assetImagePath,
+    String? website,
+    String? category,
+    Map<String, dynamic>? metadata,
+  }) {
+    return CardTypeData(
+      id: id,
+      displayName: displayName,
+      formats: formats,
+      assetImagePath: assetImagePath,
+      website: website,
+      category: category ?? 'informative',
+      metadata: metadata,
+    );
+  }
+
+  factory CardTypeData.forOther({
+    String? id,
+    String? displayName,
+    List<String>? formats,
+    String? assetImagePath,
+    String? website,
+    String? category,
+    Map<String, dynamic>? metadata,
+  }) {
+    return CardTypeData(
+      id: id,
+      displayName: displayName,
+      formats: formats,
+      assetImagePath: assetImagePath,
+      website: website,
+      category: category ?? 'other',
       metadata: metadata,
     );
   }
@@ -127,4 +184,29 @@ class CardTypeData {
 
   bool get isSimCard => category?.toLowerCase() == 'sim';
   bool get isLoyaltyCard => category?.toLowerCase() == 'loyalty';
+  bool get isBusinessCard => category?.toLowerCase() == 'business';
+  bool get isMembershipCard => category?.toLowerCase() == 'membership';
+  bool get isRewardsCard => category?.toLowerCase() == 'rewards';
+  bool get isInformativeCard => category?.toLowerCase() == 'informative';
+  bool get isOtherCard => category?.toLowerCase() == 'other';
+
+  // Helper method to get required fields for this card type
+  List<String> get requiredFields {
+    switch (category?.toLowerCase()) {
+      case 'sim':
+        return ['cardNumber', 'phone_number', 'pin', 'puk'];
+      case 'business':
+        return ['cardNumber', 'name', 'company', 'email', 'phone'];
+      case 'membership':
+        return ['cardNumber', 'memberName'];
+      case 'rewards':
+        return ['cardNumber', 'points'];
+      case 'informative':
+        return ['cardNumber', 'description'];
+      case 'other':
+        return ['cardNumber'];
+      default:
+        return ['cardNumber'];
+    }
+  }
 }

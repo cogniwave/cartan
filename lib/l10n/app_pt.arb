@@ -96,13 +96,13 @@
   "@card_number": {
     "description": "Label for the field where the card number is entered."
   },
+  "card_number_hint": "Introduza o número do cartão",
+  "@card_number_hint": {
+    "description": "Hint for the field where the card number is entered."
+  },
   "add_card": "Adicionar cartão",
   "@add_card": {
     "description": "Button or label to confirm adding a new loyalty card."
-  },
-  "format_hint": "Insira o número mostrado no seu cartão de fidelidade",
-  "@format_hint": {
-    "description": "Hint text explaining the expected card number format."
   },
   "invalid_card_format": "Formato de cartão inválido",
   "@invalid_card_format": {
@@ -267,6 +267,14 @@
   "puk_hint": "Código PUK (8 digitos)",
   "@puk_hint": {
     "description": "Label for PUK hint."
+  },
+  "sim_card_information": "Informação do cartão",
+  "@sim_card_information": {
+    "description": "Label for SIM card information."
+  },
+  "sim_card_details": "Detalhes do cartão",
+  "@sim_card_details": {
+    "description": "Label for SIM card details."
   },
   "required_field": "Campo obrigatório",
   "@required_field": {

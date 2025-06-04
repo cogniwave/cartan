@@ -174,17 +174,14 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
     final simCard = widget.card as SimCard;
     final List<Widget> infoWidgets = [];
 
-    if (simCard.iccid != null) {
-      infoWidgets.add(_buildInfoRow('ICCID', simCard.iccid!, theme));
-    }
-    if (simCard.msisdn != null) {
-      infoWidgets.add(_buildInfoRow('MSISDN', simCard.msisdn!, theme));
+    if (simCard.phoneNumber != null) {
+      infoWidgets.add(_buildInfoRow(localizations.phone_number, simCard.phoneNumber!, theme));
     }
     if (simCard.pin != null) {
-      infoWidgets.add(_buildInfoRow('PIN', simCard.pin!, theme));
+      infoWidgets.add(_buildInfoRow(localizations.pin_label, simCard.pin!, theme));
     }
     if (simCard.puk != null) {
-      infoWidgets.add(_buildInfoRow('PUK', simCard.puk!, theme));
+      infoWidgets.add(_buildInfoRow(localizations.puk_label, simCard.puk!, theme));
     }
 
     if (infoWidgets.isEmpty) return const SizedBox.shrink();
@@ -200,7 +197,7 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'SIM Card Information',
+            localizations.sim_card_information,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
             ),

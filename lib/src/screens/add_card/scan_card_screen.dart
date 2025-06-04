@@ -1,3 +1,4 @@
+import 'package:cartan/src/forms/card_form_manager.dart';
 import 'package:cartan/src/services/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,15 +30,10 @@ class _ScanCardScreenState extends State<ScanCardScreen>
     with SingleTickerProviderStateMixin {
   final TextEditingController _cardNumberController = TextEditingController();
 
-  // Configuration system
-  late CardConfiguration _cardConfig;
-  late List<FormFieldConfig> _additionalFields;
-  late Map<String, TextEditingController> _additionalControllers;
-
+  CardFormManager? _cardFormManager;
   late TabController _tabController;
 
   bool _isValid = false;
-  String? _errorMessage;
 
   bool _hasCameraPermission = false;
   bool _checkingPermission = true;
@@ -50,42 +46,77 @@ class _ScanCardScreenState extends State<ScanCardScreen>
     _tabController = TabController(length: 2, vsync: this)
       ..addListener(() => setState(() {}));
 
-    _initializeCardConfiguration();
+    _initializeCardFormManager();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _requestCameraPermission();
     });
   }
 
-  void _initializeCardConfiguration() {
-    // Determine card type based on provider
-    String cardType = widget.provider.isSimProvider ? 'sim' : 'loyalty';
+  void _initializeCardFormManager() {
+    // Determine card type based on provider.category
+    final cardType = widget.provider.category.toLowerCase();
 
-    // Initialize configuration
-    _cardConfig = CardConfigurationFactory.getConfiguration(cardType);
+    // Create CardTypeData with appropriate metadata
+    final cardTypeData = CardTypeData(
+      id: widget.provider.id,
+      displayName: widget.provider.displayName,
+      formats: widget.provider.formats,
+      assetImagePath: widget.provider.assetImagePath,
+      website: widget.provider.website,
+      category: cardType,
+      metadata: _createMetadataForCardType(cardType),
+    );
 
-    // Initialize controllers map first
-    _additionalControllers = {};
+    // Get the configuration for this card type
+    final config = CardConfigurationFactory.getConfiguration(cardType);
 
-    // Create metadata map for SIM card fields
-    Map<String, dynamic>? metadata;
-    if (widget.provider.isSimProvider) {
-      metadata = {
-        'iccid': true,
-        'msisdn': true,
-        'pin': true,
-        'puk': true,
-      };
-    }
+    // Initialize the form manager
+    _cardFormManager = CardFormManager(
+      cardTypeData: cardTypeData,
+      config: config,
+    );
+  }
 
-    // Get additional fields from configuration
-    _additionalFields = _cardConfig.getFieldsFromMetadata(metadata);
-
-    // Initialize controllers for additional fields
-    for (var field in _additionalFields) {
-      _additionalControllers[field.key] = TextEditingController(
-        text: field.initialValue ?? '',
-      );
+  Map<String, dynamic>? _createMetadataForCardType(String cardType) {
+    switch (cardType) {
+      case 'sim':
+        return {
+          'phone_number': true,
+          'pin': true,
+          'puk': true,
+        };
+      case 'business':
+        return {
+          'name': true,
+          'company': true,
+          'email': true,
+          'phone': true,
+          'position': false, // optional
+          'address': false, // optional
+        };
+      case 'membership':
+        return {
+          'memberName': true,
+          'memberType': false, // optional
+          'expiryDate': false, // optional
+        };
+      case 'rewards':
+        return {
+          'points': false,      // optional
+          'memberName': false,  // optional
+          'tier': false,        // optional
+        };
+      case 'informative':
+        return {
+          'description': true,
+          'instructions': false,
+        };
+      case 'other':
+        return <String, dynamic>{};
+      case 'loyalty':
+      default:
+        return null;
     }
   }
 
@@ -105,26 +136,19 @@ class _ScanCardScreenState extends State<ScanCardScreen>
   @override
   void dispose() {
     _cardNumberController.dispose();
-    // Dispose additional controllers
-    for (var controller in _additionalControllers.values) {
-      controller.dispose();
-    }
+    _cardFormManager?.dispose();
     _tabController.dispose();
     super.dispose();
   }
 
   void _validateCode(String code) {
     final memberId = code.trim();
-
     final formats = widget.provider.formats;
     final formatValid = CardFormatValidator().isValidFormat(memberId, formats);
 
     if (!formatValid) {
       setState(() {
         _isValid = false;
-        _errorMessage = formats.isEmpty
-            ? localizations.invalid_card_not_empty_alphanumeric
-            : localizations.invalid_card_format;
       });
       return;
     }
@@ -137,14 +161,12 @@ class _ScanCardScreenState extends State<ScanCardScreen>
     if (duplicate) {
       setState(() {
         _isValid = false;
-        _errorMessage = localizations.card_already_exists;
       });
       return;
     }
 
     setState(() {
       _isValid = true;
-      _errorMessage = null;
     });
   }
 
@@ -155,43 +177,94 @@ class _ScanCardScreenState extends State<ScanCardScreen>
   }
 
   void _saveCard(Map<String, dynamic> allData) {
-    // Validate using configuration
-    if (!_cardConfig.validateData(allData)) {
-      AppSnackBar.showError('Please verify the entered data');
+    // Validate additional fields if needed
+    if (_cardFormManager != null && !_cardFormManager!.validateAll()) {
+      AppSnackBar.showError(localizations.verify_entered_data);
       return;
     }
 
-    CardModel newCard;
-
-    if (widget.provider.isSimProvider) {
-      newCard = SimCard(
-        provider: widget.provider,
-        memberId: allData['cardNumber']?.toString().trim() ?? '',
-        iccid: allData['iccid']?.toString().trim().isEmpty == true
-            ? null
-            : allData['iccid']?.toString().trim(),
-        msisdn: allData['msisdn']?.toString().trim().isEmpty == true
-            ? null
-            : allData['msisdn']?.toString().trim(),
-        pin: allData['pin']?.toString().trim().isEmpty == true
-            ? null
-            : allData['pin']?.toString().trim(),
-        puk: allData['puk']?.toString().trim().isEmpty == true
-            ? null
-            : allData['puk']?.toString().trim(),
-      );
-    } else {
-      newCard = LoyaltyCard(
-        provider: widget.provider,
-        memberId: allData['cardNumber']?.toString().trim() ?? '',
-      );
-    }
+    final newCard = _createCardModel(allData);
 
     context.read<CardsBloc>().add(AddCard(newCard));
 
     NavigationService().navigatorKey.currentState
         ?.popUntil((route) => route.isFirst);
     AppSnackBar.showSuccess(localizations.card_added_successfully);
+  }
+
+  CardModel _createCardModel(Map<String, dynamic> allData) {
+    final cardType = _cardFormManager?.cardTypeData.category ?? 'loyalty';
+    final memberId = allData['cardNumber']?.toString().trim() ?? '';
+
+    switch (cardType.toLowerCase()) {
+      case 'sim':
+        return SimCard(
+          provider: widget.provider,
+          memberId: memberId,
+          phoneNumber: _getOptionalStringValue(allData, 'phone_number'),
+          pin: _getOptionalStringValue(allData, 'pin'),
+          puk: _getOptionalStringValue(allData, 'puk'),
+        );
+
+      case 'business':
+        return BusinessCard(
+          provider: widget.provider,
+          memberId: memberId,
+          displayName: _getOptionalStringValue(allData, 'name'),
+          company: _getOptionalStringValue(allData, 'company'),
+          email: _getOptionalStringValue(allData, 'email'),
+          phone: _getOptionalStringValue(allData, 'phone'),
+          position: _getOptionalStringValue(allData, 'position'),
+          address: _getOptionalStringValue(allData, 'address'),
+        );
+
+      case 'membership':
+        return MembershipCard(
+          provider: widget.provider,
+          memberId: memberId,
+          memberName: _getOptionalStringValue(allData, 'memberName'),
+          memberType: _getOptionalStringValue(allData, 'memberType'),
+          expiryDate: _getOptionalStringValue(allData, 'expiryDate'),
+        );
+
+      case 'rewards':
+        return RewardsCard(
+          provider: widget.provider,
+          memberId: memberId,
+          points: _getOptionalStringValue(allData, 'points'),
+          memberName: _getOptionalStringValue(allData, 'memberName'),
+          tier: _getOptionalStringValue(allData, 'tier'),
+        );
+
+      case 'informative':
+        return InformativeCard(
+          provider: widget.provider,
+          memberId: memberId,
+          description: _getOptionalStringValue(allData, 'description'),
+          instructions: allData['instructions'] is List
+              ? List<String>.from(allData['instructions'] as List<dynamic>)
+              : null,
+        );
+
+      case 'other':
+        return OtherCard(
+          provider: widget.provider,
+          memberId: memberId,
+          extraData: allData,
+        );
+
+      case 'loyalty':
+      default:
+        return LoyaltyCard(
+          provider: widget.provider,
+          memberId: memberId,
+        );
+    }
+  }
+
+  String? _getOptionalStringValue(Map<String, dynamic> data, String key) {
+    final value = data[key]?.toString().trim();
+    return (value == null || value.isEmpty) ? null : value;
   }
 
   Widget _buildScannerTab(ThemeData theme) {
@@ -227,40 +300,6 @@ class _ScanCardScreenState extends State<ScanCardScreen>
       );
     }
     return ScannerView(onCodeDetected: _handleCodeDetected);
-  }
-
-  CardTypeData? _buildCardTypeData() {
-    if (widget.provider.isSimProvider) {
-      // Create metadata for SIM card fields
-      Map<String, dynamic> metadata = {
-        'iccid': true,
-        'msisdn': true,
-        'pin': true,
-        'puk': true,
-      };
-
-      return CardTypeData.forSim(
-        id: widget.provider.id,
-        displayName: widget.provider.displayName,
-        formats: widget.provider.formats,
-        assetImagePath: widget.provider.assetImagePath,
-        metadata: metadata,
-        // Only pass controllers if they exist
-        msisdnController:
-        _additionalControllers.containsKey('msisdn') ? _additionalControllers['msisdn'] : null,
-        pinController:
-        _additionalControllers.containsKey('pin') ? _additionalControllers['pin'] : null,
-        pukController:
-        _additionalControllers.containsKey('puk') ? _additionalControllers['puk'] : null,
-      );
-    } else {
-      return CardTypeData.forLoyalty(
-        id: widget.provider.id,
-        displayName: widget.provider.displayName,
-        formats: widget.provider.formats,
-        assetImagePath: widget.provider.assetImagePath,
-      );
-    }
   }
 
   @override
@@ -314,13 +353,10 @@ class _ScanCardScreenState extends State<ScanCardScreen>
                   _buildScannerTab(theme),
                   ManualEntryView(
                     cardNumberController: _cardNumberController,
-                    errorMessage: _errorMessage,
-                    onCardNumberChanged: _validateCode,
                     onSave: _saveCard,
-                    isValid: _isValid,
                     assetImagePath: widget.provider.assetImagePath,
                     formats: widget.provider.formats,
-                    cardTypeData: _buildCardTypeData(),
+                    formManager: _cardFormManager,
                   ),
                 ],
               ),

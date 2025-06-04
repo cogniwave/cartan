@@ -167,17 +167,14 @@ class CardOptionsScreen extends StatelessWidget {
     final simCard = card as SimCard;
     final List<Widget> details = [];
 
-    if (simCard.iccid != null) {
-      details.add(_buildDetailRow('ICCID', simCard.iccid!, theme));
-    }
-    if (simCard.msisdn != null) {
-      details.add(_buildDetailRow('MSISDN', simCard.msisdn!, theme));
+    if (simCard.phoneNumber != null) {
+      details.add(_buildDetailRow(localizations.phone_number, simCard.phoneNumber!, theme));
     }
     if (simCard.pin != null) {
-      details.add(_buildDetailRow('PIN', simCard.pin!, theme));
+      details.add(_buildDetailRow(localizations.pin_label, simCard.pin!, theme));
     }
     if (simCard.puk != null) {
-      details.add(_buildDetailRow('PUK', simCard.puk!, theme));
+      details.add(_buildDetailRow(localizations.puk_label, simCard.puk!, theme));
     }
 
     if (details.isEmpty) return const SizedBox.shrink();
@@ -186,7 +183,7 @@ class CardOptionsScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'SIM Card Details',
+          localizations.sim_card_details,
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w600,
             color: theme.colorScheme.onSurface,

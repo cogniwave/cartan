@@ -6,6 +6,7 @@ enum InputType {
   phone,
   multiline,
   dropdown,
+  date,
 }
 
 // Class to define a form field
@@ -114,10 +115,10 @@ class SimCardConfig extends CardConfiguration {
     // Map metadata fields to FormFieldConfig
     metadata.forEach((key, value) {
       switch (key.toLowerCase()) {
-        case 'msisdn':
+        case 'phone_number':
           fields.add(FormFieldConfig(
-            key: 'msisdn',
-            labelKey: 'phone_number_label',
+            key: 'phone_number',
+            labelKey: 'phone_number',
             inputType: InputType.phone,
             maxLength: 9,
             hintKey: 'phone_number_hint',

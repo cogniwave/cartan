@@ -7,8 +7,8 @@
     "website": "https://www.meo.pt/",
     "category": "Sim",
     "metadata": {
-      "iccid": "",
-      "msisdn": "",
+      "card_number": "",
+      "phone_number": "",
       "pin": "",
       "puk": ""
     }
@@ -21,8 +21,8 @@
     "website": "https://www.nos.pt/",
     "category": "Sim",
     "metadata": {
-      "iccid": "",
-      "msisdn": "",
+      "card_number": "",
+      "phone_number": "",
       "pin": "",
       "puk": ""
     }
@@ -35,8 +35,8 @@
     "website": "https://www.vodafone.pt/",
     "category": "Sim",
     "metadata": {
-      "iccid": "",
-      "msisdn": "",
+      "card_number": "",
+      "phone_number": "",
       "pin": "",
       "puk": ""
     }
@@ -49,8 +49,8 @@
     "website": "https://www.nowo.pt/",
     "category": "Sim",
     "metadata": {
-      "iccid": "",
-      "msisdn": "",
+      "card_number": "",
+      "phone_number": "",
       "pin": "",
       "puk": ""
     }
@@ -63,8 +63,8 @@
     "website": "https://www.lycamobile.pt/",
     "category": "Sim",
     "metadata": {
-      "iccid": "",
-      "msisdn": "",
+      "card_number": "",
+      "phone_number": "",
       "pin": "",
       "puk": ""
     }
@@ -77,8 +77,8 @@
     "website": "https://www.digimobil.pt/",
     "category": "Sim",
     "metadata": {
-      "iccid": "",
-      "msisdn": "",
+      "card_number": "",
+      "phone_number": "",
       "pin": "",
       "puk": ""
     }
@@ -91,8 +91,8 @@
     "website": "https://www.yorn.pt/",
     "category": "Sim",
     "metadata": {
-      "iccid": "",
-      "msisdn": "",
+      "card_number": "",
+      "phone_number": "",
       "pin": "",
       "puk": ""
     }
@@ -105,8 +105,8 @@
     "website": "https://www.moche.pt/",
     "category": "Sim",
     "metadata": {
-      "iccid": "",
-      "msisdn": "",
+      "card_number": "",
+      "phone_number": "",
       "pin": "",
       "puk": ""
     }
@@ -119,8 +119,8 @@
     "website": "https://www.wtf.pt/",
     "category": "Sim",
     "metadata": {
-      "iccid": "",
-      "msisdn": "",
+      "card_number": "",
+      "phone_number": "",
       "pin": "",
       "puk": ""
     }
@@ -133,8 +133,8 @@
     "website": "https://www.uzo.pt/",
     "category": "Sim",
     "metadata": {
-      "iccid": "",
-      "msisdn": "",
+      "card_number": "",
+      "phone_number": "",
       "pin": "",
       "puk": ""
     }
@@ -147,8 +147,8 @@
     "website": "https://www.woo.pt/",
     "category": "Sim",
     "metadata": {
-      "iccid": "",
-      "msisdn": "",
+      "card_number": "",
+      "phone_number": "",
       "pin": "",
       "puk": ""
     }

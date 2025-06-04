@@ -1,5 +1,5 @@
 import 'package:antdesign_icons/antdesign_icons.dart';
-import 'package:cartan/src/models/card_type_data.dart';
+import 'package:cartan/src/forms/card_form_manager.dart';
 import 'package:cartan/src/models/card_configuration.dart';
 import 'package:cartan/utils/app_snackbar.dart';
 import 'package:flutter/material.dart';
@@ -10,24 +10,18 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class ManualEntryView extends StatefulWidget {
   final TextEditingController cardNumberController;
-  final String? errorMessage;
-  final Function(String) onCardNumberChanged;
   final Function(Map<String, dynamic>) onSave;
-  final bool isValid;
   final String assetImagePath;
   final List<String> formats;
-  final CardTypeData? cardTypeData;
+  final CardFormManager? formManager;
 
   const ManualEntryView({
     super.key,
     required this.cardNumberController,
-    this.errorMessage,
-    required this.onCardNumberChanged,
     required this.onSave,
-    required this.isValid,
     required this.assetImagePath,
     required this.formats,
-    this.cardTypeData,
+    this.formManager,
   });
 
   @override
@@ -35,210 +29,237 @@ class ManualEntryView extends StatefulWidget {
 }
 
 class _ManualEntryViewState extends State<ManualEntryView> {
-  late CardConfiguration config;
-  late List<FormFieldConfig> additionalFields;
-  late Map<String, TextEditingController> additionalControllers;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
-  void initState() {
-    super.initState();
-    _initializeConfiguration();
-  }
-
-  void _initializeConfiguration() {
-    // Determine card type based on category
-    String cardType = 'loyalty'; // default
-    if (widget.cardTypeData != null) {
-      if (widget.cardTypeData!.isSimCard) {
-        cardType = 'sim';
-      } else if (widget.cardTypeData!.isLoyaltyCard) {
-        cardType = 'loyalty';
-      }
-    }
-
-    config = CardConfigurationFactory.getConfiguration(cardType);
-
-    // Get additional fields based on metadata
-    additionalFields = config.getFieldsFromMetadata(widget.cardTypeData?.metadata);
-
-    // Initialize controllers for additional fields
-    additionalControllers = {};
-    for (var field in additionalFields) {
-      additionalControllers[field.key] = TextEditingController(
-          text: field.initialValue ?? ''
-      );
-    }
-  }
-
-  @override
   void dispose() {
-    // Clean up additional controllers
-    for (var controller in additionalControllers.values) {
-      controller.dispose();
-    }
     super.dispose();
   }
 
   int _extractExpectedDigits() {
+    if (widget.formats.isEmpty) return 0;
     final pattern = widget.formats.first;
-    final match = RegExp(r'\\d\{(\d+)\}').firstMatch(pattern);
-    return match != null ? int.parse(match.group(1)!) : 0;
+    final match = RegExp(r'\{(\d+),').firstMatch(pattern);
+    return (match != null) ? int.parse(match.group(1)!) : 0;
   }
 
   String _getLocalizedText(AppLocalizations localizations, String key) {
-    // Simple mapping for localization keys
-    switch (key) {
-      case 'phone_number_label':
-        return localizations.phone_number;
-      case 'phone_number_hint':
-        return localizations.phone_number_hint;
-      case 'pin_label':
-        return localizations.pin_label;
-      case 'pin_hint':
-        return localizations.pin_hint;
-      case 'puk_label':
-        return localizations.puk_label;
-      case 'puk_hint':
-        return localizations.puk_hint;
-      default:
-        return key; // Fallback
-    }
+    final localizationMap = {
+      // SIM Card fields
+      'phone_number': localizations.phone_number,
+      'phone_number_hint': localizations.phone_number_hint,
+      'pin_label': localizations.pin_label,
+      'pin_hint': localizations.pin_hint,
+      'puk_label': localizations.puk_label,
+      'puk_hint': localizations.puk_hint,
+
+      // Common fields
+      'card_number': localizations.card_number,
+      'card_number_hint': localizations.card_number_hint,
+    };
+    return localizationMap[key] ?? key;
   }
 
   Widget _buildFieldWidget(FormFieldConfig field, AppLocalizations localizations) {
-    final controller = additionalControllers[field.key]!;
+    final controller = widget.formManager?.getController(field.key);
+    if (controller == null) return const SizedBox.shrink();
+
+    InputDecoration decoration = InputDecoration(
+      labelText: _getLocalizedText(localizations, field.labelKey),
+      hintText: field.hintKey != null
+          ? _getLocalizedText(localizations, field.hintKey!)
+          : null,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      errorText: widget.formManager?.getFieldError(field.key),
+      prefixIcon: _getFieldIcon(field.key),
+    );
+
+    List<TextInputFormatter> formatters = [];
+    switch (field.inputType) {
+      case InputType.numeric:
+        formatters.add(FilteringTextInputFormatter.digitsOnly);
+        if (field.maxLength != null && field.maxLength! > 0) {
+          formatters.add(LengthLimitingTextInputFormatter(field.maxLength!));
+        }
+        break;
+      case InputType.phone:
+        if (field.maxLength != null && field.maxLength! > 0) {
+          formatters.add(LengthLimitingTextInputFormatter(field.maxLength!));
+        }
+        break;
+      case InputType.text:
+        if (field.maxLength != null && field.maxLength! > 0) {
+          formatters.add(LengthLimitingTextInputFormatter(field.maxLength!));
+        }
+        break;
+      default:
+        break;
+    }
+
+    String? Function(String?)? validator;
+    if (field.isRequired) {
+      validator = (value) {
+        if (value?.trim().isEmpty == true) {
+          return localizations.required_field;
+        }
+        if (field.inputType == InputType.email && value != null && value.isNotEmpty) {
+          final emailRegex = RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$');
+          if (!emailRegex.hasMatch(value)) {
+            return localizations.invalid_email;
+          }
+        }
+        return null;
+      };
+    }
 
     switch (field.inputType) {
       case InputType.numeric:
         return TextFormField(
           controller: controller,
-          decoration: InputDecoration(
-            labelText: _getLocalizedText(localizations, field.labelKey),
-            hintText: field.hintKey != null
-                ? _getLocalizedText(localizations, field.hintKey!)
-                : null,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
+          decoration: decoration,
           keyboardType: TextInputType.number,
-          inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.digitsOnly,
-            if (field.maxLength != null && field.maxLength! > 0)
-              LengthLimitingTextInputFormatter(field.maxLength!),
-          ],
-          validator: field.isRequired
-              ? (value) => value?.isEmpty == true ? 'Required field' : null
-              : null,
+          inputFormatters: formatters,
+          validator: validator,
         );
-
       case InputType.phone:
         return TextFormField(
           controller: controller,
-          decoration: InputDecoration(
-            labelText: _getLocalizedText(localizations, field.labelKey),
-            hintText: field.hintKey != null
-                ? _getLocalizedText(localizations, field.hintKey!)
-                : null,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
+          decoration: decoration,
           keyboardType: TextInputType.phone,
-          inputFormatters: <TextInputFormatter>[
-            if (field.maxLength != null && field.maxLength! > 0)
-              LengthLimitingTextInputFormatter(field.maxLength!),
-          ],
-          validator: field.isRequired
-              ? (value) => value?.isEmpty == true ? localizations.required_field : null
-              : null,
+          inputFormatters: formatters,
+          validator: validator,
         );
-
       case InputType.email:
         return TextFormField(
           controller: controller,
-          decoration: InputDecoration(
-            labelText: _getLocalizedText(localizations, field.labelKey),
-            hintText: field.hintKey != null
-                ? _getLocalizedText(localizations, field.hintKey!)
-                : null,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
+          decoration: decoration,
           keyboardType: TextInputType.emailAddress,
-          validator: field.isRequired
-              ? (value) => value?.isEmpty == true ? localizations.required_field : null
-              : null,
+          validator: validator,
         );
-
       case InputType.multiline:
         return TextFormField(
           controller: controller,
-          decoration: InputDecoration(
-            labelText: _getLocalizedText(localizations, field.labelKey),
-            hintText: field.hintKey != null
-                ? _getLocalizedText(localizations, field.hintKey!)
-                : null,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+          decoration: decoration,
+          maxLines: 3,
+          validator: validator,
+        );
+      case InputType.date:
+        return TextFormField(
+          controller: controller,
+          decoration: decoration.copyWith(
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.calendar_today),
+              onPressed: () => _selectDate(controller),
             ),
           ),
-          maxLines: 3,
-          validator: field.isRequired
-              ? (value) => value?.isEmpty == true ? localizations.required_field : null
-              : null,
+          readOnly: true,
+          validator: validator,
         );
-
       default: // InputType.text
         return TextFormField(
           controller: controller,
-          decoration: InputDecoration(
-            labelText: _getLocalizedText(localizations, field.labelKey),
-            hintText: field.hintKey != null
-                ? _getLocalizedText(localizations, field.hintKey!)
-                : null,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-          inputFormatters: <TextInputFormatter>[
-            if (field.maxLength != null && field.maxLength! > 0)
-              LengthLimitingTextInputFormatter(field.maxLength!),
-          ],
-          validator: field.isRequired
-              ? (value) => value?.isEmpty == true ? localizations.required_field : null
-              : null,
+          decoration: decoration,
+          inputFormatters: formatters,
+          validator: validator,
         );
     }
   }
 
+  Icon? _getFieldIcon(String fieldKey) {
+    switch (fieldKey.toLowerCase()) {
+      case 'email':
+        return const Icon(AntIcons.mailOutlined);
+      case 'phone':
+      case 'phone_number':
+        return const Icon(AntIcons.phoneOutlined);
+      case 'name':
+      case 'membername':
+        return const Icon(AntIcons.manOutlined);
+      case 'company':
+        return const Icon(AntIcons.buildOutlined);
+      case 'address':
+        return const Icon(AntIcons.contactsOutlined);
+      case 'points':
+        return const Icon(AntIcons.starOutlined);
+      case 'pin':
+      case 'puk':
+        return const Icon(AntIcons.lockOutlined);
+      default:
+        return null;
+    }
+  }
+
+  Future<void> _selectDate(TextEditingController controller) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 3650)), // 10 years
+    );
+    if (picked != null) {
+      controller.text = "${picked.day}/${picked.month}/${picked.year}";
+    }
+  }
+
   void _handleSave() {
-    // Validate the form if there are additional fields
-    if (additionalFields.isNotEmpty && !_formKey.currentState!.validate()) {
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    // Collect all data
-    Map<String, dynamic> allData = {
-      'cardNumber': widget.cardNumberController.text,
-    };
-
-    // Add data from additional fields
-    for (var field in additionalFields) {
-      final value = additionalControllers[field.key]!.text;
-      if (value.isNotEmpty) {
-        allData[field.key] = value;
+    if (widget.formManager != null) {
+      if (!widget.formManager!.validateAll()) {
+        setState(() {});
+        AppSnackBar.showError(AppLocalizations.of(context)!.verify_entered_data);
+        return;
       }
     }
 
-    // Validate using the configuration
-    if (config.validateData(allData)) {
-      widget.onSave(allData);
-    } else {
-      AppSnackBar.showSuccess(AppLocalizations.of(context)!.verify_entered_data);
+    Map<String, dynamic> allData = {
+      'cardNumber': widget.cardNumberController.text.trim(),
+    };
+    if (widget.formManager != null) {
+      final additionalData = widget.formManager!.collectData();
+      allData.addAll(additionalData);
     }
+    widget.onSave(allData);
+  }
+
+  Widget _buildCardPreview() {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: theme.colorScheme.outline.withValues(alpha: 0.2),
+        ),
+      ),
+      child: Column(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: SizedBox(
+              width: 150,
+              height: 100,
+              child: FittedBox(
+                fit: BoxFit.fill,
+                child: SvgPicture.asset(widget.assetImagePath),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          if (widget.formManager?.cardTypeData.displayName != null)
+            Text(
+              widget.formManager!.cardTypeData.displayName!,
+              style: theme.textTheme.titleMedium,
+              textAlign: TextAlign.center,
+            ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -248,40 +269,29 @@ class _ManualEntryViewState extends State<ManualEntryView> {
 
     final hasSpecificFormat = widget.formats.isNotEmpty;
     final expectedDigits = hasSpecificFormat ? _extractExpectedDigits() : null;
+    final additionalFields = widget.formManager?.fields ?? [];
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       child: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: SizedBox(
-                    width: 150,
-                    height: 100,
-                    child: FittedBox(
-                      fit: BoxFit.fill,
-                      child: SvgPicture.asset(widget.assetImagePath),
-                    ),
-                  ),
-                ),
-              ),
+              Center(child: _buildCardPreview()),
+              const SizedBox(height: 32),
 
-              const SizedBox(height: 40),
-
-              // Card number field (always present)
               TextFormField(
                 controller: widget.cardNumberController,
                 decoration: InputDecoration(
                   labelText: localizations.card_number,
-                  errorText: widget.errorMessage,
+                  hintText: _getLocalizedText(localizations, 'card_number_hint'),
+                  errorText: null,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
+                  prefixIcon: const Icon(AntIcons.creditCardOutlined),
                 ),
                 keyboardType: TextInputType.text,
                 inputFormatters: (hasSpecificFormat && expectedDigits != null && expectedDigits > 0)
@@ -290,38 +300,32 @@ class _ManualEntryViewState extends State<ManualEntryView> {
                   LengthLimitingTextInputFormatter(expectedDigits),
                 ]
                     : <TextInputFormatter>[],
-                onChanged: widget.onCardNumberChanged,
-                validator: (value) =>
-                value?.isEmpty == true ? localizations.required_field : null,
+                validator: (value) {
+                  if (value?.trim().isEmpty == true) {
+                    return localizations.required_field;
+                  }
+                  if (hasSpecificFormat && expectedDigits != null && expectedDigits > 0) {
+                    final memberId = value!.trim();
+                    final regex = RegExp(widget.formats.first);
+                    if (!regex.hasMatch(memberId)) {
+                      return localizations.invalid_card_format;
+                    }
+                  }
+                  return null;
+                },
               ),
 
-              const SizedBox(height: 12),
-
-              if (hasSpecificFormat)
-                Text(
-                  localizations.format_hint,
-                  style: theme.textTheme.bodySmall,
-                ),
-
-              if (hasSpecificFormat) ...[
-                const SizedBox(height: 4),
-                Text(
-                  '($expectedDigits ${localizations.digits})',
-                  style: theme.textTheme.bodySmall,
-                ),
-              ],
-
-              // Additional fields based on card type
               if (additionalFields.isNotEmpty) ...[
                 const SizedBox(height: 16),
-
-                ...additionalFields.map((field) => Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: _buildFieldWidget(field, localizations),
-                )),
+                ...additionalFields.map(
+                      (field) => Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: _buildFieldWidget(field, localizations),
+                  ),
+                ),
               ],
 
-              const SizedBox(height: 46),
+              const SizedBox(height: 32),
 
               Center(
                 child: ElevatedButton.icon(
@@ -331,14 +335,15 @@ class _ManualEntryViewState extends State<ManualEntryView> {
                     backgroundColor: theme.extension<CustomColors>()!.accent,
                     foregroundColor: theme.colorScheme.primary,
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
+                      horizontal: 32,
+                      vertical: 16,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16.0),
                     ),
+                    elevation: 2,
                   ),
-                  onPressed: widget.isValid ? _handleSave : null,
+                  onPressed: _handleSave,
                 ),
               ),
             ],
