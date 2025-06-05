@@ -84,20 +84,26 @@ class _SearchableAppBarState extends State<SearchableAppBar> {
               ),
       actions: [
         if (_isSearching)
-          IconButton(
-            icon: Icon(
-              AntIcons.closeOutlined,
-              color: theme.colorScheme.primary,
+          GestureDetector(
+            onTap: _stopSearch,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(
+                AntIcons.closeOutlined,
+                color: theme.colorScheme.primary,
+              ),
             ),
-            onPressed: _stopSearch,
           )
         else
-          IconButton(
-            icon: Icon(
-              AntIcons.searchOutlined,
-              color: theme.colorScheme.primary,
+          GestureDetector(
+            onTap: _startSearch,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(
+                AntIcons.searchOutlined,
+                color: theme.colorScheme.primary,
+              ),
             ),
-            onPressed: _startSearch,
           ),
         ...(_isSearching ? [] : widget.trailingActions),
       ],
