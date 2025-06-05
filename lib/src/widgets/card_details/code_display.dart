@@ -28,7 +28,6 @@ class CodeDisplayWidget extends StatelessWidget {
     late final double barcodeHeight;
     late final double verticalSpacing;
     late final double containerPadding;
-    late final EdgeInsets qrPadding;
 
     if (isLandscape) {
       qrSize = 120.0;
@@ -36,17 +35,12 @@ class CodeDisplayWidget extends StatelessWidget {
       barcodeHeight = 80.0;
       verticalSpacing = 8.0;
       containerPadding = 12.0;
-      qrPadding = EdgeInsets.all(containerPadding);
     } else {
       qrSize = 200.0;
       barcodeWidth = 300.0;
       barcodeHeight = 120.0;
       verticalSpacing = 24.0;
       containerPadding = 14.0;
-      qrPadding = EdgeInsets.symmetric(
-        horizontal: containerPadding,
-        vertical: containerPadding,
-      );
     }
 
     return Container(
@@ -64,20 +58,17 @@ class CodeDisplayWidget extends StatelessWidget {
                   onTap: onZoomPressed,
                   borderRadius: BorderRadius.circular(8),
                   child: Container(
-                    width: qrSize,
-                    height: qrSize,
-                    padding: qrPadding,
-                    color: Colors.white,
-                    alignment: Alignment.center,
-                    child: FittedBox(
-                      fit: BoxFit.contain,
-                      child: QrImageView(
-                        data: cardNumber,
-                        version: QrVersions.auto,
-                        size: qrSize,
-                        backgroundColor: Colors.white,
-                        padding: EdgeInsets.zero,
-                      ),
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: QrImageView(
+                      data: cardNumber,
+                      version: QrVersions.auto,
+                      size: qrSize,
+                      backgroundColor: Colors.white,
+                      padding: EdgeInsets.all(8),
                     ),
                   ),
                 ),
@@ -88,14 +79,18 @@ class CodeDisplayWidget extends StatelessWidget {
                   onTap: onZoomPressed,
                   borderRadius: BorderRadius.circular(8),
                   child: Container(
-                    padding: EdgeInsets.all(16),
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                     child: BarcodeWidget(
                       barcode: Barcode.code128(),
                       data: cardNumber,
                       width: barcodeWidth,
                       height: barcodeHeight,
                       drawText: false,
-                      color: theme.colorScheme.primary,
+                      color: Colors.black,
                     ),
                   ),
                 ),

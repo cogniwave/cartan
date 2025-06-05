@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:cartan/src/models/card_model.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class LoyaltyCardItem extends StatelessWidget {
+class CardItem extends StatelessWidget {
   final CardModel card;
   final VoidCallback? onTap;
 
-  const LoyaltyCardItem({
+  const CardItem({
     super.key,
     required this.card,
     this.onTap,
@@ -30,6 +30,7 @@ class LoyaltyCardItem extends StatelessWidget {
             fit: BoxFit.fill,
           ),
         ),
+
       ),
     );
   }

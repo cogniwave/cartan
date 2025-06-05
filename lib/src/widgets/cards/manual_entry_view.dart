@@ -230,13 +230,6 @@ class _ManualEntryViewState extends State<ManualEntryView> {
     final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: theme.colorScheme.outline.withValues(alpha: 0.2),
-        ),
-      ),
       child: Column(
         children: [
           ClipRRect(

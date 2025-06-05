@@ -1,3 +1,4 @@
+
 class CardFormatValidator {
   bool isValidFormat(String code, List<String> formats) {
     if (code.isEmpty) {
