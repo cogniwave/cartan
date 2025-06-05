@@ -34,7 +34,7 @@ class CardsListView extends StatelessWidget {
             itemBuilder: (context, index) {
               final card = cards[index];
               return Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
+                padding: const EdgeInsets.only(bottom: 32.0),
                 child: LoyaltyCardItem(
                   card: card,
                   onTap: () => onCardTap(card),
