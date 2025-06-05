@@ -88,7 +88,14 @@ class CardOptionsScreen extends StatelessWidget {
               height: 40,
             ),
             const SizedBox(width: 8),
-            Text(merchant.displayName),
+            Flexible(
+              child: Text(
+                merchant.displayName,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: theme.textTheme.titleMedium,
+              ),
+            ),
           ],
         ),
       ),

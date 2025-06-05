@@ -177,7 +177,14 @@ class _ScanCardScreenState extends State<ScanCardScreen>
               ),
             ),
             const SizedBox(width: 8),
-            Text(widget.merchant.displayName),
+            Flexible(
+              child: Text(
+                widget.merchant.displayName,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: theme.textTheme.titleMedium,
+              ),
+            ),
           ],
         ),
       ),
