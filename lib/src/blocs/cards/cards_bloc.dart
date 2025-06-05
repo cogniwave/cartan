@@ -1,21 +1,17 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:cartan/src/repositories/loyalty_card_repository.dart';
-import 'package:cartan/src/repositories/merchants_repository.dart';
-import 'package:cartan/src/models/loyalty_card.dart';
+import 'package:cartan/src/repositories/cards_repository.dart';
+import 'package:cartan/src/models/card_model.dart';
 
 part 'cards_event.dart';
 part 'cards_state.dart';
 
 class CardsBloc extends Bloc<CardsEvent, CardsState> {
-  final LoyaltyCardRepository _cardRepo;
-  final MerchantsRepository _merchantsRepo;
+  final CardsRepository _cardRepo;
 
   CardsBloc({
-    required LoyaltyCardRepository cardRepo,
-    required MerchantsRepository merchantsRepo,
+    required CardsRepository cardRepo,
   })  : _cardRepo = cardRepo,
-        _merchantsRepo = merchantsRepo,
         super(const CardsState()) {
     on<LoadCards>(_onLoadCards);
     on<AddCard>(_onAddCard);
@@ -26,22 +22,17 @@ class CardsBloc extends Bloc<CardsEvent, CardsState> {
       LoadCards event,
       Emitter<CardsState> emit,
       ) async {
-
+    emit(state.copyWith(status: Status.loading));
     try {
-      if (!_merchantsRepo.isInitialized) {
-        await _merchantsRepo.initialize();
-      }
-
       final cards = await _cardRepo.getAllCards();
       emit(state.copyWith(
         status: Status.success,
         cards: cards,
-        error: null,
       ));
-    } catch (e) {
+    } catch (error) {
       emit(state.copyWith(
         status: Status.failure,
-        error: e.toString(),
+        error: error.toString(),
       ));
     }
   }

@@ -1,7 +1,7 @@
+import 'package:cartan/src/models/provider_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:cartan/src/models/merchant.dart';
-import 'package:cartan/src/models/loyalty_card.dart';
+import 'package:cartan/src/models/card_model.dart';
 import 'package:cartan/src/themes/app_themes.dart';
 import 'package:cartan/src/widgets/card_details/code_display.dart';
 import 'package:cartan/src/screens/card-details/fullscreen_code_page.dart';
@@ -9,13 +9,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'card_options_screen.dart';
 
 class CardDetailsScreen extends StatefulWidget {
-  final LoyaltyCard card;
-  final Merchant merchant;
+  final CardModel card;
 
   const CardDetailsScreen({
     super.key,
     required this.card,
-    required this.merchant,
   });
 
   @override
@@ -60,7 +58,6 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
       MaterialPageRoute(
         builder: (context) => CardOptionsScreen(
           card: widget.card,
-          merchant: widget.merchant,
         ),
       ),
     ).then((result) {
@@ -90,12 +87,12 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
         title: Row(
           children: [
             SvgPicture.asset(
-              widget.merchant.assetImagePath,
+              widget.card.provider.assetImagePath,
               width: 70,
               height: 40,
             ),
             const SizedBox(width: 8),
-            Text(widget.merchant.displayName),
+            Text(widget.card.provider.displayName),
           ],
         ),
         actions: [
@@ -117,7 +114,6 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
                 padding: isLandscape
                     ? const EdgeInsets.fromLTRB(24, 32, 24, 32)
                     : const EdgeInsets.fromLTRB(16, 42, 16, 42),
-
                 child: Text(
                   formatMemberId(widget.card.memberId),
                   textAlign: TextAlign.center,
@@ -127,6 +123,11 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
                   ),
                 ),
               ),
+
+              if (widget.card.provider.isSimProvider) ...[
+                _buildSimCardInfo(theme, localizations),
+                SizedBox(height: isLandscape ? 8 : 16),
+              ],
 
               SizedBox(height: isLandscape ? 8 : 16),
 
@@ -155,12 +156,78 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
                 child: CodeDisplayWidget(
                   cardNumber: widget.card.memberId,
                   showQrCode: _showQrCode,
-                  onZoomPressed: _openFullScreenCode, // Usar a função já definida
+                  onZoomPressed: _openFullScreenCode,
                 ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildSimCardInfo(ThemeData theme, AppLocalizations localizations) {
+    if (!widget.card.provider.isSimProvider || widget.card is! SimCard) {
+      return const SizedBox.shrink();
+    }
+
+    final simCard = widget.card as SimCard;
+    final List<Widget> infoWidgets = [];
+
+    if (simCard.phoneNumber != null) {
+      infoWidgets.add(_buildInfoRow(localizations.phone_number, simCard.phoneNumber!, theme));
+    }
+    if (simCard.pin != null) {
+      infoWidgets.add(_buildInfoRow(localizations.pin_label, simCard.pin!, theme));
+    }
+    if (simCard.puk != null) {
+      infoWidgets.add(_buildInfoRow(localizations.puk_label, simCard.puk!, theme));
+    }
+
+    if (infoWidgets.isEmpty) return const SizedBox.shrink();
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            localizations.sim_card_information,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          ...infoWidgets,
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value, ThemeData theme) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 60,
+            child: Text(
+              '$label:',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          Text(
+            value,
+            style: theme.textTheme.bodyMedium,
+          ),
+        ],
       ),
     );
   }

@@ -6,7 +6,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/acp_card.svg",
     "website": "https://www.acp.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "agriloja",
@@ -15,7 +15,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/agriloja_card.svg",
     "website": "https://www.agriloja.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "aki",
@@ -24,7 +24,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/aki_card.svg",
     "website": "https://www.aki.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "almedina",
@@ -33,7 +33,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/almedina_card.svg",
     "website": "https://www.almedina.net/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "aqui_e_fresco",
@@ -42,7 +42,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/aqui_e_fresco_card.svg",
     "website": "https://aquiefresco.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "auchan",
@@ -51,7 +51,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/auchan_card.svg",
     "website": "https://www.auchan.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "benfica",
@@ -60,7 +60,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/benfica_card.svg",
     "website": "https://www.slbenfica.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "bertrand",
@@ -69,7 +69,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/bertrand_card.svg",
     "website": "https://www.bp.com/pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "bp",
@@ -79,7 +79,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/bp_card.svg",
     "website": "https://www.bp.com/pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "burger_king",
@@ -89,7 +89,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/burger_king_card.svg",
     "website": "https://www.burger_king.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "brio",
@@ -98,7 +98,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/brio_card.svg",
     "website": "https://www.brio.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "c_and_a",
@@ -107,7 +107,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/c_and_a_card.svg",
     "website": "https://www.c-and-a.com/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "calzedonia",
@@ -116,7 +116,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/calzedonia_card.svg",
     "website": "https://www.calzedonia.com/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "celeiro",
@@ -125,7 +125,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/celeiro_card.svg",
     "website": "https://www.celeiro.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "cex",
@@ -134,7 +134,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/cex_card.svg",
     "website": "https://uk.webuy.com/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "chicco",
@@ -143,7 +143,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/chicco_card.svg",
     "website": "https://www.chicco.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "conforama",
@@ -152,7 +152,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/conforama_card.svg",
     "website": "https://www.conforama.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "continente",
@@ -162,7 +162,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/continente_card.svg",
     "website": "https://www.continente.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "cortefiel",
@@ -171,7 +171,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/cortefiel_card.svg",
     "website": "https://www.cortefiel.com/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "coviran_clube_familia",
@@ -180,7 +180,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/coviran_clube_familia_card.svg",
     "website": "https://www.coviran.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "deborla",
@@ -189,7 +189,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/deborla_card.svg",
     "website": "https://www.deborla.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "decathlon",
@@ -198,7 +198,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/decathlon_card.svg",
     "website": "https://www.decathlon.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "deco_plus",
@@ -207,7 +207,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/deco_plus_card.svg",
     "website": "https://www.deco.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "discovery",
@@ -216,7 +216,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/discovery_card.svg",
     "website": "https://www.discovery.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "douglas_beauty_card",
@@ -225,7 +225,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/douglas_beauty_card.svg",
     "website": "https://www.douglas.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "e_leclerc",
@@ -234,7 +234,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/e_leclerc_card.svg",
     "website": "https://www.e-leclerc.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "espaco_casa",
@@ -243,7 +243,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/espaco_casa_card.svg",
     "website": "https://www.espacocasa.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "feu_vert",
@@ -252,7 +252,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/feu_vert_card.svg",
     "website": "https://www.feuvert.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "fnac",
@@ -261,7 +261,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/fnac_card.svg",
     "website": "https://www.fnac.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "foreva",
@@ -270,7 +270,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/foreva_card.svg",
     "website": "https://www.foreva.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "fotosport",
@@ -279,7 +279,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/fotosport_card.svg",
     "website": "https://www.fotosport.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "freeport_must",
@@ -288,7 +288,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/freeport_must_card.svg",
     "website": "https://www.freeportfashionoutlet.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "galp",
@@ -297,7 +297,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/galp_card.svg",
     "website": "https://www.galp.com/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "hm_club",
@@ -306,7 +306,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/hm_club_card.svg",
     "website": "https://www2.hm.com/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "homa",
@@ -315,7 +315,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/homa_card.svg",
     "website": "https://www.homa.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "ikea",
@@ -324,7 +324,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/ikea_card.svg",
     "website": "https://www.ikea.com/pt/pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "intermarche",
@@ -333,7 +333,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/intermarche_card.svg",
     "website": "https://www.intermarche.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "intimissimi",
@@ -342,7 +342,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/intimissimi_card.svg",
     "website": "https://www.intimissimi.com/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "kfc",
@@ -352,7 +352,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/kfc_card.svg",
     "website": "https://www.kfc.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "kiabi",
@@ -361,7 +361,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/kiabi_card.svg",
     "website": "https://www.kiabi.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "lanidor",
@@ -370,7 +370,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/lanidor_card.svg",
     "website": "https://www.lanidor.com/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "leroy_merlin",
@@ -379,7 +379,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/leroy_merlin_card.svg",
     "website": "https://www.leroymerlin.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "lidl_plus",
@@ -388,7 +388,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/lidl_card.svg",
     "website": "https://www.lidl.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "lyoness",
@@ -397,17 +397,17 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/lyoness_card.svg",
     "website": "https://www.lyoness.com/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "mcdonalds",
-    "displayName": "MacDonald's",
+    "displayName": "McDonald's",
     "formats": [
       "^\\d{10}$"
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/mcdonalds_card.svg",
     "website": "https://www.mcdonalds.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "makro",
@@ -416,7 +416,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/makro_card.svg",
     "website": "https://www.makro.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "minipreco",
@@ -426,7 +426,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/minipreco_card.svg",
     "website": "https://www.minipreco.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "multicare",
@@ -435,7 +435,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/multicare_card.svg",
     "website": "https://www.multicare.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "mundo_ageas_seguros",
@@ -444,7 +444,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/mundo_ageas_seguros_card.svg",
     "website": "https://www.ageas.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "natura",
@@ -453,7 +453,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/natura_card.svg",
     "website": "https://www.naturaselection.com/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "norauto",
@@ -462,7 +462,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/norauto_card.svg",
     "website": "https://www.norauto.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "nos",
@@ -472,7 +472,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/nos_card.svg",
     "website": "https://www.nos.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "o_boticario",
@@ -481,7 +481,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/o_boticario_card.svg",
     "website": "https://www.boticario.com.br/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "oney",
@@ -490,7 +490,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/oney_card.svg",
     "website": "https://www.oney.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "pingo_doce",
@@ -500,7 +500,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/pingo_doce_card.svg",
     "website": "https://www.pingodoce.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "recheio",
@@ -509,7 +509,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/recheio_card.svg",
     "website": "https://www.recheio.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "repsol",
@@ -518,7 +518,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/repsol_card.svg",
     "website": "https://www.repsol.com/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "revpoints",
@@ -527,7 +527,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/revpoints_card.svg",
     "website": "https://www.revolut.com/pt-PT/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "rituals",
@@ -536,7 +536,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/rituals_card.svg",
     "website": "https://www.rituals.com/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "salsa_star",
@@ -545,7 +545,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/salsa_star_card.svg",
     "website": "https://www.salsajeans.com/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "sauda",
@@ -554,7 +554,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/sauda_card.svg",
     "website": "https://farmaciasportuguesas.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "seaside",
@@ -563,7 +563,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/seaside_card.svg",
     "website": "https://www.seaside.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "sephora",
@@ -572,7 +572,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/sephora_card.svg",
     "website": "https://www.sephora.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "shell",
@@ -581,7 +581,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/shell_card.svg",
     "website": "https://www.shell.com/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "sport_zone",
@@ -590,7 +590,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/sport_zone_card.svg",
     "website": "https://www.sportzone.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "springfield",
@@ -599,7 +599,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/springfield_card.svg",
     "website": "https://www.springfield.com/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "staples",
@@ -608,7 +608,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/staples_card.svg",
     "website": "https://www.staples.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "supersmart",
@@ -617,7 +617,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/supersmart_card.svg",
     "website": "https://www.supersmart.com/pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "tap_miles_and_go",
@@ -626,7 +626,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/tap_card.svg",
     "website": "https://www.tap.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "united_colors_of_benetton",
@@ -635,7 +635,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/united_colors_of_benetton_card.svg",
     "website": "https://www.benetton.com/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "universo",
@@ -644,7 +644,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/universo_card.svg",
     "website": "https://universo.onyou.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "womens_secret",
@@ -653,7 +653,7 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/womens_secret_card.svg",
     "website": "https://www.womensecret.com/",
-    "category": "Simple"
+    "category": "Loyalty"
   },
   {
     "id": "worten_resolve",
@@ -663,6 +663,6 @@
     ],
     "assetImagePath": "lib/assets/images/loyalty_cards/worten_resolve_card.svg",
     "website": "https://www.worten.pt/",
-    "category": "Simple"
+    "category": "Loyalty"
   }
 ]

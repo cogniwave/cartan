@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:cartan/src/models/loyalty_card.dart';
-import 'package:cartan/src/widgets/cards/loyalty_card_item.dart';
+import 'package:cartan/src/models/card_model.dart';
+import 'package:cartan/src/widgets/cards/card_item.dart';
 
 class CardsListView extends StatelessWidget {
-  final List<LoyaltyCard> cards;
-  final Function(LoyaltyCard) onCardTap;
+  final List<CardModel> cards;
+  final Function(CardModel) onCardTap;
 
   const CardsListView({
     super.key,
@@ -35,7 +35,7 @@ class CardsListView extends StatelessWidget {
               final card = cards[index];
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
-                child: LoyaltyCardItem(
+                child: CardItem(
                   card: card,
                   onTap: () => onCardTap(card),
                 ),

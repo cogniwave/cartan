@@ -1,21 +1,26 @@
+import 'package:cartan/src/forms/card_form_manager.dart';
+import 'package:cartan/src/services/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cartan/src/blocs/cards/cards_bloc.dart';
-import 'package:cartan/src/models/merchant.dart';
-import 'package:cartan/src/models/loyalty_card.dart';
+import 'package:cartan/src/models/provider_model.dart';
+import 'package:cartan/src/models/card_model.dart';
 import 'package:cartan/src/widgets/cards/manual_entry_view.dart';
 import 'package:cartan/src/widgets/cards/scanner_view.dart';
 import 'package:cartan/utils/card_format_validator.dart';
 import 'package:cartan/utils/app_snackbar.dart';
 import 'package:cartan/src/themes/app_themes.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:cartan/src/models/card_type_data.dart';
+import 'package:cartan/src/models/card_configuration.dart';
 
 class ScanCardScreen extends StatefulWidget {
-  final Merchant merchant;
-  const ScanCardScreen({super.key, required this.merchant});
+  final Provider provider;
+
+  const ScanCardScreen({super.key, required this.provider});
 
   @override
   State<ScanCardScreen> createState() => _ScanCardScreenState();
@@ -23,11 +28,12 @@ class ScanCardScreen extends StatefulWidget {
 
 class _ScanCardScreenState extends State<ScanCardScreen>
     with SingleTickerProviderStateMixin {
-  final TextEditingController _codeController = TextEditingController();
+  final TextEditingController _cardNumberController = TextEditingController();
+
+  CardFormManager? _cardFormManager;
   late TabController _tabController;
 
   bool _isValid = false;
-  String? _errorMessage;
 
   bool _hasCameraPermission = false;
   bool _checkingPermission = true;
@@ -39,9 +45,79 @@ class _ScanCardScreenState extends State<ScanCardScreen>
     super.initState();
     _tabController = TabController(length: 2, vsync: this)
       ..addListener(() => setState(() {}));
+
+    _initializeCardFormManager();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _requestCameraPermission();
     });
+  }
+
+  void _initializeCardFormManager() {
+    // Determine card type based on provider.category
+    final cardType = widget.provider.category.toLowerCase();
+
+    // Create CardTypeData with appropriate metadata
+    final cardTypeData = CardTypeData(
+      id: widget.provider.id,
+      displayName: widget.provider.displayName,
+      formats: widget.provider.formats,
+      assetImagePath: widget.provider.assetImagePath,
+      website: widget.provider.website,
+      category: cardType,
+      metadata: _createMetadataForCardType(cardType),
+    );
+
+    // Get the configuration for this card type
+    final config = CardConfigurationFactory.getConfiguration(cardType);
+
+    // Initialize the form manager
+    _cardFormManager = CardFormManager(
+      cardTypeData: cardTypeData,
+      config: config,
+    );
+  }
+
+  Map<String, dynamic>? _createMetadataForCardType(String cardType) {
+    switch (cardType) {
+      case 'sim':
+        return {
+          'phone_number': true,
+          'pin': true,
+          'puk': true,
+        };
+      case 'business':
+        return {
+          'name': true,
+          'company': true,
+          'email': true,
+          'phone': true,
+          'position': false, // optional
+          'address': false, // optional
+        };
+      case 'membership':
+        return {
+          'memberName': true,
+          'memberType': false, // optional
+          'expiryDate': false, // optional
+        };
+      case 'rewards':
+        return {
+          'points': false,      // optional
+          'memberName': false,  // optional
+          'tier': false,        // optional
+        };
+      case 'informative':
+        return {
+          'description': true,
+          'instructions': false,
+        };
+      case 'other':
+        return <String, dynamic>{};
+      case 'loyalty':
+      default:
+        return null;
+    }
   }
 
   Future<void> _requestCameraPermission() async {
@@ -59,65 +135,136 @@ class _ScanCardScreenState extends State<ScanCardScreen>
 
   @override
   void dispose() {
-    _codeController.dispose();
+    _cardNumberController.dispose();
+    _cardFormManager?.dispose();
     _tabController.dispose();
     super.dispose();
   }
 
   void _validateCode(String code) {
     final memberId = code.trim();
-
-    final formats = widget.merchant.formats;
+    final formats = widget.provider.formats;
     final formatValid = CardFormatValidator().isValidFormat(memberId, formats);
 
     if (!formatValid) {
       setState(() {
         _isValid = false;
-        _errorMessage =
-            formats.isEmpty
-                ? localizations.invalid_card_not_empty_alphanumeric
-                : localizations.invalid_card_format;
       });
       return;
     }
 
-    // Duplicates val
+    // Check for duplicates
     final bloc = context.read<CardsBloc>();
     final duplicate = bloc.state.cards.any(
-      (c) => c.merchant.id == widget.merchant.id && c.memberId == memberId,
+          (c) => c.provider.id == widget.provider.id && c.memberId == memberId,
     );
     if (duplicate) {
       setState(() {
         _isValid = false;
-        _errorMessage = localizations.card_already_exists;
       });
       return;
     }
 
-    // Tudo OK
     setState(() {
       _isValid = true;
-      _errorMessage = null;
     });
   }
 
   void _handleCodeDetected(String code) {
-    _codeController.text = code;
+    _cardNumberController.text = code;
     _validateCode(code);
     if (_isValid) _tabController.animateTo(1);
   }
 
-  void _saveCard() {
-    if (!_isValid) return;
+  void _saveCard(Map<String, dynamic> allData) {
+    // Validate additional fields if needed
+    if (_cardFormManager != null && !_cardFormManager!.validateAll()) {
+      AppSnackBar.showError(localizations.verify_entered_data);
+      return;
+    }
 
-    final newCard = LoyaltyCard(
-      merchant: widget.merchant,
-      memberId: _codeController.text.trim(),
-    );
+    final newCard = _createCardModel(allData);
+
     context.read<CardsBloc>().add(AddCard(newCard));
 
+    NavigationService().navigatorKey.currentState
+        ?.popUntil((route) => route.isFirst);
     AppSnackBar.showSuccess(localizations.card_added_successfully);
-    Navigator.pop(context, true);
+  }
+
+  CardModel _createCardModel(Map<String, dynamic> allData) {
+    final cardType = _cardFormManager?.cardTypeData.category ?? 'loyalty';
+    final memberId = allData['cardNumber']?.toString().trim() ?? '';
+
+    switch (cardType.toLowerCase()) {
+      case 'sim':
+        return SimCard(
+          provider: widget.provider,
+          memberId: memberId,
+          phoneNumber: _getOptionalStringValue(allData, 'phone_number'),
+          pin: _getOptionalStringValue(allData, 'pin'),
+          puk: _getOptionalStringValue(allData, 'puk'),
+        );
+
+      case 'business':
+        return BusinessCard(
+          provider: widget.provider,
+          memberId: memberId,
+          displayName: _getOptionalStringValue(allData, 'name'),
+          company: _getOptionalStringValue(allData, 'company'),
+          email: _getOptionalStringValue(allData, 'email'),
+          phone: _getOptionalStringValue(allData, 'phone'),
+          position: _getOptionalStringValue(allData, 'position'),
+          address: _getOptionalStringValue(allData, 'address'),
+        );
+
+      case 'membership':
+        return MembershipCard(
+          provider: widget.provider,
+          memberId: memberId,
+          memberName: _getOptionalStringValue(allData, 'memberName'),
+          memberType: _getOptionalStringValue(allData, 'memberType'),
+          expiryDate: _getOptionalStringValue(allData, 'expiryDate'),
+        );
+
+      case 'rewards':
+        return RewardsCard(
+          provider: widget.provider,
+          memberId: memberId,
+          points: _getOptionalStringValue(allData, 'points'),
+          memberName: _getOptionalStringValue(allData, 'memberName'),
+          tier: _getOptionalStringValue(allData, 'tier'),
+        );
+
+      case 'informative':
+        return InformativeCard(
+          provider: widget.provider,
+          memberId: memberId,
+          description: _getOptionalStringValue(allData, 'description'),
+          instructions: allData['instructions'] is List
+              ? List<String>.from(allData['instructions'] as List<dynamic>)
+              : null,
+        );
+
+      case 'other':
+        return OtherCard(
+          provider: widget.provider,
+          memberId: memberId,
+          extraData: allData,
+        );
+
+      case 'loyalty':
+      default:
+        return LoyaltyCard(
+          provider: widget.provider,
+          memberId: memberId,
+        );
+    }
+  }
+
+  String? _getOptionalStringValue(Map<String, dynamic> data, String key) {
+    final value = data[key]?.toString().trim();
+    return (value == null || value.isEmpty) ? null : value;
   }
 
   Widget _buildScannerTab(ThemeData theme) {
@@ -172,12 +319,12 @@ class _ScanCardScreenState extends State<ScanCardScreen>
                 height: 30,
                 child: FittedBox(
                   fit: BoxFit.fill,
-                  child: SvgPicture.asset(widget.merchant.assetImagePath),
+                  child: SvgPicture.asset(widget.provider.assetImagePath),
                 ),
               ),
             ),
             const SizedBox(width: 8),
-            Text(widget.merchant.displayName),
+            Text(widget.provider.displayName),
           ],
         ),
       ),
@@ -205,13 +352,11 @@ class _ScanCardScreenState extends State<ScanCardScreen>
                 children: [
                   _buildScannerTab(theme),
                   ManualEntryView(
-                    controller: _codeController,
-                    errorMessage: _errorMessage,
-                    onChanged: _validateCode,
+                    cardNumberController: _cardNumberController,
                     onSave: _saveCard,
-                    isValid: _isValid,
-                    assetImagePath: widget.merchant.assetImagePath,
-                    formats: widget.merchant.formats,
+                    assetImagePath: widget.provider.assetImagePath,
+                    formats: widget.provider.formats,
+                    formManager: _cardFormManager,
                   ),
                 ],
               ),

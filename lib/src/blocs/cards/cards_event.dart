@@ -12,7 +12,7 @@ final class LoadCards extends CardsEvent {
 }
 
 final class AddCard extends CardsEvent {
-  final LoyaltyCard card;
+  final CardModel card;
 
   const AddCard(this.card);
 
