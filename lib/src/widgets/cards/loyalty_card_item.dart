@@ -14,21 +14,46 @@ class LoyaltyCardItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    final theme = Theme.of(context);
+
+    return InkWell(
       onTap: onTap,
-      child: Card(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: SvgPicture.asset(
-            card.merchant.assetImagePath,
-            width: double.infinity,
-            height: 200,
-            fit: BoxFit.fill,
+      borderRadius: BorderRadius.circular(12),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: Card(
+              margin: EdgeInsets.zero,
+              elevation: 2,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: AspectRatio(
+                  aspectRatio: 1.6,
+                  child: SvgPicture.asset(
+                    card.merchant.assetImagePath,
+                    width: double.infinity,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+            ),
           ),
-        ),
+          const SizedBox(height: 1),
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Text(
+              card.merchant.displayName,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
       ),
     );
   }

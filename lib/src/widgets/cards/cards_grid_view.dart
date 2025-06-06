@@ -33,7 +33,7 @@ class CardsGridView extends StatelessWidget {
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 4,
-              mainAxisSpacing: 12,
+              mainAxisSpacing: 20,
               childAspectRatio: 1.6,
             ),
             itemCount: cards.length,
