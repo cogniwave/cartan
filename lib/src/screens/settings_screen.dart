@@ -1,3 +1,4 @@
+import 'package:cartan/utils/custom_tap.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
@@ -34,51 +35,59 @@ class SettingsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 12),
-            ListTile(
-              title: Text(localizations.language),
-              subtitle: const LanguageSubtitle(),
-              leading: Icon(Icons.translate_outlined),
-              trailing: Icon(AntIcons.rightOutlined),
+
+            // Language
+            CustomTap(
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const LanguageScreen()),
                 );
               },
+              child: ListTile(
+                title: Text(localizations.language),
+                subtitle: const LanguageSubtitle(),
+                leading: const Icon(Icons.translate_outlined),
+                trailing: const Icon(AntIcons.rightOutlined),
+              ),
             ),
+
+            // Dark mode switch
             SwitchListTile(
               title: Text(localizations.dark_mode),
-              // subtitle: Text(localizations.theme_description),
               value: themeProvider.isDarkMode,
               onChanged: (value) {
                 Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
               },
               secondary: Icon(
-                  themeProvider.isDarkMode
-                      ? Icons.dark_mode
-                      : Icons.light_mode
+                themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode,
               ),
             ),
-            ListTile(
-              title: Text(localizations.font_size),
-              subtitle: const FontSizeSubtitle(),
-              leading: Icon(AntIcons.fontSizeOutlined),
-              trailing: Icon(AntIcons.rightOutlined),
+
+            // Font size
+            CustomTap(
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const FontSizeScreen()),
                 );
               },
+              child: ListTile(
+                title: Text(localizations.font_size),
+                subtitle: const FontSizeSubtitle(),
+                leading: const Icon(AntIcons.fontSizeOutlined),
+                trailing: Icon(AntIcons.rightOutlined),
+              ),
             ),
+
             Divider(
               color: theme.dividerTheme.color,
               thickness: theme.dividerTheme.thickness,
             ),
-            SizedBox(height: 12),
-            ListTile(
-              title: Text(localizations.privacy_policy),
-              leading: Icon(AntIcons.fileProtectOutlined),
+            const SizedBox(height: 12),
+
+            // Privacy Policy
+            CustomTap(
               onTap: () {
                 WebViewService.openPrivacyPolicy(
                   context,
@@ -89,10 +98,14 @@ class SettingsScreen extends StatelessWidget {
                   },
                 );
               },
+              child: ListTile(
+                title: Text(localizations.privacy_policy),
+                leading: const Icon(AntIcons.fileProtectOutlined),
+              ),
             ),
-            ListTile(
-              title: Text(localizations.terms_of_service),
-              leading: Icon(AntIcons.fileDoneOutlined),
+
+            // Terms of Service
+            CustomTap(
               onTap: () {
                 WebViewService.openTermsOfService(
                   context,
@@ -103,16 +116,24 @@ class SettingsScreen extends StatelessWidget {
                   },
                 );
               },
+              child: ListTile(
+                title: Text(localizations.terms_of_service),
+                leading: const Icon(AntIcons.fileDoneOutlined),
+              ),
             ),
-            ListTile(
-              title: Text(localizations.feedback),
-              leading: Icon(AntIcons.likeOutlined),
+
+            // Feedback
+            CustomTap(
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const FeedbackScreen()),
                 );
               },
+              child: ListTile(
+                title: Text(localizations.feedback),
+                leading: const Icon(AntIcons.likeOutlined),
+              ),
             ),
           ],
         ),

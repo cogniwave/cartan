@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cartan/src/models/loyalty_card.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:cartan/utils/custom_tap.dart';
 
 class LoyaltyCardItem extends StatelessWidget {
   final LoyaltyCard card;
@@ -16,7 +17,7 @@ class LoyaltyCardItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return GestureDetector(
+    return CustomTap(
       onTap: onTap,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -25,7 +26,9 @@ class LoyaltyCardItem extends StatelessWidget {
             child: Card(
               margin: EdgeInsets.zero,
               elevation: 2,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: AspectRatio(

@@ -1,3 +1,4 @@
+import 'package:cartan/utils/custom_tap.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cartan/src/models/merchant.dart';
@@ -106,9 +107,15 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
           ],
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.more_vert, size: 24),
-            onPressed: _navigateToOptions,
+          CustomTap(
+            onTap: _navigateToOptions,
+            child: const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Icon(
+                Icons.more_vert,
+                size: 24,
+              ),
+            ),
           ),
         ],
       ),

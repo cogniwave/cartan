@@ -1,5 +1,6 @@
 import 'package:cartan/src/services/navigation_service.dart';
 import 'package:cartan/src/widgets/common/search_results.dart';
+import 'package:cartan/utils/custom_tap.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -73,26 +74,32 @@ class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
                 final merchant = filteredMerchants[index];
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: ListTile(
-                    leading: SvgPicture.asset(
-                      width: 100,
-                      alignment: Alignment.centerLeft,
-                      merchant.assetImagePath,
-                      errorBuilder: (context, error, stackTrace) {
-                        return SvgPicture.asset('lib/assets/images/loyalty_cards/default_card.svg');
-                      },
-                    ),
-                    title: Text(merchant.displayName),
+                  child: CustomTap(
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ScanCardScreen(merchant: merchant)),
+                        MaterialPageRoute(
+                          builder: (context) => ScanCardScreen(merchant: merchant),
+                        ),
                       ).then((result) {
                         if (result == true) {
                           NavigationService().pop(true);
                         }
                       });
                     },
+                    child: ListTile(
+                      leading: SvgPicture.asset(
+                        merchant.assetImagePath,
+                        width: 100,
+                        alignment: Alignment.centerLeft,
+                        errorBuilder: (context, error, stackTrace) {
+                          return SvgPicture.asset(
+                            'lib/assets/images/loyalty_cards/default_card.svg',
+                          );
+                        },
+                      ),
+                      title: Text(merchant.displayName),
+                    ),
                   ),
                 );
               },

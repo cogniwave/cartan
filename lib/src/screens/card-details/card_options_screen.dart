@@ -1,4 +1,5 @@
 import 'package:cartan/src/services/navigation_service.dart';
+import 'package:cartan/utils/custom_tap.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
@@ -128,37 +129,53 @@ class CardOptionsScreen extends StatelessWidget {
               thickness: theme.dividerTheme.thickness,
             ),
 
-            SizedBox(height: 12),
-            ListTile(
-              title: Text(localizations.nearest_places),
-              leading: Icon(AntIcons.environmentOutlined),
+            const SizedBox(height: 12),
+            // Nearest places
+            CustomTap(
               onTap: () => UrlLauncher.launchExternalUrl(
                 context,
                 merchant.displayName,
                 urlType: 'map',
               ),
+              child: ListTile(
+                title: Text(localizations.nearest_places),
+                leading: Icon(AntIcons.environmentOutlined),
+              ),
             ),
-            ListTile(
-              title: Text(localizations.website),
-              leading: Icon(AntIcons.globalOutlined),
+
+            // Website
+            CustomTap(
               onTap: () => UrlLauncher.launchExternalUrl(
                 context,
                 merchant.website,
                 urlType: 'web',
               ),
+              child: ListTile(
+                title: Text(localizations.website),
+                leading: Icon(AntIcons.globalOutlined),
+              ),
             ),
+
             Divider(
               color: theme.dividerTheme.color,
               thickness: theme.dividerTheme.thickness,
             ),
-            ListTile(
-              title: Text(localizations.remove),
-              textColor: theme.colorScheme.error,
-              leading: Icon(AntIcons.deleteOutlined),
-              iconColor: theme.colorScheme.error,
+
+            // Remove
+            CustomTap(
               onTap: () {
                 _showDeleteDialog(context, card.id);
               },
+              child: ListTile(
+                title: Text(
+                  localizations.remove,
+                  style: TextStyle(color: theme.colorScheme.error),
+                ),
+                leading: Icon(
+                  AntIcons.deleteOutlined,
+                  color: theme.colorScheme.error,
+                ),
+              ),
             ),
           ],
         ),

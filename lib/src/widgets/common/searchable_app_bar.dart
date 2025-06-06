@@ -1,4 +1,5 @@
 import 'package:antdesign_icons/antdesign_icons.dart';
+import 'package:cartan/utils/custom_tap.dart';
 import 'package:flutter/material.dart';
 
 class SearchableAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -39,16 +40,14 @@ class _SearchableAppBarState extends State<SearchableAppBar> {
   }
 
   void _startSearch() {
-    setState(() {
-      _isSearching = true;
-    });
+    setState(() => _isSearching = true);
   }
 
   void _stopSearch() {
     setState(() {
       _isSearching = false;
       _searchController.clear();
-      widget.onSearch(''); // Clear search results
+      widget.onSearch('');
     });
   }
 
@@ -57,34 +56,32 @@ class _SearchableAppBarState extends State<SearchableAppBar> {
     final theme = Theme.of(context);
 
     return AppBar(
-      backgroundColor:
-          widget.backgroundColor ?? theme.appBarTheme.backgroundColor,
-      title:
-          _isSearching
-              ? TextField(
-                controller: _searchController,
-                autofocus: true,
-                decoration: InputDecoration(
-                  hintText: widget.searchHint,
-                  border: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  hintStyle: TextStyle(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                  ),
-                ),
-                style:
-                    widget.searchStyle ??
-                    TextStyle(color: theme.colorScheme.onSurface),
-                onChanged: widget.onSearch,
-              )
-              : GestureDetector(
-                onTap: _startSearch,
-                child: Text(widget.title, style: widget.titleStyle),
-              ),
+      backgroundColor: widget.backgroundColor ?? theme.appBarTheme.backgroundColor,
+      title: _isSearching
+          ? TextField(
+        controller: _searchController,
+        autofocus: true,
+        decoration: InputDecoration(
+          hintText: widget.searchHint,
+          border: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          hintStyle: TextStyle(
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+          ),
+        ),
+        style: widget.searchStyle ?? TextStyle(color: theme.colorScheme.onSurface),
+        onChanged: widget.onSearch,
+      )
+          : CustomTap(
+        key: const ValueKey('searchable_title'),
+        onTap: _startSearch,
+        child: Text(widget.title, style: widget.titleStyle),
+      ),
       actions: [
         if (_isSearching)
-          GestureDetector(
+          CustomTap(
+            key: const ValueKey('searchable_close'),
             onTap: _stopSearch,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -95,7 +92,8 @@ class _SearchableAppBarState extends State<SearchableAppBar> {
             ),
           )
         else
-          GestureDetector(
+          CustomTap(
+            key: const ValueKey('searchable_loupe'),
             onTap: _startSearch,
             child: Padding(
               padding: const EdgeInsets.all(8.0),

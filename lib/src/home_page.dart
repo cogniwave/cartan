@@ -1,3 +1,4 @@
+import 'package:cartan/utils/custom_tap.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -100,20 +101,26 @@ class _HomePageState extends State<HomePage> {
                   });
                 },
                 trailingActions: [
-                  IconButton(
-                    icon: Icon(viewType.icon, color: theme.colorScheme.primary),
-                    onPressed: () {
+                  CustomTap(
+                    onTap: () {
                       context.read<CardViewCubit>().toggleView();
                     },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(viewType.icon, color: theme.colorScheme.primary),
+                    ),
                   ),
-                  IconButton(
-                    icon: Icon(Icons.more_vert, color: theme.colorScheme.primary),
-                    onPressed: () {
+                  CustomTap(
+                    onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (_) => const SettingsScreen()),
                       );
                     },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(Icons.more_vert, color: theme.colorScheme.primary),
+                    ),
                   ),
                 ],
               ),
