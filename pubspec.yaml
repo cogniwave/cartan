@@ -1,7 +1,7 @@
 name: cartan
 description: "A Flutter app to manage all your loyalty cards in one place."
 publish_to: 'none'
-version: 1.0.0+2
+version: 1.0.1+3
 homepage: https://cartan.pt
 repository: https://github.com/cogniwave/cartan
 issue_tracker: https://github.com/cogniwave/cartan/issues

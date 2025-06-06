@@ -173,9 +173,12 @@ class _HomePageState extends State<HomePage> {
                             minimum: const EdgeInsets.all(16),
                             child: Align(
                               alignment: Alignment.bottomRight,
-                              child: addCardButton,
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 24),
+                                child: addCardButton,
+                              ),
                             ),
-                          ),
+                          )
                         ],
                       );
                     }
