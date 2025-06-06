@@ -1,3 +1,4 @@
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -129,13 +130,17 @@ class _HomePageState extends State<HomePage> {
                     } else if (state.status == Status.success) {
                       final cards = state.cards;
 
-                      // Filter cards based on search query if needed
+                      // Filter cards based on search query
+                      final queryNormalized = removeDiacritics(_searchQuery.toLowerCase());
+
                       final filteredCards = _searchQuery.isEmpty
                           ? cards
-                          : cards.where((card) =>
-                      card.name.toLowerCase().contains(_searchQuery) ||
-                          card.merchant.displayName.toLowerCase().contains(_searchQuery)
-                      ).toList();
+                          : cards.where((card) {
+                        final nameNormalized = removeDiacritics(card.name.toLowerCase());
+                        final merchantNameNormalized = removeDiacritics(card.merchant.displayName.toLowerCase());
+                        return nameNormalized.contains(queryNormalized) ||
+                            merchantNameNormalized.contains(queryNormalized);
+                      }).toList();
 
                       if (cards.isEmpty) {
                         return ListView(
