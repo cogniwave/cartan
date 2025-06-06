@@ -95,15 +95,20 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
               height: 40,
             ),
             const SizedBox(width: 8),
-            Text(widget.merchant.displayName),
+            Flexible(
+              child: Text(
+                widget.merchant.displayName,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: theme.textTheme.titleMedium,
+              ),
+            ),
           ],
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.more_vert, size: 24),
-            onPressed: () {
-              _navigateToOptions();
-            },
+            onPressed: _navigateToOptions,
           ),
         ],
       ),
@@ -155,7 +160,7 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
                 child: CodeDisplayWidget(
                   cardNumber: widget.card.memberId,
                   showQrCode: _showQrCode,
-                  onZoomPressed: _openFullScreenCode, // Usar a função já definida
+                  onZoomPressed: _openFullScreenCode,
                 ),
               ),
             ],
