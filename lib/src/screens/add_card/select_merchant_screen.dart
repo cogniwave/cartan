@@ -1,5 +1,6 @@
 import 'package:cartan/src/services/navigation_service.dart';
 import 'package:cartan/src/widgets/common/search_results.dart';
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cartan/src/repositories/merchants_repository.dart';
@@ -18,9 +19,6 @@ class SelectMerchantScreen extends StatefulWidget {
 class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
   String _searchQuery = '';
 
-  void _startSearch() {
-    // Called when title is tapped. Search logic is already handled in SearchableAppBar
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,10 +51,15 @@ class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
             merchants.sort((a, b) => a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase()));
 
             // Filter merchants based on search query
-            final filteredMerchants =
-            _searchQuery.isEmpty
+            final queryNormalized = removeDiacritics(_searchQuery.toLowerCase());
+
+            final filteredMerchants = _searchQuery.isEmpty
                 ? merchants
-                : merchants.where((merchant) => merchant.displayName.toLowerCase().contains(_searchQuery)).toList();
+                : merchants.where((merchant) {
+              final nameNormalized = removeDiacritics(merchant.displayName.toLowerCase());
+              return nameNormalized.contains(queryNormalized);
+            }).toList();
+
 
             // Show message when no merchants match the search query
             if (filteredMerchants.isEmpty && _searchQuery.isNotEmpty) {

@@ -401,7 +401,7 @@
   },
   {
     "id": "mcdonalds",
-    "displayName": "MacDonald's",
+    "displayName": "McDonald's",
     "formats": [
       "^\\d{10}$"
     ],
