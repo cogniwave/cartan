@@ -200,6 +200,7 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
             localizations.sim_card_information,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
+              color: theme.colorScheme.primary,
             ),
           ),
           const SizedBox(height: 8),
@@ -215,17 +216,20 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
       child: Row(
         children: [
           SizedBox(
-            width: 60,
+            width: 110,
             child: Text(
               '$label:',
               style: theme.textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w500,
+                color: theme.colorScheme.primary,
               ),
             ),
           ),
           Text(
             value,
-            style: theme.textTheme.bodyMedium,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.primary,
+            ),
           ),
         ],
       ),
