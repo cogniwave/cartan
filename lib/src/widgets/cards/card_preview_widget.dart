@@ -14,7 +14,6 @@ class CardPreviewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -35,7 +34,7 @@ class CardPreviewWidget extends StatelessWidget {
           if (formManager?.cardTypeData.displayName != null)
             Text(
               formManager!.cardTypeData.displayName!,
-              style: theme.textTheme.titleMedium,
+              style: Theme.of(context).textTheme.titleMedium,
               textAlign: TextAlign.center,
             ),
         ],

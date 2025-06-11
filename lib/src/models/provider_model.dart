@@ -87,14 +87,6 @@ class SimProvider extends Provider {
   }
 
   // SIM-specific methods
-  List<String> get supportedNetworks =>
-      List<String>.from(metadata['supportedNetworks'] as List<dynamic>? ?? []);
-
-  String? get networkType => metadata['networkType'] as String?; // 4G, 5G, etc.
-  bool get supportsEsim => metadata['supportsEsim'] as bool? ?? false;
-  String? get countryCode => metadata['countryCode'] as String?;
-
-  // Helper methods for SIM validation
   bool isValidCardNumber(String cardNumber) {
     // Basic validation (19-20 digits)
     return RegExp(r'^\d{19,20}$').hasMatch(cardNumber);
