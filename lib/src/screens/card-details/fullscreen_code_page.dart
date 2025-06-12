@@ -91,47 +91,49 @@ class _FullScreenCodePageState extends State<FullScreenCodePage> {
           ),
         ),
       ),
-      body: Center(
-        child: Container(
-          width: containerWidth,
-          height: containerHeight,
-          padding: const EdgeInsets.all(paddingAll),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: widget.showQrCode
-          // QR Code
-              ? Center(
-            child: QrImageView(
-              data: widget.cardNumber,
-              version: QrVersions.auto,
-              size: innerWidth.clamp(200.0, 400.0),
-              backgroundColor: Colors.white,
-              padding: EdgeInsets.zero,
+      body: SafeArea(
+        child: Center(
+          child: Container(
+            width: containerWidth,
+            height: containerHeight,
+            padding: const EdgeInsets.all(paddingAll),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
-          )
-          // Barcode
-              : RotatedBox(
-            quarterTurns: 1,
-            child: SizedBox(
-              width: innerHeight,
-              height: innerWidth,
-              child: BarcodeWidget(
-                barcode: Barcode.code128(),
+            child: widget.showQrCode
+            // QR Code
+                ? Center(
+              child: QrImageView(
                 data: widget.cardNumber,
+                version: QrVersions.auto,
+                size: innerWidth.clamp(200.0, 400.0),
+                backgroundColor: Colors.white,
+                padding: EdgeInsets.zero,
+              ),
+            )
+            // Barcode
+                : RotatedBox(
+              quarterTurns: 1,
+              child: SizedBox(
                 width: innerHeight,
                 height: innerWidth,
-                drawText: false,
-                color: Colors.black,
-                backgroundColor: Colors.white,
+                child: BarcodeWidget(
+                  barcode: Barcode.code128(),
+                  data: widget.cardNumber,
+                  width: innerHeight,
+                  height: innerWidth,
+                  drawText: false,
+                  color: Colors.black,
+                  backgroundColor: Colors.white,
+                ),
               ),
             ),
           ),
