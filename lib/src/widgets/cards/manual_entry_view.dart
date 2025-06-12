@@ -15,6 +15,7 @@ class ManualEntryView extends StatefulWidget {
   final String assetImagePath;
   final List<String> formats;
   final CardFormManager? formManager;
+  final String? cardType;
 
   const ManualEntryView({
     super.key,
@@ -23,6 +24,7 @@ class ManualEntryView extends StatefulWidget {
     required this.assetImagePath,
     required this.formats,
     this.formManager,
+    this.cardType,
   });
 
   @override
@@ -47,6 +49,7 @@ class _ManualEntryViewState extends State<ManualEntryView> {
       localizations: AppLocalizations.of(context)!,
       context: context,
       formManager: widget.formManager,
+      cardType: widget.cardType,
     );
   }
 
@@ -58,13 +61,42 @@ class _ManualEntryViewState extends State<ManualEntryView> {
     return (match != null) ? int.parse(match.group(1)!) : 0;
   }
 
-  // Handle save action
+  String? _validateCardNumber(String? value) {
+    final localizations = AppLocalizations.of(context)!;
+
+    if (value?.trim().isEmpty == true) {
+      return localizations.required_field;
+    }
+
+    final trimmedValue = value!.trim();
+
+    final validationError = _formatValidator.validateField(
+      'card_number',
+      trimmedValue,
+      localizations,
+      cardType: widget.cardType,
+    );
+
+    if (validationError != null) {
+      return validationError;
+    }
+
+    final hasSpecificFormat = widget.formats.isNotEmpty;
+    if (hasSpecificFormat && !_formatValidator.isValidFormat(trimmedValue, widget.formats)) {
+      return localizations.invalid_card_format;
+    }
+
+    return null;
+  }
+
   void _handleSave() {
+    final localizations = AppLocalizations.of(context)!;
+
     if (!_formKey.currentState!.validate()) return;
 
     if (widget.formManager != null && !widget.formManager!.validateAll()) {
       setState(() {});
-      AppSnackBar.showError(AppLocalizations.of(context)!.verify_entered_data);
+      AppSnackBar.showError(localizations.verify_entered_data);
       return;
     }
 
@@ -79,12 +111,30 @@ class _ManualEntryViewState extends State<ManualEntryView> {
     widget.onSave(allData);
   }
 
+  List<TextInputFormatter> _getCardNumberInputFormatters() {
+    final hasSpecificFormat = widget.formats.isNotEmpty;
+    final expectedDigits = hasSpecificFormat ? _extractExpectedDigits() : null;
+
+    List<TextInputFormatter> formatters = [];
+
+    if (hasSpecificFormat && expectedDigits != null && expectedDigits > 0) {
+      final isNumericOnly = widget.formats.any((format) =>
+      format.contains(r'\d') && !format.contains(r'[A-Za-z]'));
+
+      if (isNumericOnly) {
+        formatters.add(FilteringTextInputFormatter.digitsOnly);
+      }
+
+      formatters.add(LengthLimitingTextInputFormatter(expectedDigits));
+    }
+
+    return formatters;
+  }
+
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final hasSpecificFormat = widget.formats.isNotEmpty;
-    final expectedDigits = hasSpecificFormat ? _extractExpectedDigits() : null;
     final additionalFields = widget.formManager?.fields ?? [];
 
     return Padding(
@@ -104,7 +154,6 @@ class _ManualEntryViewState extends State<ManualEntryView> {
               ),
               const SizedBox(height: 32),
 
-              // Card Number Field
               TextFormField(
                 controller: widget.cardNumberController,
                 decoration: InputDecoration(
@@ -114,24 +163,10 @@ class _ManualEntryViewState extends State<ManualEntryView> {
                   prefixIcon: const Icon(AntIcons.creditCardOutlined),
                 ),
                 keyboardType: TextInputType.text,
-                inputFormatters: (hasSpecificFormat && expectedDigits != null && expectedDigits > 0)
-                    ? [
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(expectedDigits),
-                ]
-                    : [],
-                validator: (value) {
-                  if (value?.trim().isEmpty == true) {
-                    return localizations.required_field;
-                  }
-                  if (hasSpecificFormat && !_formatValidator.isValidFormat(value!.trim(), widget.formats)) {
-                    return localizations.invalid_card_format;
-                  }
-                  return null;
-                },
+                inputFormatters: _getCardNumberInputFormatters(),
+                validator: _validateCardNumber,
               ),
 
-              // Additional Fields (built by FormFieldBuilder)
               if (additionalFields.isNotEmpty) ...[
                 const SizedBox(height: 16),
                 ...additionalFields.map(

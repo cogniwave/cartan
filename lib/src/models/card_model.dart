@@ -51,9 +51,11 @@ abstract class CardModel {
         ??
         LoyaltyCard.fromJson(json, provider: provider);
   }
+
+  Map<String, dynamic> getSpecificData() => metadata;
 }
 
-/// Loyalty card
+// Loyalty card
 class LoyaltyCard extends CardModel {
   LoyaltyCard({
     super.id,
@@ -81,7 +83,7 @@ class LoyaltyCard extends CardModel {
   }
 }
 
-/// SIM card with specific functionalities
+// SIM card
 class SimCard extends CardModel {
   SimCard({
     super.id,
@@ -102,14 +104,16 @@ class SimCard extends CardModel {
     category: 'simple',
   );
 
-  /// Specific getters for SIM cards
   String? get phoneNumber => metadata['phone_number'] as String?;
   String? get pin => metadata['pin'] as String?;
   String? get puk => metadata['puk'] as String?;
 
-  /// SIM-specific validation
-  bool get hasValidPin => pin != null && pin!.isNotEmpty;
-  bool get hasValidPuk => puk != null && puk!.isNotEmpty;
+  @override
+  Map<String, dynamic> getSpecificData() => {
+    'phone_number': phoneNumber,
+    'pin': pin,
+    'puk': puk,
+  };
 
   factory SimCard.fromJson(
       Map<String, dynamic> json, {
@@ -131,7 +135,7 @@ class SimCard extends CardModel {
   }
 }
 
-/// Business card
+// Business card
 class BusinessCard extends CardModel {
   BusinessCard({
     super.id,
@@ -156,17 +160,20 @@ class BusinessCard extends CardModel {
     category: 'business',
   );
 
-  /// Business-specific getters
   String? get company => metadata['company'] as String?;
   String? get position => metadata['position'] as String?;
   String? get email => metadata['email'] as String?;
   String? get phone => metadata['phone'] as String?;
   String? get address => metadata['address'] as String?;
 
-  /// method combining fields
-  String get fullTitle => position != null && company != null
-      ? '$position at $company'
-      : position ?? company ?? '';
+  @override
+  Map<String, dynamic> getSpecificData() => {
+    'company': company,
+    'position': position,
+    'email': email,
+    'phone': phone,
+    'address': address,
+  };
 
   factory BusinessCard.fromJson(
       Map<String, dynamic> json, {
@@ -190,7 +197,7 @@ class BusinessCard extends CardModel {
   }
 }
 
-/// Membership card
+// Membership card
 class MembershipCard extends CardModel {
   MembershipCard({
     super.id,
@@ -211,19 +218,16 @@ class MembershipCard extends CardModel {
     category: 'membership',
   );
 
-  /// Membership-specific getters
   String? get memberName => metadata['memberName'] as String?;
   String? get memberType => metadata['memberType'] as String?;
   String? get expiryDate => metadata['expiryDate'] as String?;
 
-  bool get isExpired {
-    if (expiryDate == null) return false;
-    final exp = DateTime.tryParse(expiryDate!);
-    return exp == null ? false : DateTime.now().isAfter(exp);
-  }
-
-  /// Validate membership ID or name if needed
-  bool get hasValidMemberName => memberName != null && memberName!.isNotEmpty;
+  @override
+  Map<String, dynamic> getSpecificData() => {
+    'memberName': memberName,
+    'memberType': memberType,
+    'expiryDate': expiryDate,
+  };
 
   factory MembershipCard.fromJson(
       Map<String, dynamic> json, {
@@ -245,7 +249,7 @@ class MembershipCard extends CardModel {
   }
 }
 
-/// Rewards card
+// Rewards card
 class RewardsCard extends CardModel {
   RewardsCard({
     super.id,
@@ -266,15 +270,16 @@ class RewardsCard extends CardModel {
     category: 'rewards',
   );
 
-  /// Rewards-specific getters
   String? get points => metadata['points'] as String?;
   String? get memberName => metadata['memberName'] as String?;
   String? get tier => metadata['tier'] as String?;
 
-  bool get isRedeemable {
-    final pts = int.tryParse(points ?? '') ?? 0;
-    return pts > 0;
-  }
+  @override
+  Map<String, dynamic> getSpecificData() => {
+    'points': points,
+    'memberName': memberName,
+    'tier': tier,
+  };
 
   factory RewardsCard.fromJson(
       Map<String, dynamic> json, {
@@ -296,7 +301,7 @@ class RewardsCard extends CardModel {
   }
 }
 
-/// Informative card
+// Informative card
 class InformativeCard extends CardModel {
   InformativeCard({
     super.id,
@@ -315,12 +320,17 @@ class InformativeCard extends CardModel {
     category: 'informative',
   );
 
-  /// Informative-specific getters
   String? get description => metadata['description'] as String?;
   List<String>? get instructions =>
       metadata['instructions'] is List
           ? List<String>.from(metadata['instructions'] as List<dynamic>)
           : null;
+
+  @override
+  Map<String, dynamic> getSpecificData() => {
+    'description': description,
+    'instructions': instructions,
+  };
 
   factory InformativeCard.fromJson(
       Map<String, dynamic> json, {
@@ -343,7 +353,7 @@ class InformativeCard extends CardModel {
   }
 }
 
-/// Other card (generic catch-all)
+// Other cards
 class OtherCard extends CardModel {
   OtherCard({
     super.id,
@@ -358,7 +368,6 @@ class OtherCard extends CardModel {
     category: 'other',
   );
 
-  /// All extra data passed in
   Map<String, dynamic>? get extraData => metadata;
 
   factory OtherCard.fromJson(
@@ -379,7 +388,7 @@ class OtherCard extends CardModel {
   }
 }
 
-/// Mapper to facilitate instance creation based on `type`
+// Mapper
 typedef CardFactoryFunction = CardModel Function(
     Map<String, dynamic> json, {
     required Provider provider,
@@ -395,7 +404,7 @@ const Map<String, CardFactoryFunction> typeToClass = {
   'other': OtherCard.fromJson,
 };
 
-/// Helper class for card creation
+// Helper class
 class CardHelper {
   static CardModel create({
     required String type,
@@ -404,67 +413,13 @@ class CardHelper {
     required String memberId,
     Map<String, dynamic>? extraData,
   }) {
-    switch (type.toLowerCase()) {
-      case 'sim':
-        return SimCard(
-          provider: provider,
-          displayName: displayName,
-          memberId: memberId,
-          phoneNumber: extraData?['phone_number'] as String?,
-          pin: extraData?['pin'] as String?,
-          puk: extraData?['puk'] as String?,
-        );
-      case 'business':
-        return BusinessCard(
-          provider: provider,
-          displayName: displayName,
-          memberId: memberId,
-          company: extraData?['company'] as String?,
-          position: extraData?['position'] as String?,
-          email: extraData?['email'] as String?,
-          phone: extraData?['phone'] as String?,
-        );
-      case 'membership':
-        return MembershipCard(
-          provider: provider,
-          displayName: displayName,
-          memberId: memberId,
-          memberName: extraData?['memberName'] as String?,
-          memberType: extraData?['memberType'] as String?,
-          expiryDate: extraData?['expiryDate'] as String?,
-        );
-      case 'rewards':
-        return RewardsCard(
-          provider: provider,
-          displayName: displayName,
-          memberId: memberId,
-          points: extraData?['points'] as String?,
-          memberName: extraData?['memberName'] as String?,
-          tier: extraData?['tier'] as String?,
-        );
-      case 'informative':
-        return InformativeCard(
-          provider: provider,
-          displayName: displayName,
-          memberId: memberId,
-          description: extraData?['description'] as String?,
-          instructions: extraData?['instructions'] is List
-              ? List<String>.from(extraData!['instructions'] as List<dynamic>)
-              : null,
-        );
-      case 'other':
-        return OtherCard(
-          provider: provider,
-          displayName: displayName,
-          memberId: memberId,
-          extraData: extraData,
-        );
-      default:
-        return LoyaltyCard(
-          provider: provider,
-          displayName: displayName,
-          memberId: memberId,
-        );
-    }
+    final json = {
+      'type': type,
+      'displayName': displayName,
+      'memberId': memberId,
+      'metadata': extraData ?? {},
+    };
+
+    return CardModel.fromJson(json, provider: provider);
   }
 }

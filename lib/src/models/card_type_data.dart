@@ -17,14 +17,13 @@ class CardTypeData {
     this.metadata,
   });
 
-  // Factory constructors
-  factory CardTypeData.forSim({
+  factory CardTypeData.create({
     String? id,
     String? displayName,
     List<String>? formats,
     String? assetImagePath,
     String? website,
-    String? category,
+    required String category,
     Map<String, dynamic>? metadata,
   }) {
     return CardTypeData(
@@ -33,7 +32,7 @@ class CardTypeData {
       formats: formats,
       assetImagePath: assetImagePath,
       website: website,
-      category: category ?? 'sim',
+      category: category,
       metadata: metadata,
     );
   }
@@ -44,19 +43,33 @@ class CardTypeData {
     List<String>? formats,
     String? assetImagePath,
     String? website,
-    String? category,
     Map<String, dynamic>? metadata,
-  }) {
-    return CardTypeData(
-      id: id,
-      displayName: displayName,
-      formats: formats,
-      assetImagePath: assetImagePath,
-      website: website,
-      category: category ?? 'loyalty',
-      metadata: metadata,
-    );
-  }
+  }) => CardTypeData.create(
+    id: id,
+    displayName: displayName,
+    formats: formats,
+    assetImagePath: assetImagePath,
+    website: website,
+    category: 'loyalty',
+    metadata: metadata,
+  );
+
+  factory CardTypeData.forSim({
+    String? id,
+    String? displayName,
+    List<String>? formats,
+    String? assetImagePath,
+    String? website,
+    Map<String, dynamic>? metadata,
+  }) => CardTypeData.create(
+    id: id,
+    displayName: displayName,
+    formats: formats,
+    assetImagePath: assetImagePath,
+    website: website,
+    category: 'sim',
+    metadata: metadata,
+  );
 
   factory CardTypeData.forBusiness({
     String? id,
@@ -64,19 +77,16 @@ class CardTypeData {
     List<String>? formats,
     String? assetImagePath,
     String? website,
-    String? category,
     Map<String, dynamic>? metadata,
-  }) {
-    return CardTypeData(
-      id: id,
-      displayName: displayName,
-      formats: formats,
-      assetImagePath: assetImagePath,
-      website: website,
-      category: category ?? 'business',
-      metadata: metadata,
-    );
-  }
+  }) => CardTypeData.create(
+    id: id,
+    displayName: displayName,
+    formats: formats,
+    assetImagePath: assetImagePath,
+    website: website,
+    category: 'business',
+    metadata: metadata,
+  );
 
   factory CardTypeData.forMembership({
     String? id,
@@ -84,19 +94,16 @@ class CardTypeData {
     List<String>? formats,
     String? assetImagePath,
     String? website,
-    String? category,
     Map<String, dynamic>? metadata,
-  }) {
-    return CardTypeData(
-      id: id,
-      displayName: displayName,
-      formats: formats,
-      assetImagePath: assetImagePath,
-      website: website,
-      category: category ?? 'membership',
-      metadata: metadata,
-    );
-  }
+  }) => CardTypeData.create(
+    id: id,
+    displayName: displayName,
+    formats: formats,
+    assetImagePath: assetImagePath,
+    website: website,
+    category: 'membership',
+    metadata: metadata,
+  );
 
   factory CardTypeData.forRewards({
     String? id,
@@ -104,19 +111,16 @@ class CardTypeData {
     List<String>? formats,
     String? assetImagePath,
     String? website,
-    String? category,
     Map<String, dynamic>? metadata,
-  }) {
-    return CardTypeData(
-      id: id,
-      displayName: displayName,
-      formats: formats,
-      assetImagePath: assetImagePath,
-      website: website,
-      category: category ?? 'rewards',
-      metadata: metadata,
-    );
-  }
+  }) => CardTypeData.create(
+    id: id,
+    displayName: displayName,
+    formats: formats,
+    assetImagePath: assetImagePath,
+    website: website,
+    category: 'rewards',
+    metadata: metadata,
+  );
 
   factory CardTypeData.forInformative({
     String? id,
@@ -124,19 +128,16 @@ class CardTypeData {
     List<String>? formats,
     String? assetImagePath,
     String? website,
-    String? category,
     Map<String, dynamic>? metadata,
-  }) {
-    return CardTypeData(
-      id: id,
-      displayName: displayName,
-      formats: formats,
-      assetImagePath: assetImagePath,
-      website: website,
-      category: category ?? 'informative',
-      metadata: metadata,
-    );
-  }
+  }) => CardTypeData.create(
+    id: id,
+    displayName: displayName,
+    formats: formats,
+    assetImagePath: assetImagePath,
+    website: website,
+    category: 'informative',
+    metadata: metadata,
+  );
 
   factory CardTypeData.forOther({
     String? id,
@@ -144,19 +145,16 @@ class CardTypeData {
     List<String>? formats,
     String? assetImagePath,
     String? website,
-    String? category,
     Map<String, dynamic>? metadata,
-  }) {
-    return CardTypeData(
-      id: id,
-      displayName: displayName,
-      formats: formats,
-      assetImagePath: assetImagePath,
-      website: website,
-      category: category ?? 'other',
-      metadata: metadata,
-    );
-  }
+  }) => CardTypeData.create(
+    id: id,
+    displayName: displayName,
+    formats: formats,
+    assetImagePath: assetImagePath,
+    website: website,
+    category: 'other',
+    metadata: metadata,
+  );
 
   factory CardTypeData.fromJson(Map<String, dynamic> json) {
     return CardTypeData(
@@ -190,23 +188,8 @@ class CardTypeData {
   bool get isInformativeCard => category?.toLowerCase() == 'informative';
   bool get isOtherCard => category?.toLowerCase() == 'other';
 
-  // Helper method to get required fields for this card type
-  List<String> get requiredFields {
-    switch (category?.toLowerCase()) {
-      case 'sim':
-        return ['cardNumber', 'phone_number', 'pin', 'puk'];
-      case 'business':
-        return ['cardNumber', 'name', 'company', 'email', 'phone'];
-      case 'membership':
-        return ['cardNumber', 'memberName'];
-      case 'rewards':
-        return ['cardNumber', 'points'];
-      case 'informative':
-        return ['cardNumber', 'description'];
-      case 'other':
-        return ['cardNumber'];
-      default:
-        return ['cardNumber'];
-    }
-  }
+  bool get isKnownType => [
+    'sim', 'loyalty', 'business', 'membership',
+    'rewards', 'informative', 'other'
+  ].contains(category?.toLowerCase());
 }

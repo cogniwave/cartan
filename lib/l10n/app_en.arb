@@ -283,5 +283,9 @@
   "verify_entered_data": "Please verify the entered data",
   "@verify_entered_data": {
     "description": "Label for errors in entered data snackbar."
+  },
+  "invalid_phone_number": "Invalid phone number format",
+  "@invalid_phone_number": {
+    "description": "Error label for invalid phone number format."
   }
 }

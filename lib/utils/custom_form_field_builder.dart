@@ -4,21 +4,22 @@ import 'package:cartan/src/models/card_configuration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'card_format_validator.dart';
+import 'package:cartan/utils/card_format_validator.dart';
 
 class CustomFormFieldBuilder {
   final CardFormManager? formManager;
   final AppLocalizations localizations;
   final BuildContext context;
   final CardFormatValidator _validator = CardFormatValidator();
+  final String? cardType;
 
   CustomFormFieldBuilder({
     required this.localizations,
     required this.context,
     this.formManager,
+    this.cardType,
   });
 
-  // Main field construction method
   Widget buildField(FormFieldConfig field) {
     final controller = formManager?.getController(field.key);
     if (controller == null) return const SizedBox.shrink();
@@ -27,21 +28,24 @@ class CustomFormFieldBuilder {
     final formatters = _buildInputFormatters(field);
     final validator = _buildValidator(field);
 
-    return _buildTextFormField(field, controller, decoration, formatters, validator);
-  }
-
-  // Input decoration builder
-  InputDecoration _buildInputDecoration(FormFieldConfig field) {
-    return InputDecoration(
-      labelText: _getLocalizedText(field.labelKey),
-      hintText: field.hintKey != null ? _getLocalizedText(field.hintKey!) : null,
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-      errorText: formManager?.getFieldError(field.key),
-      prefixIcon: _getFieldIcon(field.key),
+    return _buildTextFormField(
+      field,
+      controller,
+      decoration,
+      formatters,
+      validator,
     );
   }
 
-  // Input formatters builder
+  InputDecoration _buildInputDecoration(FormFieldConfig field) {
+    return InputDecoration(
+      labelText: _getLocalizedText(field.labelKey),
+      hintText:
+      field.hintKey != null ? _getLocalizedText(field.hintKey!) : null,
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+    );
+  }
+
   List<TextInputFormatter> _buildInputFormatters(FormFieldConfig field) {
     List<TextInputFormatter> formatters = [];
 
@@ -50,9 +54,19 @@ class CustomFormFieldBuilder {
         formatters.add(FilteringTextInputFormatter.digitsOnly);
         break;
       case InputType.phone:
-        formatters.add(FilteringTextInputFormatter.allow(RegExp(r'[0-9+\-\s()]')));
+        formatters.add(
+          FilteringTextInputFormatter.allow(RegExp(r'[0-9+\-\s()]')),
+        );
         break;
-      default:
+      case InputType.email:
+        formatters.add(
+          FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9@._-]')),
+        );
+        break;
+      case InputType.text:
+      case InputType.multiline:
+      case InputType.date:
+      case InputType.dropdown:
         break;
     }
 
@@ -63,21 +77,34 @@ class CustomFormFieldBuilder {
     return formatters;
   }
 
-  // Validator builder
   String? Function(String?)? _buildValidator(FormFieldConfig field) {
-    if (!field.isRequired) return null;
+    if (!field.isRequired && field.inputType != InputType.email) {
+      return (value) {
+        if (value?.trim().isEmpty == true) return null;
+        return _validator.validateField(
+          field.key,
+          value!,
+          localizations,
+          cardType: cardType,
+          inputType: field.inputType,
+        );
+      };
+    }
 
     return (value) {
       if (value?.trim().isEmpty == true) {
         return localizations.required_field;
       }
-
-      // Uses CardFormatValidator for specific validations
-      return _validator.validateField(field.key, field.inputType, value!, localizations);
+      return _validator.validateField(
+        field.key,
+        value!,
+        localizations,
+        cardType: cardType,
+        inputType: field.inputType,
+      );
     };
   }
 
-  // TextFormField widget builder
   Widget _buildTextFormField(
       FormFieldConfig field,
       TextEditingController controller,
@@ -85,60 +112,99 @@ class CustomFormFieldBuilder {
       List<TextInputFormatter> formatters,
       String? Function(String?)? validator,
       ) {
-    switch (field.inputType) {
-      case InputType.numeric:
+    if (field.inputType == InputType.dropdown && field.options != null) {
+      return _buildDropdownField(field, controller, decoration, validator);
+    }
+
+    if (field.inputType == InputType.date) {
+      return _buildDateField(field, controller, decoration, validator);
+    }
+
+    final iconData = _getFieldIconData(field.key);
+
+    return FormField<String>(
+      validator: validator,
+      initialValue: controller.text,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      builder: (FormFieldState<String> fieldState) {
         return TextFormField(
           controller: controller,
-          decoration: decoration,
-          keyboardType: TextInputType.number,
+          keyboardType: _getKeyboardType(field.inputType),
+          maxLines: field.inputType == InputType.multiline ? 3 : 1,
           inputFormatters: formatters,
-          validator: validator,
-        );
-      case InputType.phone:
-        return TextFormField(
-          controller: controller,
-          decoration: decoration,
-          keyboardType: TextInputType.phone,
-          inputFormatters: formatters,
-          validator: validator,
-        );
-      case InputType.email:
-        return TextFormField(
-          controller: controller,
-          decoration: decoration,
-          keyboardType: TextInputType.emailAddress,
-          validator: validator,
-        );
-      case InputType.multiline:
-        return TextFormField(
-          controller: controller,
-          decoration: decoration,
-          maxLines: 3,
-          validator: validator,
-        );
-      case InputType.date:
-        return TextFormField(
-          controller: controller,
           decoration: decoration.copyWith(
-            suffixIcon: IconButton(
-              icon: const Icon(Icons.calendar_today),
-              onPressed: () => _selectDate(controller),
-            ),
+            prefixIcon: iconData != null
+                ? Icon(iconData, color: fieldState.hasError ? Theme.of(context).colorScheme.error : null)
+                : null,
+            errorText: fieldState.errorText,
           ),
-          readOnly: true,
-          validator: validator,
+          onChanged: (value) {
+            fieldState.didChange(value);
+            // controller.text = value;
+          },
         );
-      default:
-        return TextFormField(
-          controller: controller,
-          decoration: decoration,
-          inputFormatters: formatters,
-          validator: validator,
+      },
+    );
+  }
+
+  Widget _buildDropdownField(
+      FormFieldConfig field,
+      TextEditingController controller,
+      InputDecoration decoration,
+      String? Function(String?)? validator,
+      ) {
+    return DropdownButtonFormField<String>(
+      value: controller.text.isEmpty ? null : controller.text,
+      decoration: decoration,
+      items: field.options!.map((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
         );
+      }).toList(),
+      onChanged: (String? newValue) {
+        controller.text = newValue ?? '';
+      },
+      validator: validator,
+    );
+  }
+
+  Widget _buildDateField(
+      FormFieldConfig field,
+      TextEditingController controller,
+      InputDecoration decoration,
+      String? Function(String?)? validator,
+      ) {
+    return TextFormField(
+      controller: controller,
+      decoration: decoration.copyWith(
+        suffixIcon: IconButton(
+          icon: const Icon(Icons.calendar_today),
+          onPressed: () => _selectDate(controller),
+        ),
+      ),
+      readOnly: true,
+      validator: validator,
+    );
+  }
+
+  TextInputType _getKeyboardType(InputType inputType) {
+    switch (inputType) {
+      case InputType.numeric:
+        return TextInputType.number;
+      case InputType.phone:
+        return TextInputType.phone;
+      case InputType.email:
+        return TextInputType.emailAddress;
+      case InputType.multiline:
+        return TextInputType.multiline;
+      case InputType.text:
+      case InputType.date:
+      case InputType.dropdown:
+        return TextInputType.text;
     }
   }
 
-  // Date picker helper method
   Future<void> _selectDate(TextEditingController controller) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -151,45 +217,47 @@ class CustomFormFieldBuilder {
     }
   }
 
-  // Localization methods
   String _getLocalizedText(String key) {
     final localizationMap = {
-      // SIM Card fields
       'phone_number': localizations.phone_number,
       'phone_number_hint': localizations.phone_number_hint,
       'pin_label': localizations.pin_label,
       'pin_hint': localizations.pin_hint,
       'puk_label': localizations.puk_label,
       'puk_hint': localizations.puk_hint,
-      // Common fields
       'card_number': localizations.card_number,
       'card_number_hint': localizations.card_number_hint,
     };
+
     return localizationMap[key] ?? key;
   }
 
-  // Icon methods
-  Icon? _getFieldIcon(String fieldKey) {
-    switch (fieldKey.toLowerCase()) {
-      case 'email':
-        return const Icon(AntIcons.mailOutlined);
-      case 'phone':
-      case 'phone_number':
-        return const Icon(AntIcons.phoneOutlined);
-      case 'name':
-      case 'membername':
-        return const Icon(AntIcons.manOutlined);
-      case 'company':
-        return const Icon(AntIcons.buildOutlined);
-      case 'address':
-        return const Icon(AntIcons.contactsOutlined);
-      case 'points':
-        return const Icon(AntIcons.starOutlined);
-      case 'pin':
-      case 'puk':
-        return const Icon(AntIcons.lockOutlined);
-      default:
-        return null;
-    }
+  static const Map<String, IconData> _iconMap = {
+    'email': AntIcons.mailOutlined,
+    'phone': AntIcons.phoneOutlined,
+    'phone_number': AntIcons.phoneOutlined,
+    'name': AntIcons.manOutlined,
+    'membername': AntIcons.manOutlined,
+    'member_name': AntIcons.manOutlined,
+    'company': AntIcons.buildOutlined,
+    'position': AntIcons.userOutlined,
+    'address': AntIcons.contactsOutlined,
+    'points': AntIcons.starOutlined,
+    'tier': AntIcons.crownOutlined,
+    'pin': AntIcons.lockOutlined,
+    'puk': AntIcons.lockOutlined,
+    'cardnumber': AntIcons.creditCardOutlined,
+    'card_number': AntIcons.creditCardOutlined,
+    'cardNumber': AntIcons.creditCardOutlined,
+    'expirydate': AntIcons.calendarOutlined,
+    'expiry_date': AntIcons.calendarOutlined,
+    'description': AntIcons.fileTextOutlined,
+    'instructions': AntIcons.bookOutlined,
+    'membertype': AntIcons.tagOutlined,
+    'member_type': AntIcons.tagOutlined,
+  };
+
+  IconData? _getFieldIconData(String fieldKey) {
+    return _iconMap[fieldKey.toLowerCase()];
   }
 }
