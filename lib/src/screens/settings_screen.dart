@@ -24,10 +24,7 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(localizations.settings),
-        leading: IconButton(
-          icon: const Icon(AntIcons.leftOutlined),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        leading: IconButton(icon: const Icon(AntIcons.leftOutlined), onPressed: () => Navigator.of(context).pop()),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -39,10 +36,7 @@ class SettingsScreen extends StatelessWidget {
             // Language
             CustomTap(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LanguageScreen()),
-                );
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const LanguageScreen()));
               },
               child: ListTile(
                 title: Text(localizations.language),
@@ -59,18 +53,13 @@ class SettingsScreen extends StatelessWidget {
               onChanged: (value) {
                 Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
               },
-              secondary: Icon(
-                themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode,
-              ),
+              secondary: Icon(themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode),
             ),
 
             // Font size
             CustomTap(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const FontSizeScreen()),
-                );
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const FontSizeScreen()));
               },
               child: ListTile(
                 title: Text(localizations.font_size),
@@ -80,10 +69,7 @@ class SettingsScreen extends StatelessWidget {
               ),
             ),
 
-            Divider(
-              color: theme.dividerTheme.color,
-              thickness: theme.dividerTheme.thickness,
-            ),
+            Divider(color: theme.dividerTheme.color, thickness: theme.dividerTheme.thickness),
             const SizedBox(height: 12),
 
             // Privacy Policy
@@ -107,9 +93,9 @@ class SettingsScreen extends StatelessWidget {
             // Terms of Service
             CustomTap(
               onTap: () {
-                WebViewService.openTermsOfService(
+                WebViewService.openTermsAndConditions(
                   context,
-                  title: localizations.terms_of_service,
+                  title: localizations.terms_and_conditions,
                   onError: (e) {
                     bugsnag.notify(e, StackTrace.current);
                     AppSnackBar.showError(localizations.error);
@@ -117,7 +103,7 @@ class SettingsScreen extends StatelessWidget {
                 );
               },
               child: ListTile(
-                title: Text(localizations.terms_of_service),
+                title: Text(localizations.terms_and_conditions),
                 leading: const Icon(AntIcons.fileDoneOutlined),
               ),
             ),
@@ -125,15 +111,9 @@ class SettingsScreen extends StatelessWidget {
             // Feedback
             CustomTap(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const FeedbackScreen()),
-                );
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const FeedbackScreen()));
               },
-              child: ListTile(
-                title: Text(localizations.feedback),
-                leading: const Icon(AntIcons.likeOutlined),
-              ),
+              child: ListTile(title: Text(localizations.feedback), leading: const Icon(AntIcons.likeOutlined)),
             ),
           ],
         ),

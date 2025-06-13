@@ -48,9 +48,17 @@
   "@font_size": {
     "description": "Menu option for app text size."
   },
-  "terms_of_service": "Terms of service",
-  "@terms_of_service": {
+  "terms_and_conditions_url": "https://firebasestorage.googleapis.com/v0/b/cartan-a6680.firebasestorage.app/o/en%2Fterms_conditions.html?alt=media",
+  "@terms_and_conditions_url": {
+    "description": "Link for terms and conditions in EN"
+  },
+  "terms_and_conditions": "Terms and conditions",
+  "@terms_and_conditions": {
     "description": "Menu option for app Terms of Service."
+  },
+  "privacy_policy_url": "https://firebasestorage.googleapis.com/v0/b/cartan-a6680.firebasestorage.app/o/en%2Fprivacy_policy.html?alt=media",
+  "@privacy_policy_url": {
+    "description": "Link for privacy policy in EN"
   },
   "privacy_policy": "Privacy Policy",
   "@privacy_policy": {
