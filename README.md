@@ -131,6 +131,12 @@ Whenever you add new keys in the `.arb` files (under `lib/l10n/`), run:
 
 ---
 
+## 📱 Store assets
+
+Store assets generated with [app-mockup](https://studio.app-mockup.com/). Base files exist in the project drive
+
+---
+
 ## 🤝 Contributing
 
 Feel free to open issues or pull requests. Thanks for helping improve Cartan!
