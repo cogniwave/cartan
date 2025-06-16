@@ -35,6 +35,7 @@ class _ManualEntryViewState extends State<ManualEntryView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late final CardFormatValidator _formatValidator;
   late CustomFormFieldBuilder _fieldBuilder;
+  bool _showOptionalFields = false;
 
   @override
   void initState() {
@@ -53,99 +54,62 @@ class _ManualEntryViewState extends State<ManualEntryView> {
     );
   }
 
-  // Extract expected digits from format pattern
-  int _extractExpectedDigits() {
-    if (widget.formats.isEmpty) return 0;
-    final pattern = widget.formats.first;
-    final match = RegExp(r'\{(\d+),').firstMatch(pattern);
-    return (match != null) ? int.parse(match.group(1)!) : 0;
-  }
+  bool get _isCardNumberRequired => widget.cardType?.toLowerCase() != 'sim';
 
   String? _validateCardNumber(String? value) {
-    final localizations = AppLocalizations.of(context)!;
-
-    if (value?.trim().isEmpty == true) {
-      return localizations.required_field;
+    final loc = AppLocalizations.of(context)!;
+    final val = value?.trim() ?? '';
+    if (!_isCardNumberRequired && val.isEmpty) return null;
+    if (_isCardNumberRequired && val.isEmpty) return loc.required_field;
+    if (val.isNotEmpty) {
+      final err = _formatValidator.validateField(
+        'card_number',
+        val,
+        loc,
+        cardType: widget.cardType,
+        isRequired: _isCardNumberRequired,
+      );
+      if (err != null) return err;
+      if (widget.formats.isNotEmpty && !_formatValidator.isValidFormat(val, widget.formats)) {
+        return loc.invalid_card_format;
+      }
     }
-
-    final trimmedValue = value!.trim();
-
-    final validationError = _formatValidator.validateField(
-      'card_number',
-      trimmedValue,
-      localizations,
-      cardType: widget.cardType,
-    );
-
-    if (validationError != null) {
-      return validationError;
-    }
-
-    final hasSpecificFormat = widget.formats.isNotEmpty;
-    if (hasSpecificFormat && !_formatValidator.isValidFormat(trimmedValue, widget.formats)) {
-      return localizations.invalid_card_format;
-    }
-
     return null;
   }
 
   void _handleSave() {
-    final localizations = AppLocalizations.of(context)!;
-
+    final loc = AppLocalizations.of(context)!;
     if (!_formKey.currentState!.validate()) return;
-
     if (widget.formManager != null && !widget.formManager!.validateAll()) {
       setState(() {});
-      AppSnackBar.showError(localizations.verify_entered_data);
+      AppSnackBar.showError(loc.verify_entered_data);
       return;
     }
-
-    Map<String, dynamic> allData = {
-      'cardNumber': widget.cardNumberController.text.trim(),
+    final num = widget.cardNumberController.text.trim();
+    final data = <String, dynamic>{
+      'cardNumber': num.isEmpty && !_isCardNumberRequired ? null : num,
     };
-
-    if (widget.formManager != null) {
-      allData.addAll(widget.formManager!.collectData());
-    }
-
-    widget.onSave(allData);
-  }
-
-  List<TextInputFormatter> _getCardNumberInputFormatters() {
-    final hasSpecificFormat = widget.formats.isNotEmpty;
-    final expectedDigits = hasSpecificFormat ? _extractExpectedDigits() : null;
-
-    List<TextInputFormatter> formatters = [];
-
-    if (hasSpecificFormat && expectedDigits != null && expectedDigits > 0) {
-      final isNumericOnly = widget.formats.any((format) =>
-      format.contains(r'\d') && !format.contains(r'[A-Za-z]'));
-
-      if (isNumericOnly) {
-        formatters.add(FilteringTextInputFormatter.digitsOnly);
-      }
-
-      formatters.add(LengthLimitingTextInputFormatter(expectedDigits));
-    }
-
-    return formatters;
+    if (widget.formManager != null) data.addAll(widget.formManager!.collectData());
+    widget.onSave(data);
   }
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
+    final loc = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final additionalFields = widget.formManager?.fields ?? [];
+    final allFields = widget.formManager?.fields ?? [];
+    // Separate required/optional based on field.isRequired
+    final requiredFields = allFields.where((f) => f.isRequired).toList();
+    final optionalFields = allFields.where((f) => !f.isRequired).toList();
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
       child: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Card Preview
               Center(
                 child: CardPreviewWidget(
                   assetImagePath: widget.assetImagePath,
@@ -154,42 +118,58 @@ class _ManualEntryViewState extends State<ManualEntryView> {
               ),
               const SizedBox(height: 32),
 
+              // Card number field
               TextFormField(
                 controller: widget.cardNumberController,
                 decoration: InputDecoration(
-                  labelText: localizations.card_number,
-                  hintText: localizations.card_number_hint,
+                  labelText: _isCardNumberRequired
+                      ? loc.card_number
+                      : '${loc.card_number} (${loc.optional})',
+                  hintText: loc.card_number_hint,
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                   prefixIcon: const Icon(AntIcons.creditCardOutlined),
                 ),
-                keyboardType: TextInputType.text,
-                inputFormatters: _getCardNumberInputFormatters(),
+                inputFormatters: [],
                 validator: _validateCardNumber,
               ),
 
-              if (additionalFields.isNotEmpty) ...[
-                const SizedBox(height: 16),
-                ...additionalFields.map(
-                      (field) => Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: _fieldBuilder.buildField(field),
+              const SizedBox(height: 16),
+
+              // Required extra fields
+              ...requiredFields.map((field) => Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: _fieldBuilder.buildField(field),
+              )),
+
+              // Optional toggle
+              if (optionalFields.isNotEmpty) ...[
+                GestureDetector(
+                  onTap: () => setState(() => _showOptionalFields = !_showOptionalFields),
+                  child: Row(
+                    children: [
+                      Text(loc.optional_fields, style: theme.textTheme.bodyMedium),
+                      const SizedBox(width: 8),
+                      Icon(_showOptionalFields ? Icons.expand_less : Icons.expand_more),
+                    ],
                   ),
                 ),
+                if (_showOptionalFields) ...optionalFields.map((field) => Padding(
+                  padding: const EdgeInsets.only(top: 16, bottom: 16),
+                  child: _fieldBuilder.buildField(field),
+                )),
               ],
 
               const SizedBox(height: 32),
 
-              // Save Button
               Center(
                 child: ElevatedButton.icon(
                   icon: const Icon(AntIcons.formOutlined),
-                  label: Text(localizations.add_card),
+                  label: Text(loc.add_card),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: theme.extension<CustomColors>()!.accent,
                     foregroundColor: theme.colorScheme.primary,
                     padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-                    elevation: 2,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                   ),
                   onPressed: _handleSave,
                 ),

@@ -91,6 +91,26 @@ class CardFormatValidator {
     return trimmed.isNotEmpty && _defaultRegex.hasMatch(trimmed);
   }
 
+  /// Check if a field is required based on card type
+  bool _isFieldRequired(String fieldKey, String? cardType) {
+    final normalizedKey = _fieldNormalization[fieldKey.toLowerCase()] ?? fieldKey.toLowerCase();
+    final ct = cardType?.toLowerCase();
+
+    // For SIM cards, make card_number and phone_number optional
+    if (ct == 'sim') {
+      switch (normalizedKey) {
+        case 'card_number':
+        case 'phone_number':
+          return false;
+        default:
+          return true;
+      }
+    }
+
+    // For other card types, use default behavior
+    return true;
+  }
+
   /// Main field validation with improved performance
   String? validateField(
       String fieldKey,
@@ -98,15 +118,18 @@ class CardFormatValidator {
       AppLocalizations localizations, {
         String? cardType,
         InputType? inputType,
-        bool isRequired = true,
+        bool? isRequired,
       }) {
     final trimmed = value.trim();
 
+    // Determine if field is required
+    final fieldRequired = isRequired ?? _isFieldRequired(fieldKey, cardType);
+
     // Early return for optional empty fields
-    if (!isRequired && trimmed.isEmpty) return null;
+    if (!fieldRequired && trimmed.isEmpty) return null;
 
     // Required field validation
-    if (isRequired && trimmed.isEmpty) {
+    if (fieldRequired && trimmed.isEmpty) {
       return localizations.required_field;
     }
 
@@ -209,17 +232,28 @@ class CardFormatValidator {
       AppLocalizations localizations,
       ) {
     final errors = <String, String>{};
+    final ct = cardType.toLowerCase();
 
-    // Validate cardNumber:
-    if (!data.containsKey('cardNumber')) {
-      errors['cardNumber'] = localizations.required_field;
-    } else if (!isValidCardNumber(data['cardNumber'].toString())) {
-      errors['cardNumber'] = localizations.invalid_card_format;
+    // For SIM cards, cardNumber is optional
+    if (ct != 'sim') {
+      if (!data.containsKey('cardNumber')) {
+        errors['cardNumber'] = localizations.required_field;
+      } else if (!isValidCardNumber(data['cardNumber'].toString())) {
+        errors['cardNumber'] = localizations.invalid_card_format;
+      }
+    } else {
+      // For SIM cards, validate cardNumber only if provided
+      if (data.containsKey('cardNumber') &&
+          data['cardNumber'] != null &&
+          data['cardNumber'].toString().trim().isNotEmpty) {
+        if (!isValidCardNumber(data['cardNumber'].toString())) {
+          errors['cardNumber'] = localizations.invalid_card_format;
+        }
+      }
     }
 
-
     // Card-specific validation using strategy pattern
-    final validator = _getCardValidator(cardType.toLowerCase());
+    final validator = _getCardValidator(ct);
     if (validator != null) {
       validator(data, errors, localizations);
     }
@@ -247,6 +281,7 @@ class CardFormatValidator {
       ) {
     _validateOptionalField(data, errors, 'pin', isValidPin, 'pin', 'sim', localizations);
     _validateOptionalField(data, errors, 'puk', isValidPuk, 'puk', 'sim', localizations);
+    // Phone number is optional for SIM cards
     _validateOptionalField(data, errors, 'phone_number', isValidPhoneNumber, 'phone', 'sim', localizations);
   }
 

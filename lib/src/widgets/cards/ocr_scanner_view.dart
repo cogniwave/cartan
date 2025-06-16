@@ -73,33 +73,42 @@ class _OCRScannerViewState extends State<OCRScannerView> {
   }
 
   Future<void> _captureAndProcessImage() async {
+    // If already processing, controller is null, or not initialized, bail out.
     if (_isProcessing || _cameraController == null || !_cameraController!.value.isInitialized) {
       return;
     }
 
+    // Mark as processing
     setState(() {
       _isProcessing = true;
     });
 
     try {
+      // Take a picture from the camera.
       final XFile image = await _cameraController!.takePicture();
       final InputImage inputImage = InputImage.fromFilePath(image.path);
 
+      // Run ML Kit text recognition.
       final RecognizedText recognizedText = await _textRecognizer.processImage(inputImage);
 
+      // Extract PIN and PUK from the OCR result.
       _extractSimCardData(recognizedText.text);
 
     } catch (e) {
+      // Report any errors to Bugsnag, including the stack trace.
       bugsnag.notify(e, StackTrace.current);
-    } finally {
-      setState(() {
-        _isProcessing = false;
-      });
+    }
+    // If widget was disposed during processing, skip the rest.
+    if (!mounted) return;
 
-      // Continue scanning if we haven't found all required data
-      if (_detectedData.length < 2 && mounted) {
-        _startContinuousScanning();
-      }
+    // Clear the processing flag.
+    setState(() {
+      _isProcessing = false;
+    });
+
+    // Continue scanning if we still need PIN or PUK.
+    if (_detectedData.length < 2) {
+      _startContinuousScanning();
     }
   }
 

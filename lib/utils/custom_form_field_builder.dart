@@ -38,12 +38,44 @@ class CustomFormFieldBuilder {
   }
 
   InputDecoration _buildInputDecoration(FormFieldConfig field) {
+    // Check if field should be marked as optional for SIM cards
+    final isOptionalForSim = _isFieldOptionalForSim(field.key);
+    final baseLabel = _getLocalizedText(field.labelKey);
+
+    final labelText = isOptionalForSim
+        ? '$baseLabel (${localizations.optional})'
+        : baseLabel;
+
     return InputDecoration(
-      labelText: _getLocalizedText(field.labelKey),
+      labelText: labelText,
       hintText:
       field.hintKey != null ? _getLocalizedText(field.hintKey!) : null,
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
     );
+  }
+
+  /// Check if field should be optional for SIM cards
+  bool _isFieldOptionalForSim(String fieldKey) {
+    if (cardType?.toLowerCase() != 'sim') return false;
+
+    final normalizedKey = fieldKey.toLowerCase();
+    return normalizedKey == 'phone_number' ||
+        normalizedKey == 'phone' ||
+        normalizedKey == 'card_number' ||
+        normalizedKey == 'cardnumber';
+  }
+
+  /// Check if field is required based on card type and field key
+  bool _isFieldRequired(FormFieldConfig field) {
+    // For SIM cards, phone_number is optional
+    if (cardType?.toLowerCase() == 'sim') {
+      final normalizedKey = field.key.toLowerCase();
+      if (normalizedKey == 'phone_number' || normalizedKey == 'phone') {
+        return false;
+      }
+    }
+
+    return field.isRequired;
   }
 
   List<TextInputFormatter> _buildInputFormatters(FormFieldConfig field) {
@@ -78,7 +110,9 @@ class CustomFormFieldBuilder {
   }
 
   String? Function(String?)? _buildValidator(FormFieldConfig field) {
-    if (!field.isRequired && field.inputType != InputType.email) {
+    final isRequired = _isFieldRequired(field);
+
+    if (!isRequired && field.inputType != InputType.email) {
       return (value) {
         if (value?.trim().isEmpty == true) return null;
         return _validator.validateField(
@@ -87,13 +121,14 @@ class CustomFormFieldBuilder {
           localizations,
           cardType: cardType,
           inputType: field.inputType,
+          isRequired: false,
         );
       };
     }
 
     return (value) {
       if (value?.trim().isEmpty == true) {
-        return localizations.required_field;
+        return isRequired ? localizations.required_field : null;
       }
       return _validator.validateField(
         field.key,
@@ -101,6 +136,7 @@ class CustomFormFieldBuilder {
         localizations,
         cardType: cardType,
         inputType: field.inputType,
+        isRequired: isRequired,
       );
     };
   }

@@ -91,6 +91,28 @@ class CardFormManager {
     _errors.clear();
   }
 
+  /// Factory method for Loyalty card form manager
+  static CardFormManager forLoyalty({
+    required String id,
+    required String displayName,
+    required List<String> formats,
+    required String assetImagePath,
+  }) {
+    final cardTypeData = CardTypeData.forLoyalty(
+      id: id,
+      displayName: displayName,
+      formats: formats,
+      assetImagePath: assetImagePath,
+    );
+
+    final config = CardConfigurationFactory.getConfiguration('loyalty');
+
+    return CardFormManager(
+      cardTypeData: cardTypeData,
+      config: config,
+    );
+  }
+
   /// Factory method for SIM card form manager
   static CardFormManager forSim({
     required String id,
@@ -113,28 +135,6 @@ class CardFormManager {
     );
 
     final config = CardConfigurationFactory.getConfiguration('sim');
-
-    return CardFormManager(
-      cardTypeData: cardTypeData,
-      config: config,
-    );
-  }
-
-  /// Factory method for Loyalty card form manager
-  static CardFormManager forLoyalty({
-    required String id,
-    required String displayName,
-    required List<String> formats,
-    required String assetImagePath,
-  }) {
-    final cardTypeData = CardTypeData.forLoyalty(
-      id: id,
-      displayName: displayName,
-      formats: formats,
-      assetImagePath: assetImagePath,
-    );
-
-    final config = CardConfigurationFactory.getConfiguration('loyalty');
 
     return CardFormManager(
       cardTypeData: cardTypeData,
