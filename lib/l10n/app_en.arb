@@ -287,5 +287,34 @@
   "invalid_phone_number": "Invalid phone number format",
   "@invalid_phone_number": {
     "description": "Error label for invalid phone number format."
+  },
+  "scan_ocr": "Scan OCR",
+  "@scan_ocr": {
+    "description": "Label for scan OCR action."
+  },
+
+  "position_sim_card_in_frame": "Position the SIM card within the frame",
+  "@position_sim_card_in_frame": {
+    "description": "Instruction to position the SIM card within the camera frame."
+  },
+
+  "ocr_scanning_instructions": "Keep the card steady and well-lit. PIN and PUK will be detected automatically.",
+  "@ocr_scanning_instructions": {
+    "description": "Detailed instructions for performing the OCR scan."
+  },
+
+  "processing": "Processing...",
+  "@processing": {
+    "description": "Label shown while OCR processing is ongoing."
+  },
+
+  "detected_data": "Detected data:",
+  "@detected_data": {
+    "description": "Heading for the section where detected OCR data is displayed."
+  },
+
+  "ocr_data_detected": "OCR data detected successfully!",
+  "@ocr_data_detected": {
+    "description": "Confirmation message shown when OCR data is successfully detected."
   }
 }

@@ -10,6 +10,7 @@ import 'package:cartan/src/models/provider_model.dart';
 import 'package:cartan/src/models/card_model.dart';
 import 'package:cartan/src/widgets/cards/manual_entry_view.dart';
 import 'package:cartan/src/widgets/cards/scanner_view.dart';
+import 'package:cartan/src/widgets/cards/ocr_scanner_view.dart';
 import 'package:cartan/utils/card_format_validator.dart';
 import 'package:cartan/utils/app_snackbar.dart';
 import 'package:cartan/src/themes/app_themes.dart';
@@ -39,6 +40,9 @@ class _ScanCardScreenState extends State<ScanCardScreen>
   bool _checkingPermission = true;
 
   AppLocalizations get localizations => AppLocalizations.of(context)!;
+
+  // Determine if this card type should use OCR
+  bool get _shouldUseOCR => widget.provider.category.toLowerCase() == 'sim';
 
   @override
   void initState() {
@@ -176,6 +180,31 @@ class _ScanCardScreenState extends State<ScanCardScreen>
     if (_isValid) _tabController.animateTo(1);
   }
 
+  // New method to handle OCR data detection
+  void _handleOCRDataDetected(Map<String, String> ocrData) {
+    // Set the card number if ICCID was detected
+    if (ocrData.containsKey('iccid')) {
+      _cardNumberController.text = ocrData['iccid']!;
+      _validateCode(ocrData['iccid']!);
+    }
+
+    // Populate form fields with detected data
+    if (_cardFormManager != null) {
+      ocrData.forEach((key, value) {
+        final controller = _cardFormManager!.getController(key);
+        if (controller != null) {
+          controller.text = value;
+        }
+      });
+    }
+
+    // Switch to manual entry tab to show the populated form
+    _tabController.animateTo(1);
+
+    // Show success message
+    AppSnackBar.showSuccess(localizations.ocr_data_detected);
+  }
+
   void _saveCard(Map<String, dynamic> allData) {
     // Validate additional fields if needed
     if (_cardFormManager != null && !_cardFormManager!.validateAll()) {
@@ -299,7 +328,13 @@ class _ScanCardScreenState extends State<ScanCardScreen>
         ),
       );
     }
-    return ScannerView(onCodeDetected: _handleCodeDetected);
+
+    // Return appropriate scanner based on card type
+    if (_shouldUseOCR) {
+      return OCRScannerView(onDataDetected: _handleOCRDataDetected);
+    } else {
+      return ScannerView(onCodeDetected: _handleCodeDetected);
+    }
   }
 
   @override
@@ -339,7 +374,11 @@ class _ScanCardScreenState extends State<ScanCardScreen>
               indicatorColor: custom.accentAlt,
               dividerColor: Colors.transparent,
               tabs: [
-                Tab(text: localizations.scan_barcode),
+                Tab(
+                  text: _shouldUseOCR
+                      ? localizations.scan_ocr
+                      : localizations.scan_barcode,
+                ),
                 Tab(text: localizations.enter_manually),
               ],
             ),
@@ -357,6 +396,7 @@ class _ScanCardScreenState extends State<ScanCardScreen>
                     assetImagePath: widget.provider.assetImagePath,
                     formats: widget.provider.formats,
                     formManager: _cardFormManager,
+                    cardType: widget.provider.category.toLowerCase(),
                   ),
                 ],
               ),
