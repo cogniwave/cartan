@@ -39,10 +39,10 @@ class CustomFormFieldBuilder {
 
   InputDecoration _buildInputDecoration(FormFieldConfig field) {
     // Check if field should be marked as optional for SIM cards
-    final isOptionalForSim = _isFieldOptionalForSim(field.key);
+    final isOptional = _isFieldOptional(field.key);
     final baseLabel = _getLocalizedText(field.labelKey);
 
-    final labelText = isOptionalForSim
+    final labelText = isOptional
         ? '$baseLabel (${localizations.optional})'
         : baseLabel;
 
@@ -54,23 +54,33 @@ class CustomFormFieldBuilder {
     );
   }
 
-  /// Check if field should be optional for SIM cards
-  bool _isFieldOptionalForSim(String fieldKey) {
-    if (cardType?.toLowerCase() != 'sim') return false;
+  /// Check if field should be optional
+  bool _isFieldOptional(String fieldKey) {
+    if (cardType?.toLowerCase() == null) return false;
 
+    final ct = cardType!.toLowerCase();
     final normalizedKey = fieldKey.toLowerCase();
-    return normalizedKey == 'phone_number' ||
-        normalizedKey == 'phone' ||
-        normalizedKey == 'card_number' ||
-        normalizedKey == 'cardnumber';
+
+    if (ct == 'sim' || ct == 'business' || ct == 'informative' || ct == 'other') {
+      return normalizedKey == 'phone_number' ||
+          normalizedKey == 'phone' ||
+          normalizedKey == 'card_number' ||
+          normalizedKey == 'cardnumber';
+    }
+
+    return false;
   }
 
   /// Check if field is required based on card type and field key
   bool _isFieldRequired(FormFieldConfig field) {
-    // For SIM cards, phone_number is optional
-    if (cardType?.toLowerCase() == 'sim') {
-      final normalizedKey = field.key.toLowerCase();
-      if (normalizedKey == 'phone_number' || normalizedKey == 'phone') {
+    final ct = cardType?.toLowerCase();
+    final normalizedKey = field.key.toLowerCase();
+
+    if (ct == 'sim' || ct == 'business' || ct == 'informative' || ct == 'other') {
+      if (normalizedKey == 'phone_number' ||
+          normalizedKey == 'phone' ||
+          normalizedKey == 'card_number' ||
+          normalizedKey == 'cardnumber') {
         return false;
       }
     }

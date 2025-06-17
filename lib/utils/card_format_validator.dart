@@ -91,13 +91,43 @@ class CardFormatValidator {
     return trimmed.isNotEmpty && _defaultRegex.hasMatch(trimmed);
   }
 
+  /// Card number validation (formats)
+  String? validateCardNumberField({
+    required String value,
+    required AppLocalizations localizations,
+    required String cardType,
+    required bool isRequired,
+    required List<String> formats,
+  }) {
+    final trimmed = value.trim();
+
+    if (isRequired && trimmed.isEmpty) {
+      return localizations.required_field;
+    }
+
+    final basicValidation = validateField(
+      'cardNumber',
+      trimmed,
+      localizations,
+      cardType: cardType,
+      isRequired: isRequired,
+    );
+    if (basicValidation != null) return basicValidation;
+
+    if (formats.isNotEmpty && trimmed.isNotEmpty && !isValidFormat(trimmed, formats)) {
+      return localizations.invalid_card_format;
+    }
+
+    return null;
+  }
+
   /// Check if a field is required based on card type
   bool _isFieldRequired(String fieldKey, String? cardType) {
     final normalizedKey = _fieldNormalization[fieldKey.toLowerCase()] ?? fieldKey.toLowerCase();
     final ct = cardType?.toLowerCase();
 
     // For SIM cards, make card_number and phone_number optional
-    if (ct == 'sim') {
+    if (ct == 'sim' || ct == 'business' || ct == 'informative' || ct == 'other') {
       switch (normalizedKey) {
         case 'card_number':
         case 'phone_number':
@@ -335,5 +365,52 @@ class CardFormatValidator {
     if (input.isNotEmpty && !validator(input)) {
       errors[fieldKey] = _getErrorMessage(validationType, cardType, localizations);
     }
+  }
+
+  /// Check if card number is required for the given card type
+  bool isCardNumberRequired(String? cardType) {
+    final ct = cardType?.toLowerCase();
+
+    // Card number is optional for these card types
+    if (ct == 'sim' || ct == 'business' || ct == 'informative' || ct == 'other') {
+      return false;
+    }
+
+    // Card number is required for loyalty, membership, rewards, and others
+    return true;
+  }
+
+  /// Validate card number with proper format checking
+  String? validateCardNumber(
+      String? value,
+      AppLocalizations localizations,
+      String? cardType,
+      List<String> formats,
+      ) {
+    final val = value?.trim() ?? '';
+    final isRequired = isCardNumberRequired(cardType);
+
+    // Handle empty values
+    if (val.isEmpty) {
+      return isRequired ? localizations.required_field : null;
+    }
+
+    // Validate format using existing validator
+    final formatError = validateField(
+      'card_number',
+      val,
+      localizations,
+      cardType: cardType,
+      isRequired: isRequired,
+    );
+
+    if (formatError != null) return formatError;
+
+    // Check against specific formats if provided
+    if (formats.isNotEmpty && !isValidFormat(val, formats)) {
+      return localizations.invalid_card_format;
+    }
+
+    return null;
   }
 }

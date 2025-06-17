@@ -71,14 +71,23 @@ class LoyaltyCardConfig extends CardConfiguration {
   String get cardType => 'loyalty';
 
   @override
-  List<FormFieldConfig> get additionalFields => [];
+  List<FormFieldConfig> get additionalFields => [
+    FormFieldConfig(
+      key: 'card_number',
+      labelKey: 'card_number',
+      inputType: InputType.text,
+      maxLength: 50,
+      isRequired: true,
+      hintKey: 'card_number_hint',
+    ),
+  ];
 
   @override
-  bool get needsManualEntry => false;
+  bool get needsManualEntry => true;
 
   @override
   List<FormFieldConfig> getFieldsFromMetadata(Map<String, dynamic>? metadata) {
-    return [];
+    return additionalFields;
   }
 }
 
@@ -98,6 +107,15 @@ class SimCardConfig extends CardConfiguration {
     if (metadata == null) return [];
 
     List<FormFieldConfig> fields = [];
+
+    fields.add(FormFieldConfig(
+      key: 'card_number',
+      labelKey: 'card_number',
+      inputType: InputType.text,
+      maxLength: 50,
+      isRequired: false,
+      hintKey: 'card_number_hint',
+    ));
 
     // Map metadata fields to FormFieldConfig
     metadata.forEach((key, value) {
@@ -154,6 +172,15 @@ class BusinessCardConfig extends CardConfiguration {
     if (metadata == null) return [];
 
     List<FormFieldConfig> fields = [];
+
+    fields.add(FormFieldConfig(
+      key: 'card_number',
+      labelKey: 'card_number',
+      inputType: InputType.text,
+      maxLength: 50,
+      isRequired: false,
+      hintKey: 'card_number_hint',
+    ));
 
     metadata.forEach((key, value) {
       switch (key.toLowerCase()) {
@@ -332,6 +359,15 @@ class InformativeCardConfig extends CardConfiguration {
 
     List<FormFieldConfig> fields = [];
 
+    fields.add(FormFieldConfig(
+      key: 'card_number',
+      labelKey: 'card_number',
+      inputType: InputType.text,
+      maxLength: 50,
+      isRequired: false,
+      hintKey: 'card_number_hint',
+    ));
+
     metadata.forEach((key, value) {
       switch (key.toLowerCase()) {
         case 'description':
@@ -373,7 +409,16 @@ class OtherCardConfig extends CardConfiguration {
 
   @override
   List<FormFieldConfig> getFieldsFromMetadata(Map<String, dynamic>? metadata) {
-    return [];
+    return [
+      FormFieldConfig(
+        key: 'card_number',
+        labelKey: 'card_number',
+        inputType: InputType.text,
+        maxLength: 50,
+        isRequired: false,
+        hintKey: 'card_number_hint',
+      )
+    ];
   }
 }
 

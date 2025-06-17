@@ -2,7 +2,6 @@ import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:cartan/src/forms/card_form_manager.dart';
 import 'package:cartan/utils/app_snackbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cartan/src/themes/app_themes.dart';
 import 'package:cartan/utils/custom_form_field_builder.dart';
@@ -54,48 +53,62 @@ class _ManualEntryViewState extends State<ManualEntryView> {
     );
   }
 
-  bool get _isCardNumberRequired => widget.cardType?.toLowerCase() != 'sim';
+  void _handleSave() {
+    final localizations = AppLocalizations.of(context)!;
+    final validator = _formatValidator;
+    final formats = widget.formats;
 
-  String? _validateCardNumber(String? value) {
-    final loc = AppLocalizations.of(context)!;
-    final val = value?.trim() ?? '';
-    if (!_isCardNumberRequired && val.isEmpty) return null;
-    if (_isCardNumberRequired && val.isEmpty) return loc.required_field;
-    if (val.isNotEmpty) {
-      final err = _formatValidator.validateField(
-        'card_number',
-        val,
-        loc,
-        cardType: widget.cardType,
-        isRequired: _isCardNumberRequired,
+    if (!_formKey.currentState!.validate()) return;
+
+    final formManager = widget.formManager;
+
+    if (formManager == null) return;
+
+    final cardType = widget.cardType ?? 'loyalty';
+
+    final data = formManager.collectData();
+    final cardNumber = data['cardNumber']?.toString().trim() ?? '';
+
+    if (formManager.controllers.containsKey('cardNumber')) {
+      final isRequired = validator.isCardNumberRequired(cardType);
+
+      final error = validator.validateField(
+        'cardNumber',
+        cardNumber,
+        localizations,
+        cardType: cardType,
+        isRequired: isRequired,
       );
-      if (err != null) return err;
-      if (widget.formats.isNotEmpty && !_formatValidator.isValidFormat(val, widget.formats)) {
-        return loc.invalid_card_format;
+
+      if (error != null) {
+        AppSnackBar.showError(error);
+        return;
+      }
+
+      if (!isRequired && cardNumber.isEmpty) {
+        data.remove('cardNumber');
+      } else {
+        data['cardNumber'] = cardNumber;
       }
     }
-    return null;
-  }
 
-  void _handleSave() {
-    final loc = AppLocalizations.of(context)!;
-    if (!_formKey.currentState!.validate()) return;
-    if (widget.formManager != null && !widget.formManager!.validateAll()) {
+    if (!formManager.validateAll()) {
       setState(() {});
-      AppSnackBar.showError(loc.verify_entered_data);
+      AppSnackBar.showError(localizations.verify_entered_data);
       return;
     }
-    final num = widget.cardNumberController.text.trim();
-    final data = <String, dynamic>{
-      'cardNumber': num.isEmpty && !_isCardNumberRequired ? null : num,
-    };
-    if (widget.formManager != null) data.addAll(widget.formManager!.collectData());
+
+    if (formats.isNotEmpty && !_formatValidator.isValidFormat(cardNumber, formats)) {
+      AppSnackBar.showError(localizations.invalid_card_format);
+      return;
+    }
+
     widget.onSave(data);
   }
 
   @override
   Widget build(BuildContext context) {
-    final loc = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final allFields = widget.formManager?.fields ?? [];
     // Separate required/optional based on field.isRequired
@@ -118,24 +131,7 @@ class _ManualEntryViewState extends State<ManualEntryView> {
               ),
               const SizedBox(height: 32),
 
-              // Card number field
-              TextFormField(
-                controller: widget.cardNumberController,
-                decoration: InputDecoration(
-                  labelText: _isCardNumberRequired
-                      ? loc.card_number
-                      : '${loc.card_number} (${loc.optional})',
-                  hintText: loc.card_number_hint,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                  prefixIcon: const Icon(AntIcons.creditCardOutlined),
-                ),
-                inputFormatters: [],
-                validator: _validateCardNumber,
-              ),
-
-              const SizedBox(height: 16),
-
-              // Required extra fields
+              // Required fields
               ...requiredFields.map((field) => Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: _fieldBuilder.buildField(field),
@@ -147,7 +143,7 @@ class _ManualEntryViewState extends State<ManualEntryView> {
                   onTap: () => setState(() => _showOptionalFields = !_showOptionalFields),
                   child: Row(
                     children: [
-                      Text(loc.optional_fields, style: theme.textTheme.bodyMedium),
+                      Text(localizations.optional_fields, style: theme.textTheme.bodyMedium),
                       const SizedBox(width: 8),
                       Icon(_showOptionalFields ? Icons.expand_less : Icons.expand_more),
                     ],
@@ -164,7 +160,7 @@ class _ManualEntryViewState extends State<ManualEntryView> {
               Center(
                 child: ElevatedButton.icon(
                   icon: const Icon(AntIcons.formOutlined),
-                  label: Text(loc.add_card),
+                  label: Text(localizations.add_card),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: theme.extension<CustomColors>()!.accent,
                     foregroundColor: theme.colorScheme.primary,

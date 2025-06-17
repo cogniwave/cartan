@@ -182,11 +182,6 @@ class _ScanCardScreenState extends State<ScanCardScreen>
 
   // New method to handle OCR data detection
   void _handleOCRDataDetected(Map<String, String> ocrData) {
-    // Set the card number if ICCID was detected
-    if (ocrData.containsKey('iccid')) {
-      _cardNumberController.text = ocrData['iccid']!;
-      _validateCode(ocrData['iccid']!);
-    }
 
     // Populate form fields with detected data
     if (_cardFormManager != null) {

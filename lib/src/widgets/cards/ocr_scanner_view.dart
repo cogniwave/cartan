@@ -36,23 +36,27 @@ class _OCRScannerViewState extends State<OCRScannerView> {
   Future<void> _initializeCamera() async {
     try {
       _cameras = await availableCameras();
-      if (_cameras.isNotEmpty) {
-        _cameraController = CameraController(
+
+      if (_cameras.isNotEmpty && mounted) {
+        final controller = CameraController(
           _cameras.first,
           ResolutionPreset.high,
           enableAudio: false,
         );
 
-        await _cameraController!.initialize();
+        await controller.initialize();
 
-        if (mounted) {
-          setState(() {
-            _isInitialized = true;
-          });
-
-          // Start continuous scanning
-          _startContinuousScanning();
+        if (!mounted) {
+          await controller.dispose();
+          return;
         }
+
+        setState(() {
+          _cameraController = controller;
+          _isInitialized = true;
+        });
+
+        _startContinuousScanning();
       }
     } catch (e) {
       bugsnag.notify(e, StackTrace.current);
@@ -60,53 +64,40 @@ class _OCRScannerViewState extends State<OCRScannerView> {
   }
 
   void _startContinuousScanning() {
-    if (_cameraController == null || !_cameraController!.value.isInitialized) {
-      return;
-    }
+    if (_cameraController == null || !_cameraController!.value.isInitialized) return;
 
-    // Process frames every 2 seconds to avoid overwhelming the processor
     Future.delayed(const Duration(seconds: 2), () {
-      if (mounted && !_isProcessing) {
-        _captureAndProcessImage();
-      }
+      if (!mounted || _isProcessing) return;
+      _captureAndProcessImage();
     });
   }
 
-  Future<void> _captureAndProcessImage() async {
-    // If already processing, controller is null, or not initialized, bail out.
-    if (_isProcessing || _cameraController == null || !_cameraController!.value.isInitialized) {
-      return;
-    }
 
-    // Mark as processing
+  Future<void> _captureAndProcessImage() async {
+    if (_isProcessing || _cameraController == null) return;
+
+    final controller = _cameraController!;
+    if (!controller.value.isInitialized || !mounted) return;
+
     setState(() {
       _isProcessing = true;
     });
 
     try {
-      // Take a picture from the camera.
-      final XFile image = await _cameraController!.takePicture();
-      final InputImage inputImage = InputImage.fromFilePath(image.path);
-
-      // Run ML Kit text recognition.
-      final RecognizedText recognizedText = await _textRecognizer.processImage(inputImage);
-
-      // Extract PIN and PUK from the OCR result.
+      final XFile image = await controller.takePicture();
+      final inputImage = InputImage.fromFilePath(image.path);
+      final recognizedText = await _textRecognizer.processImage(inputImage);
       _extractSimCardData(recognizedText.text);
-
     } catch (e) {
-      // Report any errors to Bugsnag, including the stack trace.
       bugsnag.notify(e, StackTrace.current);
     }
-    // If widget was disposed during processing, skip the rest.
+
     if (!mounted) return;
 
-    // Clear the processing flag.
     setState(() {
       _isProcessing = false;
     });
 
-    // Continue scanning if we still need PIN or PUK.
     if (_detectedData.length < 2) {
       _startContinuousScanning();
     }
@@ -178,6 +169,7 @@ class _OCRScannerViewState extends State<OCRScannerView> {
   @override
   void dispose() {
     _cameraController?.dispose();
+    _cameraController = null;
     _textRecognizer.close();
     super.dispose();
   }
@@ -192,123 +184,127 @@ class _OCRScannerViewState extends State<OCRScannerView> {
       );
     }
 
-    return Column(
-      children: [
-        Expanded(
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              // Camera preview
-              CameraPreview(_cameraController!),
+    return SafeArea(
+      child: Column(
+        children: [
+          Expanded(
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                SizedBox.expand(
+                  // Camera preview
+                  child:
+                    CameraPreview(_cameraController!),
+                ),
+                // Overlay frame
+                Container(
+                  width: 320,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.primary,
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
 
-              // Overlay frame
-              Container(
-                width: 320,
-                height: 200,
-                decoration: BoxDecoration(
-                  border: Border.all(
+                // Processing indicator
+                if (_isProcessing)
+                  Positioned(
+                    top: 20,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.black54,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            localizations.processing,
+                            style: const TextStyle(color: Colors.white, fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                // Detected data overlay
+                if (_detectedData.isNotEmpty)
+                  Positioned(
+                    bottom: 20,
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      margin: const EdgeInsets.symmetric(horizontal: 20),
+                      decoration: BoxDecoration(
+                        color: Colors.black87,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            localizations.detected_data,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          ..._detectedData.entries.map((entry) => Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 2),
+                            child: Text(
+                              '${_getFieldLabel(entry.key, localizations)}: ${entry.value}',
+                              style: const TextStyle(color: Colors.white70, fontSize: 12),
+                            ),
+                          )),
+                        ],
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+
+          // Instructions
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Text(
+                  localizations.position_sim_card_in_frame,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
-                    width: 2,
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-
-              // Processing indicator
-              if (_isProcessing)
-                Positioned(
-                  top: 20,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.black54,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          localizations.processing,
-                          style: const TextStyle(color: Colors.white, fontSize: 12),
-                        ),
-                      ],
-                    ),
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-
-              // Detected data overlay
-              if (_detectedData.isNotEmpty)
-                Positioned(
-                  bottom: 20,
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    margin: const EdgeInsets.symmetric(horizontal: 20),
-                    decoration: BoxDecoration(
-                      color: Colors.black87,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          localizations.detected_data,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        ..._detectedData.entries.map((entry) => Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2),
-                          child: Text(
-                            '${_getFieldLabel(entry.key, localizations)}: ${entry.value}',
-                            style: const TextStyle(color: Colors.white70, fontSize: 12),
-                          ),
-                        )),
-                      ],
-                    ),
+                const SizedBox(height: 8),
+                Text(
+                  localizations.ocr_scanning_instructions,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                    fontSize: 12,
                   ),
                 ),
-            ],
+              ],
+            ),
           ),
-        ),
-
-        // Instructions
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Text(
-                localizations.position_sim_card_in_frame,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                localizations.ocr_scanning_instructions,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
+        ],
+      )
     );
   }
 

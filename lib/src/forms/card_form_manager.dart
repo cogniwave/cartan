@@ -98,11 +98,16 @@ class CardFormManager {
     required List<String> formats,
     required String assetImagePath,
   }) {
+    final metadata = <String, dynamic>{
+      'card_number': true,
+    };
+
     final cardTypeData = CardTypeData.forLoyalty(
       id: id,
       displayName: displayName,
       formats: formats,
       assetImagePath: assetImagePath,
+      metadata: metadata,
     );
 
     final config = CardConfigurationFactory.getConfiguration('loyalty');
@@ -150,6 +155,7 @@ class CardFormManager {
     required String assetImagePath,
   }) {
     final metadata = {
+      'card_number': false,
       'name': true,
       'company': true,
       'email': true,
@@ -212,6 +218,7 @@ class CardFormManager {
     required String assetImagePath,
   }) {
     final metadata = {
+      'card_number': false,
       'description': true,
       'instructions': false,
     };
@@ -240,7 +247,9 @@ class CardFormManager {
     required List<String> formats,
     required String assetImagePath,
   }) {
-    final metadata = <String, dynamic>{};
+    final metadata = {
+      'card_number': false,
+    };
 
     final cardTypeData = CardTypeData(
       id: id,

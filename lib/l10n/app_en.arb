@@ -288,7 +288,7 @@
   "@invalid_phone_number": {
     "description": "Error label for invalid phone number format."
   },
-  "scan_ocr": "Scan OCR",
+  "scan_ocr": "Scan",
   "@scan_ocr": {
     "description": "Label for scan OCR action."
   },
@@ -308,7 +308,7 @@
   "@detected_data": {
     "description": "Heading for the section where detected OCR data is displayed."
   },
-  "ocr_data_detected": "OCR data detected successfully!",
+  "ocr_data_detected": "Data detected successfully!",
   "@ocr_data_detected": {
     "description": "Confirmation message shown when OCR data is successfully detected."
   },
