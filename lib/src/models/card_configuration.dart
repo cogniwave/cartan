@@ -1,7 +1,7 @@
 import 'package:cartan/utils/card_format_validator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-// Enum for input types
+// Enum input types
 enum InputType {
   text,
   numeric,
@@ -38,9 +38,18 @@ class FormFieldConfig {
 abstract class CardConfiguration {
   static final CardFormatValidator _validator = CardFormatValidator();
 
+  final List<String> formats;
+  final Map<String, dynamic>? metadata;
+
+  CardConfiguration({
+    required this.formats,
+    required this.metadata,
+  });
+
   String get cardType;
-  List<FormFieldConfig> get additionalFields;
   bool get needsManualEntry;
+
+  List<FormFieldConfig> getFieldsFromMetadata();
 
   bool isDataValid(
       Map<String, dynamic> data,
@@ -61,64 +70,66 @@ abstract class CardConfiguration {
       localizations,
     );
   }
-
-  List<FormFieldConfig> getFieldsFromMetadata(Map<String, dynamic>? metadata);
 }
 
 // Loyalty Card
+
 class LoyaltyCardConfig extends CardConfiguration {
+  LoyaltyCardConfig({
+    required super.formats,
+    required super.metadata,
+  });
+
   @override
   String get cardType => 'loyalty';
 
   @override
-  List<FormFieldConfig> get additionalFields => [
-    FormFieldConfig(
-      key: 'card_number',
-      labelKey: 'card_number',
-      inputType: InputType.text,
-      maxLength: 50,
-      isRequired: true,
-      hintKey: 'card_number_hint',
-    ),
-  ];
-
-  @override
   bool get needsManualEntry => true;
 
   @override
-  List<FormFieldConfig> getFieldsFromMetadata(Map<String, dynamic>? metadata) {
-    return additionalFields;
+  List<FormFieldConfig> getFieldsFromMetadata() {
+    return [
+      FormFieldConfig(
+        key: 'card_number',
+        labelKey: 'card_number',
+        inputType: InputType.text,
+        maxLength: CardFormatValidator.getMaxLengthFromFormats(formats),
+        isRequired: true,
+        hintKey: 'card_number_hint',
+      ),
+    ];
   }
 }
 
-// Sim Card
+// Sim Card 
+
 class SimCardConfig extends CardConfiguration {
+  SimCardConfig({
+    required super.formats,
+    required super.metadata,
+  });
+
   @override
   String get cardType => 'sim';
 
   @override
-  List<FormFieldConfig> get additionalFields => [];
-
-  @override
   bool get needsManualEntry => true;
 
   @override
-  List<FormFieldConfig> getFieldsFromMetadata(Map<String, dynamic>? metadata) {
-    if (metadata == null) return [];
+  List<FormFieldConfig> getFieldsFromMetadata() {
+    final fields = <FormFieldConfig>[];
 
-    List<FormFieldConfig> fields = [];
-
+    // card_number
     fields.add(FormFieldConfig(
       key: 'card_number',
       labelKey: 'card_number',
       inputType: InputType.text,
-      maxLength: 50,
+      maxLength: CardFormatValidator.getMaxLengthFromFormats(formats),
       isRequired: false,
       hintKey: 'card_number_hint',
     ));
 
-    // Map metadata fields to FormFieldConfig
-    metadata.forEach((key, value) {
+    metadata?.forEach((key, _) {
       switch (key.toLowerCase()) {
         case 'phone_number':
           fields.add(FormFieldConfig(
@@ -156,33 +167,35 @@ class SimCardConfig extends CardConfiguration {
   }
 }
 
-// Business Card
+// Business Card 
+
 class BusinessCardConfig extends CardConfiguration {
-  @override
-  String get cardType => 'business';
+  BusinessCardConfig({
+    required super.formats,
+    required super.metadata,
+  });
 
   @override
-  List<FormFieldConfig> get additionalFields => [];
+  String get cardType => 'business';
 
   @override
   bool get needsManualEntry => true;
 
   @override
-  List<FormFieldConfig> getFieldsFromMetadata(Map<String, dynamic>? metadata) {
-    if (metadata == null) return [];
+  List<FormFieldConfig> getFieldsFromMetadata() {
+    final fields = <FormFieldConfig>[];
 
-    List<FormFieldConfig> fields = [];
-
+    // card_number
     fields.add(FormFieldConfig(
       key: 'card_number',
       labelKey: 'card_number',
       inputType: InputType.text,
-      maxLength: 50,
+      maxLength: CardFormatValidator.getMaxLengthFromFormats(formats),
       isRequired: false,
       hintKey: 'card_number_hint',
     ));
 
-    metadata.forEach((key, value) {
+    metadata?.forEach((key, _) {
       switch (key.toLowerCase()) {
         case 'company':
           fields.add(FormFieldConfig(
@@ -237,23 +250,24 @@ class BusinessCardConfig extends CardConfiguration {
 }
 
 // Membership Card
+
 class MembershipCardConfig extends CardConfiguration {
-  @override
-  String get cardType => 'membership';
+  MembershipCardConfig({
+    required super.formats,
+    required super.metadata,
+  });
 
   @override
-  List<FormFieldConfig> get additionalFields => [];
+  String get cardType => 'membership';
 
   @override
   bool get needsManualEntry => true;
 
   @override
-  List<FormFieldConfig> getFieldsFromMetadata(Map<String, dynamic>? metadata) {
-    if (metadata == null) return [];
+  List<FormFieldConfig> getFieldsFromMetadata() {
+    final fields = <FormFieldConfig>[];
 
-    List<FormFieldConfig> fields = [];
-
-    metadata.forEach((key, value) {
+    metadata?.forEach((key, _) {
       switch (key.toLowerCase()) {
         case 'membername':
           fields.add(FormFieldConfig(
@@ -290,23 +304,24 @@ class MembershipCardConfig extends CardConfiguration {
 }
 
 // Rewards Card
+
 class RewardsCardConfig extends CardConfiguration {
-  @override
-  String get cardType => 'rewards';
+  RewardsCardConfig({
+    required super.formats,
+    required super.metadata,
+  });
 
   @override
-  List<FormFieldConfig> get additionalFields => [];
+  String get cardType => 'rewards';
 
   @override
   bool get needsManualEntry => true;
 
   @override
-  List<FormFieldConfig> getFieldsFromMetadata(Map<String, dynamic>? metadata) {
-    if (metadata == null) return [];
+  List<FormFieldConfig> getFieldsFromMetadata() {
+    final fields = <FormFieldConfig>[];
 
-    List<FormFieldConfig> fields = [];
-
-    metadata.forEach((key, value) {
+    metadata?.forEach((key, _) {
       switch (key.toLowerCase()) {
         case 'points':
           fields.add(FormFieldConfig(
@@ -343,32 +358,34 @@ class RewardsCardConfig extends CardConfiguration {
 }
 
 // Informative Card
+
 class InformativeCardConfig extends CardConfiguration {
-  @override
-  String get cardType => 'informative';
+  InformativeCardConfig({
+    required super.formats,
+    required super.metadata,
+  });
 
   @override
-  List<FormFieldConfig> get additionalFields => [];
+  String get cardType => 'informative';
 
   @override
   bool get needsManualEntry => true;
 
   @override
-  List<FormFieldConfig> getFieldsFromMetadata(Map<String, dynamic>? metadata) {
-    if (metadata == null) return [];
+  List<FormFieldConfig> getFieldsFromMetadata() {
+    final fields = <FormFieldConfig>[];
 
-    List<FormFieldConfig> fields = [];
-
+    // card_number
     fields.add(FormFieldConfig(
       key: 'card_number',
       labelKey: 'card_number',
       inputType: InputType.text,
-      maxLength: 50,
+      maxLength: CardFormatValidator.getMaxLengthFromFormats(formats),
       isRequired: false,
       hintKey: 'card_number_hint',
     ));
 
-    metadata.forEach((key, value) {
+    metadata?.forEach((key, _) {
       switch (key.toLowerCase()) {
         case 'description':
           fields.add(FormFieldConfig(
@@ -396,82 +413,131 @@ class InformativeCardConfig extends CardConfiguration {
   }
 }
 
-// Other Cards
+// Other Card
+
 class OtherCardConfig extends CardConfiguration {
-  @override
-  String get cardType => 'other';
+  OtherCardConfig({
+    required super.formats,
+    required super.metadata,
+  });
 
   @override
-  List<FormFieldConfig> get additionalFields => [];
+  String get cardType => 'other';
 
   @override
   bool get needsManualEntry => false;
 
   @override
-  List<FormFieldConfig> getFieldsFromMetadata(Map<String, dynamic>? metadata) {
+  List<FormFieldConfig> getFieldsFromMetadata() {
     return [
       FormFieldConfig(
         key: 'card_number',
         labelKey: 'card_number',
         inputType: InputType.text,
-        maxLength: 50,
+        maxLength: CardFormatValidator.getMaxLengthFromFormats(formats),
         isRequired: false,
         hintKey: 'card_number_hint',
-      )
+      ),
     ];
   }
 }
 
+// Factory
 class CardConfigurationFactory {
-  static final Map<String, CardConfiguration> _cache = {};
+  // Cache configurations by card ID to ensure each card uses its own formats
+  static final Map<String, CardConfiguration> _cacheById = {};
 
-  static CardConfiguration getConfiguration(String cardType) {
-    final type = cardType.toLowerCase();
+  //Creates or retrieves a CardConfiguration based on the full card JSON.
+  //Caches instances by the card's "id" field to ensure per-card settings.
+  static CardConfiguration fromJson(Map<String, dynamic> cardJson) {
+    // Extract the unique card ID
+    final id = cardJson['id'] as String;
 
-    if (_cache.containsKey(type)) {
-      return _cache[type]!;
+    // Return cached config if available
+    if (_cacheById.containsKey(id)) {
+      return _cacheById[id]!;
     }
 
-    CardConfiguration config;
-    switch (type) {
+    // Parse formats and metadata from JSON
+    final formats = (cardJson['formats'] as List<dynamic>?)
+        ?.cast<String>() ??
+        <String>[];
+    final metadata = cardJson['metadata'] as Map<String, dynamic>?;
+
+    // Determine category for selecting the right subclass
+    final category = (cardJson['category'] as String).toLowerCase();
+
+    // Instantiate the correct CardConfiguration subclass
+    late final CardConfiguration config;
+    switch (category) {
       case 'loyalty':
-        config = LoyaltyCardConfig();
+        config = LoyaltyCardConfig(
+          formats: formats,
+          metadata: metadata,
+        );
         break;
       case 'sim':
-        config = SimCardConfig();
+        config = SimCardConfig(
+          formats: formats,
+          metadata: metadata,
+        );
         break;
       case 'business':
-        config = BusinessCardConfig();
+        config = BusinessCardConfig(
+          formats: formats,
+          metadata: metadata,
+        );
         break;
       case 'membership':
-        config = MembershipCardConfig();
+        config = MembershipCardConfig(
+          formats: formats,
+          metadata: metadata,
+        );
         break;
       case 'rewards':
-        config = RewardsCardConfig();
+        config = RewardsCardConfig(
+          formats: formats,
+          metadata: metadata,
+        );
         break;
       case 'informative':
-        config = InformativeCardConfig();
+        config = InformativeCardConfig(
+          formats: formats,
+          metadata: metadata,
+        );
         break;
       case 'other':
-        config = OtherCardConfig();
+        config = OtherCardConfig(
+          formats: formats,
+          metadata: metadata,
+        );
         break;
       default:
-        throw UnsupportedError('Card type $cardType not supported');
+        throw UnsupportedError('Card type $category not supported');
     }
 
-    _cache[type] = config;
+    // Cache and return the new configuration
+    _cacheById[id] = config;
     return config;
   }
 
+
   static List<String> get supportedTypes => [
-    'loyalty', 'sim', 'business', 'membership', 'rewards', 'informative', 'other'
+    'loyalty',
+    'sim',
+    'business',
+    'membership',
+    'rewards',
+    'informative',
+    'other',
   ];
 
   static bool isTypeSupported(String cardType) {
     return supportedTypes.contains(cardType.toLowerCase());
   }
 
+  //Clears all cached configurations
   static void clearCache() {
-    _cache.clear();
+    _cacheById.clear();
   }
 }

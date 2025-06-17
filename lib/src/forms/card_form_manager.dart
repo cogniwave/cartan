@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cartan/src/models/card_type_data.dart';
 import 'package:cartan/src/models/card_configuration.dart';
 
-/// Manages input controllers and field validation for each card type
+// Manages input controllers and field validation for each card type
 class CardFormManager {
   final CardTypeData cardTypeData;
   final CardConfiguration config;
@@ -17,7 +17,7 @@ class CardFormManager {
   }
 
   void _initializeControllers() {
-    final fields = config.getFieldsFromMetadata(cardTypeData.metadata);
+    final fields = config.getFieldsFromMetadata();
 
     for (final field in fields) {
       _controllers[field.key] = TextEditingController(
@@ -26,18 +26,19 @@ class CardFormManager {
     }
   }
 
-  /// Returns the controller for a specific field
+
+  // Returns the controller for a specific field
   TextEditingController? getController(String fieldKey) {
     return _controllers[fieldKey];
   }
 
-  /// Returns all controllers
+  // Returns all controllers
   Map<String, TextEditingController> get controllers => Map.unmodifiable(_controllers);
 
-  /// Returns the field configurations for this card type
-  List<FormFieldConfig> get fields => config.getFieldsFromMetadata(cardTypeData.metadata);
+  // Returns the field configurations for this card type
+  List<FormFieldConfig> get fields => config.getFieldsFromMetadata();
 
-  /// Validates all fields and stores errors
+  // Validates all fields and stores errors
   bool validateAll() {
     _errors.clear();
     bool isValid = true;
@@ -55,12 +56,12 @@ class CardFormManager {
     return isValid;
   }
 
-  /// Returns the error message for a specific field, if any
+  // Returns the error message for a specific field, if any
   String? getFieldError(String fieldKey) {
     return _errors[fieldKey];
   }
 
-  /// Collects all form data into a map
+  // Collects all form data into a map
   Map<String, dynamic> collectData() {
     final data = <String, dynamic>{};
 
@@ -74,7 +75,7 @@ class CardFormManager {
     return data;
   }
 
-  /// Clears all field values and errors
+  // Clears all field values and errors
   void clearAll() {
     for (final controller in _controllers.values) {
       controller.clear();
@@ -82,7 +83,7 @@ class CardFormManager {
     _errors.clear();
   }
 
-  /// Disposes all controllers and clears memory
+  // Disposes all controllers and clears memory
   void dispose() {
     for (final controller in _controllers.values) {
       controller.dispose();
@@ -91,7 +92,7 @@ class CardFormManager {
     _errors.clear();
   }
 
-  /// Factory method for Loyalty card form manager
+  // Factory method for Loyalty card form manager
   static CardFormManager forLoyalty({
     required String id,
     required String displayName,
@@ -110,7 +111,7 @@ class CardFormManager {
       metadata: metadata,
     );
 
-    final config = CardConfigurationFactory.getConfiguration('loyalty');
+    final config = CardConfigurationFactory.fromJson(cardTypeData.toJson());
 
     return CardFormManager(
       cardTypeData: cardTypeData,
@@ -118,7 +119,7 @@ class CardFormManager {
     );
   }
 
-  /// Factory method for SIM card form manager
+  // Factory method for SIM card form manager
   static CardFormManager forSim({
     required String id,
     required String displayName,
@@ -139,7 +140,7 @@ class CardFormManager {
       metadata: metadata,
     );
 
-    final config = CardConfigurationFactory.getConfiguration('sim');
+    final config = CardConfigurationFactory.fromJson(cardTypeData.toJson());
 
     return CardFormManager(
       cardTypeData: cardTypeData,
@@ -147,7 +148,7 @@ class CardFormManager {
     );
   }
 
-  /// Factory method for Business card form manager
+  // Factory method for Business card form manager
   static CardFormManager forBusiness({
     required String id,
     required String displayName,
@@ -172,7 +173,7 @@ class CardFormManager {
       metadata: metadata,
     );
 
-    final config = CardConfigurationFactory.getConfiguration('business');
+    final config = CardConfigurationFactory.fromJson(cardTypeData.toJson());
 
     return CardFormManager(
       cardTypeData: cardTypeData,
@@ -180,7 +181,7 @@ class CardFormManager {
     );
   }
 
-  /// Factory method for Rewards card form manager
+  // Factory method for Rewards card form manager
   static CardFormManager forRewards({
     required String id,
     required String displayName,
@@ -202,7 +203,7 @@ class CardFormManager {
       metadata: metadata,
     );
 
-    final config = CardConfigurationFactory.getConfiguration('rewards');
+    final config = CardConfigurationFactory.fromJson(cardTypeData.toJson());
 
     return CardFormManager(
       cardTypeData: cardTypeData,
@@ -210,7 +211,7 @@ class CardFormManager {
     );
   }
 
-  /// Factory method for Informative card form manager
+  // Factory method for Informative card form manager
   static CardFormManager forInformative({
     required String id,
     required String displayName,
@@ -232,7 +233,7 @@ class CardFormManager {
       metadata: metadata,
     );
 
-    final config = CardConfigurationFactory.getConfiguration('informative');
+    final config = CardConfigurationFactory.fromJson(cardTypeData.toJson());
 
     return CardFormManager(
       cardTypeData: cardTypeData,
@@ -240,7 +241,7 @@ class CardFormManager {
     );
   }
 
-  /// Factory method for Other card form manager
+  // Factory method for Other card form manager
   static CardFormManager forOther({
     required String id,
     required String displayName,
@@ -260,7 +261,7 @@ class CardFormManager {
       metadata: metadata,
     );
 
-    final config = CardConfigurationFactory.getConfiguration('other');
+    final config = CardConfigurationFactory.fromJson(cardTypeData.toJson());
 
     return CardFormManager(
       cardTypeData: cardTypeData,

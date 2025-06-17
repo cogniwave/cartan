@@ -73,7 +73,7 @@ class _ScanCardScreenState extends State<ScanCardScreen>
     );
 
     // Get the configuration for this card type
-    final config = CardConfigurationFactory.getConfiguration(cardType);
+    final config = CardConfigurationFactory.fromJson(cardTypeData.toJson());
 
     // Initialize the form manager
     _cardFormManager = CardFormManager(

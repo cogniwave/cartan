@@ -1,7 +1,7 @@
 import 'package:uuid/uuid.dart';
 import 'package:cartan/src/models/provider_model.dart';
 
-/// Base class for all cards
+//Base class for all cards
 abstract class CardModel {
   final String id;
   final Provider provider;
@@ -40,7 +40,7 @@ abstract class CardModel {
     };
   }
 
-  /// Factory method to create instances based on `type`
+  //Factory method to create instances based on `type`
   static CardModel fromJson(
       Map<String, dynamic> json, {
         required Provider provider,

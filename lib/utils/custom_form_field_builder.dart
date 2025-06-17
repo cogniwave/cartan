@@ -12,13 +12,17 @@ class CustomFormFieldBuilder {
   final BuildContext context;
   final CardFormatValidator _validator = CardFormatValidator();
   final String? cardType;
+  final List<String> formats;
+  final CardFormatValidator _formatValidator;
 
   CustomFormFieldBuilder({
     required this.localizations,
     required this.context,
     this.formManager,
     this.cardType,
-  });
+    required this.formats,
+  }) : _formatValidator = CardFormatValidator();
+
 
   Widget buildField(FormFieldConfig field) {
     final controller = formManager?.getController(field.key);
@@ -54,7 +58,7 @@ class CustomFormFieldBuilder {
     );
   }
 
-  /// Check if field should be optional
+  // Check if field should be optional
   bool _isFieldOptional(String fieldKey) {
     if (cardType?.toLowerCase() == null) return false;
 
@@ -71,7 +75,7 @@ class CustomFormFieldBuilder {
     return false;
   }
 
-  /// Check if field is required based on card type and field key
+  // Check if field is required based on card type and field key
   bool _isFieldRequired(FormFieldConfig field) {
     final ct = cardType?.toLowerCase();
     final normalizedKey = field.key.toLowerCase();
@@ -125,7 +129,9 @@ class CustomFormFieldBuilder {
     if (!isRequired && field.inputType != InputType.email) {
       return (value) {
         if (value?.trim().isEmpty == true) return null;
-        return _validator.validateField(
+
+        // Validação básica do campo
+        final basicError = _validator.validateField(
           field.key,
           value!,
           localizations,
@@ -133,6 +139,18 @@ class CustomFormFieldBuilder {
           inputType: field.inputType,
           isRequired: false,
         );
+
+        if (basicError != null) return basicError;
+
+        // Validação de formato específica para card_number
+        if (field.key == 'card_number') {
+          final formats = _getFormatsFromContext();
+          if (formats.isNotEmpty && !_formatValidator.isValidFormat(value, formats)) {
+            return localizations.invalid_card_format;
+          }
+        }
+
+        return null;
       };
     }
 
@@ -140,7 +158,9 @@ class CustomFormFieldBuilder {
       if (value?.trim().isEmpty == true) {
         return isRequired ? localizations.required_field : null;
       }
-      return _validator.validateField(
+
+      // Validação básica do campo
+      final basicError = _validator.validateField(
         field.key,
         value!,
         localizations,
@@ -148,7 +168,23 @@ class CustomFormFieldBuilder {
         inputType: field.inputType,
         isRequired: isRequired,
       );
+
+      if (basicError != null) return basicError;
+
+      // Validação de formato específica para card_number
+      if (field.key == 'card_number') {
+        final formats = _getFormatsFromContext();
+        if (formats.isNotEmpty && !_formatValidator.isValidFormat(value, formats)) {
+          return localizations.invalid_card_format;
+        }
+      }
+
+      return null;
     };
+  }
+
+  List<String> _getFormatsFromContext() {
+    return formats;
   }
 
   Widget _buildTextFormField(
@@ -171,7 +207,6 @@ class CustomFormFieldBuilder {
     return FormField<String>(
       validator: validator,
       initialValue: controller.text,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
       builder: (FormFieldState<String> fieldState) {
         return TextFormField(
           controller: controller,
@@ -187,6 +222,9 @@ class CustomFormFieldBuilder {
           onChanged: (value) {
             fieldState.didChange(value);
             // controller.text = value;
+          },
+          onTap: () {
+            fieldState.reset();
           },
         );
       },

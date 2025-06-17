@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// AppColors for the dark theme
+//AppColors for the dark theme
 class AppColors {
   static const Color background = Color(0xFF2A2A40);
   static const Color primary = Color(0xFFEDEDED);
@@ -12,7 +12,7 @@ class AppColors {
   static const Color error = Color(0xFFEF5350);
 }
 
-/// AppColors for the light theme
+//AppColors for the light theme
 class AppColorsLight {
   static const Color background = Color(0xFFF5F5F5);
   static const Color primary = Color(0xFF333333);
@@ -24,7 +24,7 @@ class AppColorsLight {
   static const Color error = Color(0xFFE57373);
 }
 
-/// Custom color extension
+//Custom color extension
 class CustomColors extends ThemeExtension<CustomColors> {
   final Color success;
   final Color borders;
@@ -71,7 +71,7 @@ class CustomColors extends ThemeExtension<CustomColors> {
   );
 }
 
-/// AppThemes that configure the dark and light themes
+//AppThemes that configure the dark and light themes
 class AppThemes {
   static ThemeData get darkTheme {
     return ThemeData(

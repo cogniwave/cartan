@@ -1,7 +1,7 @@
 import 'package:cartan/src/models/card_configuration.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-/// Optimized validator for various card field formats
+// Optimized validator for various card field formats
 class CardFormatValidator {
   // Precompiled regex patterns for performance - made static final for better memory usage
   static final Map<String, RegExp> _regexCache = {
@@ -47,7 +47,7 @@ class CardFormatValidator {
   RegExp get _dateRegex => _regexCache['date']!;
   RegExp get _numericRegex => _regexCache['numeric']!;
 
-  /// Validate against a list of regex patterns or use default alphanumeric
+  // Validate against a list of regex patterns or use default alphanumeric
   bool isValidFormat(String input, List<String> formats) {
     if (input.isEmpty) return false;
     if (formats.isEmpty) {
@@ -56,21 +56,45 @@ class CardFormatValidator {
     return formats.any((pattern) => RegExp(pattern).hasMatch(input));
   }
 
-  /// Optimized validation methods using cached regex
+  static const int _defaultMaxLength = 50;
+
+  static int getMaxLengthFromFormats(List<String> formats) {
+    if (formats.isEmpty) return _defaultMaxLength;
+
+    // Regex que capta {min} ou {min,max}
+    final quantifierPattern = RegExp(r'\{(\d+)(?:,(\d+))?\}');
+    int maxLength = 0;
+
+    for (final format in formats) {
+      final match = quantifierPattern.firstMatch(format);
+      if (match != null) {
+        // Se existir grupo 2 (máximo do intervalo) usa-o, senão usa o grupo 1
+        final candidate = int.parse(match.group(2) ?? match.group(1)!);
+        if (candidate > maxLength) {
+          maxLength = candidate;
+        }
+      }
+    }
+
+    // Se não encontramos nenhum quantificador válido, usamos o default
+    return maxLength > 0 ? maxLength : _defaultMaxLength;
+  }
+
+  // Optimized validation methods using cached regex
   bool isValidPin(String pin) => pin.isNotEmpty && _pinRegex.hasMatch(pin);
   bool isValidPuk(String puk) => puk.isNotEmpty && _pukRegex.hasMatch(puk);
   bool isValidEmail(String email) => email.isNotEmpty && _emailRegex.hasMatch(email);
   bool isValidNumeric(String value) => value.isNotEmpty && _numericRegex.hasMatch(value);
   bool isValidPoints(String points) => isValidNumeric(points);
 
-  /// Phone number validation (after cleaning separators)
+  // Phone number validation (after cleaning separators)
   bool isValidPhoneNumber(String phone) {
     if (phone.isEmpty) return false;
     final cleaned = phone.replaceAll(_phoneCleanupRegex, '');
     return _phoneRegex.hasMatch(cleaned);
   }
 
-  /// Date validation with improved error handling
+  // Date validation with improved error handling
   bool isValidDate(String date) {
     if (date.isEmpty || !_dateRegex.hasMatch(date)) return false;
 
@@ -85,13 +109,13 @@ class CardFormatValidator {
     }
   }
 
-  /// Card number validation (non-empty alphanumeric)
+  // Card number validation (non-empty alphanumeric)
   bool isValidCardNumber(String number) {
     final trimmed = number.trim();
     return trimmed.isNotEmpty && _defaultRegex.hasMatch(trimmed);
   }
 
-  /// Card number validation (formats)
+  // Card number validation (formats)
   String? validateCardNumberField({
     required String value,
     required AppLocalizations localizations,
@@ -121,7 +145,7 @@ class CardFormatValidator {
     return null;
   }
 
-  /// Check if a field is required based on card type
+  // Check if a field is required based on card type
   bool _isFieldRequired(String fieldKey, String? cardType) {
     final normalizedKey = _fieldNormalization[fieldKey.toLowerCase()] ?? fieldKey.toLowerCase();
     final ct = cardType?.toLowerCase();
@@ -141,7 +165,7 @@ class CardFormatValidator {
     return true;
   }
 
-  /// Main field validation with improved performance
+  // Main field validation with improved performance
   String? validateField(
       String fieldKey,
       String value,
@@ -170,7 +194,7 @@ class CardFormatValidator {
     return _validateFieldContent(normalizedKey, trimmed, cardType, inputType, localizations);
   }
 
-  /// Unified validation logic
+  // Unified validation logic
   String? _validateFieldContent(
       String key,
       String value,
@@ -188,7 +212,7 @@ class CardFormatValidator {
     return null;
   }
 
-  /// Get appropriate validator function for field
+  // Get appropriate validator function for field
   bool Function(String)? _getValidatorForField(String key, InputType? inputType) {
     switch (key) {
       case 'pin': return isValidPin;
@@ -204,7 +228,7 @@ class CardFormatValidator {
     }
   }
 
-  /// Get validator based on input type
+  // Get validator based on input type
   bool Function(String)? _getValidatorForInputType(InputType? type) {
     switch (type) {
       case InputType.email: return isValidEmail;
@@ -215,7 +239,7 @@ class CardFormatValidator {
     }
   }
 
-  /// Get validation type from input type
+  // Get validation type from input type
   String _getValidationTypeFromInputType(InputType? type) {
     switch (type) {
       case InputType.email: return 'email';
@@ -226,7 +250,7 @@ class CardFormatValidator {
     }
   }
 
-  /// Optimized error message generation
+  // Optimized error message generation
   String _getErrorMessage(
       String validationType,
       String? cardType,
@@ -291,7 +315,7 @@ class CardFormatValidator {
     return errors;
   }
 
-  /// Strategy pattern for card-specific validation
+  // Strategy pattern for card-specific validation
   void Function(Map<String, dynamic>, Map<String, String>, AppLocalizations)? _getCardValidator(String cardType) {
     switch (cardType) {
       case 'sim': return _validateSimCard;
@@ -351,7 +375,7 @@ class CardFormatValidator {
     }
   }
 
-  /// Simplified optional field validation
+  // Simplified optional field validation
   void _validateOptionalField(
       Map<String, dynamic> data,
       Map<String, String> errors,
@@ -367,7 +391,7 @@ class CardFormatValidator {
     }
   }
 
-  /// Check if card number is required for the given card type
+  // Check if card number is required for the given card type
   bool isCardNumberRequired(String? cardType) {
     final ct = cardType?.toLowerCase();
 
@@ -380,7 +404,7 @@ class CardFormatValidator {
     return true;
   }
 
-  /// Validate card number with proper format checking
+  // Validate card number with proper format checking
   String? validateCardNumber(
       String? value,
       AppLocalizations localizations,

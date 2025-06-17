@@ -1,6 +1,5 @@
 import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:cartan/src/forms/card_form_manager.dart';
-import 'package:cartan/utils/app_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cartan/src/themes/app_themes.dart';
@@ -50,56 +49,28 @@ class _ManualEntryViewState extends State<ManualEntryView> {
       context: context,
       formManager: widget.formManager,
       cardType: widget.cardType,
+      formats: widget.formats,
     );
   }
 
   void _handleSave() {
-    final localizations = AppLocalizations.of(context)!;
-    final validator = _formatValidator;
-    final formats = widget.formats;
-
     if (!_formKey.currentState!.validate()) return;
 
     final formManager = widget.formManager;
-
     if (formManager == null) return;
 
+    final data = formManager.collectData();
+    final cardNumber = data['card_number']?.toString().trim() ?? '';
     final cardType = widget.cardType ?? 'loyalty';
 
-    final data = formManager.collectData();
-    final cardNumber = data['cardNumber']?.toString().trim() ?? '';
-
-    if (formManager.controllers.containsKey('cardNumber')) {
-      final isRequired = validator.isCardNumberRequired(cardType);
-
-      final error = validator.validateField(
-        'cardNumber',
-        cardNumber,
-        localizations,
-        cardType: cardType,
-        isRequired: isRequired,
-      );
-
-      if (error != null) {
-        AppSnackBar.showError(error);
-        return;
-      }
-
-      if (!isRequired && cardNumber.isEmpty) {
-        data.remove('cardNumber');
-      } else {
-        data['cardNumber'] = cardNumber;
-      }
+    if (!_formatValidator.isCardNumberRequired(cardType) && cardNumber.isEmpty) {
+      data.remove('card_number');
+    } else if (cardNumber.isNotEmpty) {
+      data['card_number'] = cardNumber;
     }
 
     if (!formManager.validateAll()) {
       setState(() {});
-      AppSnackBar.showError(localizations.verify_entered_data);
-      return;
-    }
-
-    if (formats.isNotEmpty && !_formatValidator.isValidFormat(cardNumber, formats)) {
-      AppSnackBar.showError(localizations.invalid_card_format);
       return;
     }
 
