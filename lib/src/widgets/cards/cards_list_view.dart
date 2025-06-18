@@ -16,34 +16,36 @@ class CardsListView extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Column(
-      children: [
-        Divider(
-          color: theme.dividerTheme.color,
-          thickness: theme.dividerTheme.thickness,
-        ),
-        Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.only(
-              left: 16,
-              right: 16,
-              bottom: 80,
-              top: 16,
-            ),
-            itemCount: cards.length,
-            itemBuilder: (context, index) {
-              final card = cards[index];
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: CardItem(
-                  card: card,
-                  onTap: () => onCardTap(card),
-                ),
-              );
-            },
+    return SafeArea(
+      child: Column(
+        children: [
+          Divider(
+            color: theme.dividerTheme.color,
+            thickness: theme.dividerTheme.thickness,
           ),
-        ),
-      ],
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.only(
+                left: 16,
+                right: 16,
+                bottom: 80,
+                top: 16,
+              ),
+              itemCount: cards.length,
+              itemBuilder: (context, index) {
+                final card = cards[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: CardItem(
+                    card: card,
+                    onTap: () => onCardTap(card),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

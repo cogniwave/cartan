@@ -86,62 +86,64 @@ class _ManualEntryViewState extends State<ManualEntryView> {
     final requiredFields = allFields.where((f) => f.isRequired).toList();
     final optionalFields = allFields.where((f) => !f.isRequired).toList();
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-      child: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: CardPreviewWidget(
-                  assetImagePath: widget.assetImagePath,
-                  formManager: widget.formManager,
-                ),
-              ),
-              const SizedBox(height: 32),
-
-              // Required fields
-              ...requiredFields.map((field) => Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: _fieldBuilder.buildField(field),
-              )),
-
-              // Optional toggle
-              if (optionalFields.isNotEmpty) ...[
-                GestureDetector(
-                  onTap: () => setState(() => _showOptionalFields = !_showOptionalFields),
-                  child: Row(
-                    children: [
-                      Text(localizations.optional_fields, style: theme.textTheme.bodyMedium),
-                      const SizedBox(width: 8),
-                      Icon(_showOptionalFields ? Icons.expand_less : Icons.expand_more),
-                    ],
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: CardPreviewWidget(
+                    assetImagePath: widget.assetImagePath,
+                    formManager: widget.formManager,
                   ),
                 ),
-                if (_showOptionalFields) ...optionalFields.map((field) => Padding(
-                  padding: const EdgeInsets.only(top: 16, bottom: 16),
+                const SizedBox(height: 32),
+      
+                // Required fields
+                ...requiredFields.map((field) => Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
                   child: _fieldBuilder.buildField(field),
                 )),
-              ],
-
-              const SizedBox(height: 32),
-
-              Center(
-                child: ElevatedButton.icon(
-                  icon: const Icon(AntIcons.formOutlined),
-                  label: Text(localizations.add_card),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.extension<CustomColors>()!.accent,
-                    foregroundColor: theme.colorScheme.primary,
-                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      
+                // Optional toggle
+                if (optionalFields.isNotEmpty) ...[
+                  GestureDetector(
+                    onTap: () => setState(() => _showOptionalFields = !_showOptionalFields),
+                    child: Row(
+                      children: [
+                        Text(localizations.optional_fields, style: theme.textTheme.bodyMedium),
+                        const SizedBox(width: 8),
+                        Icon(_showOptionalFields ? Icons.expand_less : Icons.expand_more),
+                      ],
+                    ),
                   ),
-                  onPressed: _handleSave,
+                  if (_showOptionalFields) ...optionalFields.map((field) => Padding(
+                    padding: const EdgeInsets.only(top: 16, bottom: 16),
+                    child: _fieldBuilder.buildField(field),
+                  )),
+                ],
+      
+                const SizedBox(height: 32),
+      
+                Center(
+                  child: ElevatedButton.icon(
+                    icon: const Icon(AntIcons.formOutlined),
+                    label: Text(localizations.add_card),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: theme.extension<CustomColors>()!.accent,
+                      foregroundColor: theme.colorScheme.primary,
+                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    ),
+                    onPressed: _handleSave,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

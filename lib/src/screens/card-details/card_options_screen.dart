@@ -88,74 +88,76 @@ class CardOptionsScreen extends StatelessWidget {
           ],
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 16),
-            Text(
-              localizations.card_number,
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: theme.colorScheme.onSurface,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16.0),
-              child: Text(
-                formatMemberId(card.memberId),
-                style: theme.textTheme.headlineLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: theme.colorScheme.primary,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 16),
+              Text(
+                localizations.card_number,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
-            ),
+              const SizedBox(height: 8),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: Text(
+                  formatMemberId(card.memberId),
+                  style: theme.textTheme.headlineLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+              ),
 
-            if (card.provider.isSimProvider) ...[
-              _buildSimCardDetails(context, theme, localizations),
-              const SizedBox(height: 16),
+              if (card.provider.isSimProvider) ...[
+                _buildSimCardDetails(context, theme, localizations),
+                const SizedBox(height: 16),
+              ],
+
+              Divider(
+                color: theme.dividerTheme.color,
+                thickness: theme.dividerTheme.thickness,
+              ),
+
+              const SizedBox(height: 12),
+              ListTile(
+                title: Text(localizations.nearest_places),
+                leading: const Icon(AntIcons.environmentOutlined),
+                onTap: () => UrlLauncher.launchExternalUrl(
+                  context,
+                  card.provider.displayName,
+                  urlType: 'map',
+                ),
+              ),
+              ListTile(
+                title: Text(localizations.website),
+                leading: const Icon(AntIcons.globalOutlined),
+                onTap: () => UrlLauncher.launchExternalUrl(
+                  context,
+                  card.provider.website,
+                  urlType: 'web',
+                ),
+              ),
+              Divider(
+                color: theme.dividerTheme.color,
+                thickness: theme.dividerTheme.thickness,
+              ),
+              ListTile(
+                title: Text(localizations.remove),
+                textColor: theme.colorScheme.error,
+                leading: const Icon(AntIcons.deleteOutlined),
+                iconColor: theme.colorScheme.error,
+                onTap: () {
+                  _showDeleteDialog(context, card.id);
+                },
+              ),
             ],
-
-            Divider(
-              color: theme.dividerTheme.color,
-              thickness: theme.dividerTheme.thickness,
-            ),
-
-            const SizedBox(height: 12),
-            ListTile(
-              title: Text(localizations.nearest_places),
-              leading: const Icon(AntIcons.environmentOutlined),
-              onTap: () => UrlLauncher.launchExternalUrl(
-                context,
-                card.provider.displayName,
-                urlType: 'map',
-              ),
-            ),
-            ListTile(
-              title: Text(localizations.website),
-              leading: const Icon(AntIcons.globalOutlined),
-              onTap: () => UrlLauncher.launchExternalUrl(
-                context,
-                card.provider.website,
-                urlType: 'web',
-              ),
-            ),
-            Divider(
-              color: theme.dividerTheme.color,
-              thickness: theme.dividerTheme.thickness,
-            ),
-            ListTile(
-              title: Text(localizations.remove),
-              textColor: theme.colorScheme.error,
-              leading: const Icon(AntIcons.deleteOutlined),
-              iconColor: theme.colorScheme.error,
-              onTap: () {
-                _showDeleteDialog(context, card.id);
-              },
-            ),
-          ],
+          ),
         ),
       ),
     );
