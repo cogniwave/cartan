@@ -319,5 +319,37 @@
   "optional_fields": "Optional fields",
   "@optional_fields": {
     "description": "Label shown for optional fields."
+  },
+  "coming_soon": "Coming soon",
+  "@coming_soon": {
+    "description": "Label for card types screen."
+  },
+  "loyalty_card": "Loyalty",
+  "@loyalty_card": {
+    "description": "Label for loyalty card."
+  },
+  "sim_card": "Sim",
+  "@sim_card": {
+    "description": "Label for sim card."
+  },
+  "business_card": "Business",
+  "@business_card": {
+    "description": "Label for business card."
+  },
+  "membership_card": "Membership",
+  "@membership_card": {
+    "description": "Label for membership card."
+  },
+  "informative_card": "Informative",
+  "@informative_card": {
+    "description": "Label for informative card."
+  },
+  "rewards_card": "Rewards",
+  "@rewards_card": {
+    "description": "Label for rewards card."
+  },
+  "other_card": "Other",
+  "@other_card": {
+    "description": "Label for others card."
   }
 }

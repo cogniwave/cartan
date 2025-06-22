@@ -1,4 +1,6 @@
 import 'package:cartan/src/screens/add_card/select_provider_screen.dart';
+import 'package:cartan/src/themes/app_themes.dart';
+import 'package:corner_ribbon/corner_ribbon.dart';
 import 'package:flutter/material.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:cartan/l10n/app_localizations.dart';
@@ -30,6 +32,7 @@ class CardTypeScreen extends StatelessWidget {
               context,
               icon: AntIcons.giftOutlined,
               title: localizations.loyalty_card,
+              isEnabled: true,
               onTap: () {
                 Navigator.push(
                   context,
@@ -46,6 +49,7 @@ class CardTypeScreen extends StatelessWidget {
               context,
               icon: AntIcons.mobileOutlined,
               title: localizations.sim_card,
+              isEnabled: true,
               onTap: () {
                 Navigator.push(
                   context,
@@ -62,6 +66,7 @@ class CardTypeScreen extends StatelessWidget {
               context,
               icon: AntIcons.contactsOutlined,
               title: localizations.business_card,
+              isEnabled: false,
               onTap: () {
                 // TODO: Navigate to business card creation screen
               },
@@ -70,6 +75,7 @@ class CardTypeScreen extends StatelessWidget {
               context,
               icon: AntIcons.crownOutlined,
               title: localizations.membership_card,
+              isEnabled: false,
               onTap: () {
                 // TODO: Navigate to membership card creation screen
               },
@@ -78,6 +84,7 @@ class CardTypeScreen extends StatelessWidget {
               context,
               icon: AntIcons.infoCircleOutlined,
               title: localizations.informative_card,
+              isEnabled: false,
               onTap: () {
                 // TODO: Navigate to information card creation screen
               },
@@ -86,6 +93,7 @@ class CardTypeScreen extends StatelessWidget {
               context,
               icon: AntIcons.trophyOutlined,
               title: localizations.rewards_card,
+              isEnabled: false,
               onTap: () {
                 // TODO: Navigate to rewards card creation screen
               },
@@ -94,6 +102,7 @@ class CardTypeScreen extends StatelessWidget {
               context,
               icon: AntIcons.appstoreOutlined,
               title: localizations.other_card,
+              isEnabled: false,
               onTap: () {
                 // TODO: Navigate to other card types screen
               },
@@ -109,32 +118,59 @@ class CardTypeScreen extends StatelessWidget {
     required IconData icon,
     required String title,
     required VoidCallback onTap,
+    required bool isEnabled,
   }) {
     final theme = Theme.of(context);
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: theme.colorScheme.secondary, width: 1.0),
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 60.0, color: theme.colorScheme.primary),
-            const SizedBox(height: 16.0),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.w500,
-                color: theme.colorScheme.primary,
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: theme.colorScheme.secondary, width: 1.0),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Opacity(
+            opacity: isEnabled ? 1.0 : 0.5,
+            child: GestureDetector(
+              onTap: isEnabled ? onTap : null,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(icon, size: 60.0, color: theme.colorScheme.primary),
+                  const SizedBox(height: 16.0),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w500,
+                      color: theme.colorScheme.primary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
-              textAlign: TextAlign.center,
             ),
-          ],
-        ),
+          ),
+          if (!isEnabled)
+            CornerRibbon(
+              ribbonColor: theme.extension<CustomColors>()!.accent,
+              text: AppLocalizations.of(context)!.coming_soon,
+              position: RibbonPosition.topRight,
+              ribbonStroke: 40,
+              cornerOffset: 45,
+              textStyle: TextStyle(
+                color: theme.colorScheme.primary,
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+              child: Container(
+                width: 200,
+                height: 200,
+                color: Colors.transparent,
+              ),
+            ),
+        ],
       ),
     );
   }

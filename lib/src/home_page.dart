@@ -1,7 +1,7 @@
 import 'package:cartan/src/screens/add_card/card_types_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 import 'package:cartan/src/blocs/cards/cards_bloc.dart';
 import 'package:cartan/src/models/card_model.dart';
 import 'package:cartan/src/screens/card-details/card_details_screen.dart';
@@ -23,9 +23,7 @@ enum CardViewType {
   }
 
   IconData get icon {
-    return this == CardViewType.grid
-        ? Icons.view_list
-        : Icons.grid_view;
+    return this == CardViewType.grid ? Icons.view_list : Icons.grid_view;
   }
 }
 
@@ -61,9 +59,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> _onCardTap(BuildContext context, CardModel card) async {
     await Navigator.push<bool>(
       context,
-      MaterialPageRoute(
-        builder: (_) => CardDetailsScreen(card: card),
-      ),
+      MaterialPageRoute(builder: (_) => CardDetailsScreen(card: card)),
     ).then((result) {
       if (result == true && context.mounted) {
         context.read<CardsBloc>().add(const LoadCards());
@@ -82,105 +78,113 @@ class _HomePageState extends State<HomePage> {
     return BlocProvider(
       create: (_) => CardViewCubit(),
       child: BlocBuilder<CardViewCubit, CardViewType>(
-          builder: (context, viewType) {
-            return Scaffold(
-              appBar: SearchableAppBar(
-                title: localizations.cards,
-                searchHint: localizations.search,
-                titleStyle: TextStyle(
-                  color: theme.colorScheme.primary,
-                  fontWeight: FontWeight.bold,
-                ),
-                searchStyle: TextStyle(color: theme.colorScheme.onSurface),
-                backgroundColor: theme.appBarTheme.backgroundColor,
-                onSearch: (query) {
-                  setState(() {
-                    _searchQuery = query.toLowerCase();
-                  });
-                },
-                trailingActions: [
-                  IconButton(
-                    icon: Icon(viewType.icon, color: theme.colorScheme.primary),
-                    onPressed: () {
-                      context.read<CardViewCubit>().toggleView();
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.more_vert, color: theme.colorScheme.primary),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const SettingsScreen()),
-                      );
-                    },
-                  ),
-                ],
+        builder: (context, viewType) {
+          return Scaffold(
+            appBar: SearchableAppBar(
+              title: localizations.cards,
+              searchHint: localizations.search,
+              titleStyle: TextStyle(
+                color: theme.colorScheme.primary,
+                fontWeight: FontWeight.bold,
               ),
-              body: RefreshIndicator(
-                onRefresh: () async {
-                  context.read<CardsBloc>().add(const LoadCards());
-                },
-                child: BlocBuilder<CardsBloc, CardsState>(
-                  builder: (context, state) {
-                    if (state.status == Status.loading) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (state.status == Status.failure) {
-                      return Center(child: Text('Error: ${state.error}'));
-                    } else if (state.status == Status.success) {
-                      final cards = state.cards;
+              searchStyle: TextStyle(color: theme.colorScheme.onSurface),
+              backgroundColor: theme.appBarTheme.backgroundColor,
+              onSearch: (query) {
+                setState(() {
+                  _searchQuery = query.toLowerCase();
+                });
+              },
+              trailingActions: [
+                IconButton(
+                  icon: Icon(viewType.icon, color: theme.colorScheme.primary),
+                  onPressed: () {
+                    context.read<CardViewCubit>().toggleView();
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.more_vert, color: theme.colorScheme.primary),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                    );
+                  },
+                ),
+              ],
+            ),
+            body: RefreshIndicator(
+              onRefresh: () async {
+                context.read<CardsBloc>().add(const LoadCards());
+              },
+              child: BlocBuilder<CardsBloc, CardsState>(
+                builder: (context, state) {
+                  if (state.status == Status.loading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state.status == Status.failure) {
+                    return Center(child: Text('Error: ${state.error}'));
+                  } else if (state.status == Status.success) {
+                    final cards = state.cards;
 
-                      // Filter cards based on search query if needed
-                      final filteredCards = _searchQuery.isEmpty
-                          ? cards
-                          : cards.where((card) =>
-                      card.name.toLowerCase().contains(_searchQuery) ||
-                          card.provider.displayName.toLowerCase().contains(_searchQuery)
-                      ).toList();
+                    // Filter cards based on search query if needed
+                    final filteredCards =
+                        _searchQuery.isEmpty
+                            ? cards
+                            : cards
+                                .where(
+                                  (card) =>
+                                      card.name.toLowerCase().contains(
+                                        _searchQuery,
+                                      ) ||
+                                      card.provider.displayName
+                                          .toLowerCase()
+                                          .contains(_searchQuery),
+                                )
+                                .toList();
 
-                      if (cards.isEmpty) {
-                        return ListView(
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          children: [
-                            EmptyCardsView(addCardButton: addCardButton),
-                          ],
-                        );
-                      }
-
-                      if (filteredCards.isEmpty && _searchQuery.isNotEmpty) {
-                        return SearchResults.buildNoResultsFound(
-                          message: localizations.no_results_found,
-                          theme: theme,
-                        );
-                      }
-
-                      return Stack(
+                    if (cards.isEmpty) {
+                      return ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
                         children: [
-                          viewType == CardViewType.grid
-                              ? CardsGridView(
-                            cards: filteredCards,
-                            onCardTap: (card) => _onCardTap(context, card),
-                          )
-                              : CardsListView(
-                            cards: filteredCards,
-                            onCardTap: (card) => _onCardTap(context, card),
-                          ),
-                          SafeArea(
-                            minimum: const EdgeInsets.all(16),
-                            child: Align(
-                              alignment: Alignment.bottomRight,
-                              child: addCardButton,
-                            ),
-                          ),
+                          EmptyCardsView(addCardButton: addCardButton),
                         ],
                       );
                     }
-                    // Unknown state, should not occur
-                    return const SizedBox.shrink();
-                  },
-                ),
+
+                    if (filteredCards.isEmpty && _searchQuery.isNotEmpty) {
+                      return SearchResults.buildNoResultsFound(
+                        message: localizations.no_results_found,
+                        theme: theme,
+                      );
+                    }
+
+                    return Stack(
+                      children: [
+                        viewType == CardViewType.grid
+                            ? CardsGridView(
+                              cards: filteredCards,
+                              onCardTap: (card) => _onCardTap(context, card),
+                            )
+                            : CardsListView(
+                              cards: filteredCards,
+                              onCardTap: (card) => _onCardTap(context, card),
+                            ),
+                        SafeArea(
+                          minimum: const EdgeInsets.all(16),
+                          child: Align(
+                            alignment: Alignment.bottomRight,
+                            child: addCardButton,
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                  // Unknown state, should not occur
+                  return const SizedBox.shrink();
+                },
               ),
-            );
-          }
+            ),
+          );
+        },
       ),
     );
   }

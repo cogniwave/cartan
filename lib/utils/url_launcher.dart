@@ -1,16 +1,16 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:bugsnag_flutter/bugsnag_flutter.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 import 'package:cartan/utils/app_snackbar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UrlLauncher {
   static Future<void> launchExternalUrl(
-      BuildContext context,
-      String target, {
-        required String urlType,
-      }) async {
+    BuildContext context,
+    String target, {
+    required String urlType,
+  }) async {
     final localizations = AppLocalizations.of(context)!;
 
     try {
@@ -34,7 +34,10 @@ class UrlLauncher {
   }
 
   // Launch map with system chooser dialog (native to Android/iOS)
-  static Future<void> _launchMap(BuildContext context, String searchQuery) async {
+  static Future<void> _launchMap(
+    BuildContext context,
+    String searchQuery,
+  ) async {
     final localizations = AppLocalizations.of(context)!;
     final String encodedQuery = Uri.encodeComponent(searchQuery);
     Uri? mapUrl;
@@ -54,7 +57,9 @@ class UrlLauncher {
 
         if (!launched) {
           if (Platform.isIOS) {
-            final appleUrl = Uri.parse("http://maps.apple.com/?q=$encodedQuery");
+            final appleUrl = Uri.parse(
+              "http://maps.apple.com/?q=$encodedQuery",
+            );
             final appleLaunched = await launchUrl(
               appleUrl,
               mode: LaunchMode.externalApplication,
@@ -64,7 +69,9 @@ class UrlLauncher {
               AppSnackBar.showError(localizations.no_map_apps_installed);
             }
           } else {
-            final googleUrl = Uri.parse("https://www.google.com/maps/search/?api=1&query=$encodedQuery");
+            final googleUrl = Uri.parse(
+              "https://www.google.com/maps/search/?api=1&query=$encodedQuery",
+            );
             final googleLaunched = await launchUrl(
               googleUrl,
               mode: LaunchMode.externalApplication,

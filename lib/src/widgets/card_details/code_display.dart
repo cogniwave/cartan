@@ -2,7 +2,7 @@ import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:cartan/src/themes/app_themes.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class CodeDisplayWidget extends StatelessWidget {
@@ -51,69 +51,68 @@ class CodeDisplayWidget extends StatelessWidget {
         children: [
           Expanded(
             child: Center(
-              child: showQrCode
-                  ? Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: onZoomPressed,
-                  borderRadius: BorderRadius.circular(8),
-                  child: Container(
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: QrImageView(
-                      data: cardNumber,
-                      version: QrVersions.auto,
-                      size: qrSize,
-                      backgroundColor: Colors.white,
-                      padding: EdgeInsets.all(8),
-                    ),
-                  ),
-                ),
-              )
-                  : Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: onZoomPressed,
-                  borderRadius: BorderRadius.circular(8),
-                  child: Container(
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: BarcodeWidget(
-                      barcode: Barcode.code128(),
-                      data: cardNumber,
-                      width: barcodeWidth,
-                      height: barcodeHeight,
-                      drawText: false,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
+              child:
+                  showQrCode
+                      ? Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: onZoomPressed,
+                          borderRadius: BorderRadius.circular(8),
+                          child: Container(
+                            padding: EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: QrImageView(
+                              data: cardNumber,
+                              version: QrVersions.auto,
+                              size: qrSize,
+                              backgroundColor: Colors.white,
+                              padding: EdgeInsets.all(8),
+                            ),
+                          ),
+                        ),
+                      )
+                      : Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: onZoomPressed,
+                          borderRadius: BorderRadius.circular(8),
+                          child: Container(
+                            padding: EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: BarcodeWidget(
+                              barcode: Barcode.code128(),
+                              data: cardNumber,
+                              width: barcodeWidth,
+                              height: barcodeHeight,
+                              drawText: false,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
             ),
           ),
           SizedBox(height: verticalSpacing),
           ElevatedButton.icon(
             onPressed: onZoomPressed,
-            icon: Icon(
-              AntIcons.searchOutlined,
-              size: isLandscape ? 16 : 24,
-            ),
+            icon: Icon(AntIcons.searchOutlined, size: isLandscape ? 16 : 24),
             label: Text(AppLocalizations.of(context)!.zoom),
             style: ElevatedButton.styleFrom(
-              backgroundColor:
-              theme.extension<CustomColors>()!.accentAlt,
+              backgroundColor: theme.extension<CustomColors>()!.accentAlt,
               foregroundColor: theme.colorScheme.primary,
-              padding: isLandscape
-                  ? const EdgeInsets.symmetric(
-                  horizontal: 16, vertical: 8)
-                  : const EdgeInsets.symmetric(
-                  horizontal: 24, vertical: 12),
+              padding:
+                  isLandscape
+                      ? const EdgeInsets.symmetric(horizontal: 16, vertical: 8)
+                      : const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16.0),
               ),

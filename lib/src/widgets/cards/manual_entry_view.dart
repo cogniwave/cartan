@@ -1,7 +1,7 @@
 import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:cartan/src/forms/card_form_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 import 'package:cartan/src/themes/app_themes.dart';
 import 'package:cartan/utils/custom_form_field_builder.dart';
 import 'card_preview_widget.dart';
@@ -60,13 +60,18 @@ class _ManualEntryViewState extends State<ManualEntryView> {
     if (formManager == null) return;
 
     final data = formManager.collectData();
+
     final cardNumber = data['card_number']?.toString().trim() ?? '';
+
     final cardType = widget.cardType ?? 'loyalty';
 
-    if (!_formatValidator.isCardNumberRequired(cardType) && cardNumber.isEmpty) {
+    if (!_formatValidator.isCardNumberRequired(cardType) &&
+        cardNumber.isEmpty) {
       data.remove('card_number');
     } else if (cardNumber.isNotEmpty) {
       data['card_number'] = cardNumber;
+
+      data['memberId'] = cardNumber;
     }
 
     if (!formManager.validateAll()) {
@@ -102,33 +107,49 @@ class _ManualEntryViewState extends State<ManualEntryView> {
                   ),
                 ),
                 const SizedBox(height: 32),
-      
+
                 // Required fields
-                ...requiredFields.map((field) => Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: _fieldBuilder.buildField(field),
-                )),
-      
+                ...requiredFields.map(
+                  (field) => Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: _fieldBuilder.buildField(field),
+                  ),
+                ),
+
                 // Optional toggle
                 if (optionalFields.isNotEmpty) ...[
                   GestureDetector(
-                    onTap: () => setState(() => _showOptionalFields = !_showOptionalFields),
+                    onTap:
+                        () => setState(
+                          () => _showOptionalFields = !_showOptionalFields,
+                        ),
                     child: Row(
                       children: [
-                        Text(localizations.optional_fields, style: theme.textTheme.bodyMedium),
+                        Text(
+                          localizations.optional_fields,
+                          style: theme.textTheme.bodyMedium,
+                        ),
+
                         const SizedBox(width: 8),
-                        Icon(_showOptionalFields ? Icons.expand_less : Icons.expand_more),
+                        Icon(
+                          _showOptionalFields
+                              ? Icons.expand_less
+                              : Icons.expand_more,
+                        ),
                       ],
                     ),
                   ),
-                  if (_showOptionalFields) ...optionalFields.map((field) => Padding(
-                    padding: const EdgeInsets.only(top: 16, bottom: 16),
-                    child: _fieldBuilder.buildField(field),
-                  )),
+                  if (_showOptionalFields)
+                    ...optionalFields.map(
+                      (field) => Padding(
+                        padding: const EdgeInsets.only(top: 16, bottom: 16),
+                        child: _fieldBuilder.buildField(field),
+                      ),
+                    ),
                 ],
-      
+
                 const SizedBox(height: 32),
-      
+
                 Center(
                   child: ElevatedButton.icon(
                     icon: const Icon(AntIcons.formOutlined),
@@ -136,8 +157,13 @@ class _ManualEntryViewState extends State<ManualEntryView> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: theme.extension<CustomColors>()!.accent,
                       foregroundColor: theme.colorScheme.primary,
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 16,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                     ),
                     onPressed: _handleSave,
                   ),

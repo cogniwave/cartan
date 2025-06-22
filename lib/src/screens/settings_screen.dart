@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:bugsnag_flutter/bugsnag_flutter.dart';
 import 'package:provider/provider.dart';
@@ -42,7 +42,9 @@ class SettingsScreen extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const LanguageScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const LanguageScreen(),
+                  ),
                 );
               },
             ),
@@ -51,12 +53,13 @@ class SettingsScreen extends StatelessWidget {
               // subtitle: Text(localizations.theme_description),
               value: themeProvider.isDarkMode,
               onChanged: (value) {
-                Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+                Provider.of<ThemeProvider>(
+                  context,
+                  listen: false,
+                ).toggleTheme();
               },
               secondary: Icon(
-                  themeProvider.isDarkMode
-                      ? Icons.dark_mode
-                      : Icons.light_mode
+                themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode,
               ),
             ),
             ListTile(
@@ -67,7 +70,9 @@ class SettingsScreen extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const FontSizeScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const FontSizeScreen(),
+                  ),
                 );
               },
             ),
@@ -110,7 +115,9 @@ class SettingsScreen extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const FeedbackScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const FeedbackScreen(),
+                  ),
                 );
               },
             ),

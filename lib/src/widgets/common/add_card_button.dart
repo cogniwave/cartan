@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 import 'package:cartan/src/themes/app_themes.dart';
 
 class AddCardButton extends StatelessWidget {
   final VoidCallback onPressed;
 
-  const AddCardButton({
-    super.key,
-    required this.onPressed,
-  });
+  const AddCardButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +20,7 @@ class AddCardButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: customColor.accentAlt,
         foregroundColor: theme.colorScheme.primary,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 24,
-          vertical: 12,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),
         ),

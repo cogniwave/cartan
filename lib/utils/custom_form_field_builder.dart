@@ -3,7 +3,7 @@ import 'package:cartan/src/forms/card_form_manager.dart';
 import 'package:cartan/src/models/card_configuration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 import 'package:cartan/utils/card_format_validator.dart';
 
 class CustomFormFieldBuilder {
@@ -22,7 +22,6 @@ class CustomFormFieldBuilder {
     this.cardType,
     required this.formats,
   }) : _formatValidator = CardFormatValidator();
-
 
   Widget buildField(FormFieldConfig field) {
     final controller = formManager?.getController(field.key);
@@ -46,14 +45,13 @@ class CustomFormFieldBuilder {
     final isOptional = _isFieldOptional(field.key);
     final baseLabel = _getLocalizedText(field.labelKey);
 
-    final labelText = isOptional
-        ? '$baseLabel (${localizations.optional})'
-        : baseLabel;
+    final labelText =
+        isOptional ? '$baseLabel (${localizations.optional})' : baseLabel;
 
     return InputDecoration(
       labelText: labelText,
       hintText:
-      field.hintKey != null ? _getLocalizedText(field.hintKey!) : null,
+          field.hintKey != null ? _getLocalizedText(field.hintKey!) : null,
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
     );
   }
@@ -65,7 +63,10 @@ class CustomFormFieldBuilder {
     final ct = cardType!.toLowerCase();
     final normalizedKey = fieldKey.toLowerCase();
 
-    if (ct == 'sim' || ct == 'business' || ct == 'informative' || ct == 'other') {
+    if (ct == 'sim' ||
+        ct == 'business' ||
+        ct == 'informative' ||
+        ct == 'other') {
       return normalizedKey == 'phone_number' ||
           normalizedKey == 'phone' ||
           normalizedKey == 'card_number' ||
@@ -80,7 +81,10 @@ class CustomFormFieldBuilder {
     final ct = cardType?.toLowerCase();
     final normalizedKey = field.key.toLowerCase();
 
-    if (ct == 'sim' || ct == 'business' || ct == 'informative' || ct == 'other') {
+    if (ct == 'sim' ||
+        ct == 'business' ||
+        ct == 'informative' ||
+        ct == 'other') {
       if (normalizedKey == 'phone_number' ||
           normalizedKey == 'phone' ||
           normalizedKey == 'card_number' ||
@@ -145,7 +149,8 @@ class CustomFormFieldBuilder {
         // Validação de formato específica para card_number
         if (field.key == 'card_number') {
           final formats = _getFormatsFromContext();
-          if (formats.isNotEmpty && !_formatValidator.isValidFormat(value, formats)) {
+          if (formats.isNotEmpty &&
+              !_formatValidator.isValidFormat(value, formats)) {
             return localizations.invalid_card_format;
           }
         }
@@ -174,7 +179,8 @@ class CustomFormFieldBuilder {
       // Validação de formato específica para card_number
       if (field.key == 'card_number') {
         final formats = _getFormatsFromContext();
-        if (formats.isNotEmpty && !_formatValidator.isValidFormat(value, formats)) {
+        if (formats.isNotEmpty &&
+            !_formatValidator.isValidFormat(value, formats)) {
           return localizations.invalid_card_format;
         }
       }
@@ -188,12 +194,12 @@ class CustomFormFieldBuilder {
   }
 
   Widget _buildTextFormField(
-      FormFieldConfig field,
-      TextEditingController controller,
-      InputDecoration decoration,
-      List<TextInputFormatter> formatters,
-      String? Function(String?)? validator,
-      ) {
+    FormFieldConfig field,
+    TextEditingController controller,
+    InputDecoration decoration,
+    List<TextInputFormatter> formatters,
+    String? Function(String?)? validator,
+  ) {
     if (field.inputType == InputType.dropdown && field.options != null) {
       return _buildDropdownField(field, controller, decoration, validator);
     }
@@ -214,9 +220,16 @@ class CustomFormFieldBuilder {
           maxLines: field.inputType == InputType.multiline ? 3 : 1,
           inputFormatters: formatters,
           decoration: decoration.copyWith(
-            prefixIcon: iconData != null
-                ? Icon(iconData, color: fieldState.hasError ? Theme.of(context).colorScheme.error : null)
-                : null,
+            prefixIcon:
+                iconData != null
+                    ? Icon(
+                      iconData,
+                      color:
+                          fieldState.hasError
+                              ? Theme.of(context).colorScheme.error
+                              : null,
+                    )
+                    : null,
             errorText: fieldState.errorText,
           ),
           onChanged: (value) {
@@ -232,20 +245,18 @@ class CustomFormFieldBuilder {
   }
 
   Widget _buildDropdownField(
-      FormFieldConfig field,
-      TextEditingController controller,
-      InputDecoration decoration,
-      String? Function(String?)? validator,
-      ) {
+    FormFieldConfig field,
+    TextEditingController controller,
+    InputDecoration decoration,
+    String? Function(String?)? validator,
+  ) {
     return DropdownButtonFormField<String>(
       value: controller.text.isEmpty ? null : controller.text,
       decoration: decoration,
-      items: field.options!.map((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
+      items:
+          field.options!.map((String value) {
+            return DropdownMenuItem<String>(value: value, child: Text(value));
+          }).toList(),
       onChanged: (String? newValue) {
         controller.text = newValue ?? '';
       },
@@ -254,11 +265,11 @@ class CustomFormFieldBuilder {
   }
 
   Widget _buildDateField(
-      FormFieldConfig field,
-      TextEditingController controller,
-      InputDecoration decoration,
-      String? Function(String?)? validator,
-      ) {
+    FormFieldConfig field,
+    TextEditingController controller,
+    InputDecoration decoration,
+    String? Function(String?)? validator,
+  ) {
     return TextFormField(
       controller: controller,
       decoration: decoration.copyWith(

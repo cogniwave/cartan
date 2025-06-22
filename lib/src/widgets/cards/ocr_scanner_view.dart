@@ -2,15 +2,12 @@ import 'package:bugsnag_flutter/bugsnag_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 
 class OCRScannerView extends StatefulWidget {
   final Function(Map<String, String>) onDataDetected;
 
-  const OCRScannerView({
-    super.key,
-    required this.onDataDetected,
-  });
+  const OCRScannerView({super.key, required this.onDataDetected});
 
   @override
   State<OCRScannerView> createState() => _OCRScannerViewState();
@@ -64,14 +61,15 @@ class _OCRScannerViewState extends State<OCRScannerView> {
   }
 
   void _startContinuousScanning() {
-    if (_cameraController == null || !_cameraController!.value.isInitialized) return;
+    if (_cameraController == null || !_cameraController!.value.isInitialized) {
+      return;
+    }
 
     Future.delayed(const Duration(seconds: 2), () {
       if (!mounted || _isProcessing) return;
       _captureAndProcessImage();
     });
   }
-
 
   Future<void> _captureAndProcessImage() async {
     if (_isProcessing || _cameraController == null) return;
@@ -107,7 +105,12 @@ class _OCRScannerViewState extends State<OCRScannerView> {
     final Map<String, String> extractedData = {};
 
     // Split text into lines and clean them
-    final lines = text.split('\n').map((line) => line.trim()).where((line) => line.isNotEmpty).toList();
+    final lines =
+        text
+            .split('\n')
+            .map((line) => line.trim())
+            .where((line) => line.isNotEmpty)
+            .toList();
 
     for (int i = 0; i < lines.length; i++) {
       final line = lines[i].toUpperCase();
@@ -142,7 +145,8 @@ class _OCRScannerViewState extends State<OCRScannerView> {
       setState(() {});
 
       // If we have PIN and PUK, notify the parent
-      if (_detectedData.containsKey('pin') && _detectedData.containsKey('puk')) {
+      if (_detectedData.containsKey('pin') &&
+          _detectedData.containsKey('puk')) {
         widget.onDataDetected(Map<String, String>.from(_detectedData));
       }
     }
@@ -165,7 +169,6 @@ class _OCRScannerViewState extends State<OCRScannerView> {
     return null;
   }
 
-
   @override
   void dispose() {
     _cameraController?.dispose();
@@ -179,9 +182,7 @@ class _OCRScannerViewState extends State<OCRScannerView> {
     final localizations = AppLocalizations.of(context)!;
 
     if (!_isInitialized) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     return SafeArea(
@@ -193,13 +194,12 @@ class _OCRScannerViewState extends State<OCRScannerView> {
               children: [
                 SizedBox.expand(
                   // Camera preview
-                  child:
-                    CameraPreview(_cameraController!),
+                  child: CameraPreview(_cameraController!),
                 ),
                 // Overlay frame
                 Container(
                   width: 320,
-                  height: 200,
+                  height: 400,
                   decoration: BoxDecoration(
                     border: Border.all(
                       color: Theme.of(context).colorScheme.primary,
@@ -214,7 +214,10 @@ class _OCRScannerViewState extends State<OCRScannerView> {
                   Positioned(
                     top: 20,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.black54,
                         borderRadius: BorderRadius.circular(20),
@@ -227,13 +230,18 @@ class _OCRScannerViewState extends State<OCRScannerView> {
                             height: 16,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 8),
                           Text(
                             localizations.processing,
-                            style: const TextStyle(color: Colors.white, fontSize: 12),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
                           ),
                         ],
                       ),
@@ -263,13 +271,18 @@ class _OCRScannerViewState extends State<OCRScannerView> {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          ..._detectedData.entries.map((entry) => Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 2),
-                            child: Text(
-                              '${_getFieldLabel(entry.key, localizations)}: ${entry.value}',
-                              style: const TextStyle(color: Colors.white70, fontSize: 12),
+                          ..._detectedData.entries.map(
+                            (entry) => Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 2),
+                              child: Text(
+                                '${_getFieldLabel(entry.key, localizations)}: ${entry.value}',
+                                style: const TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 12,
+                                ),
+                              ),
                             ),
-                          )),
+                          ),
                         ],
                       ),
                     ),
@@ -296,7 +309,9 @@ class _OCRScannerViewState extends State<OCRScannerView> {
                   localizations.ocr_scanning_instructions,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.7),
                     fontSize: 12,
                   ),
                 ),
@@ -304,7 +319,7 @@ class _OCRScannerViewState extends State<OCRScannerView> {
             ),
           ),
         ],
-      )
+      ),
     );
   }
 

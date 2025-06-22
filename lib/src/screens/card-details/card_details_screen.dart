@@ -1,6 +1,6 @@
 import 'package:cartan/src/models/provider_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 import 'package:cartan/src/models/card_model.dart';
 import 'package:cartan/src/themes/app_themes.dart';
 import 'package:cartan/src/widgets/card_details/code_display.dart';
@@ -11,16 +11,14 @@ import 'card_options_screen.dart';
 class CardDetailsScreen extends StatefulWidget {
   final CardModel card;
 
-  const CardDetailsScreen({
-    super.key,
-    required this.card,
-  });
+  const CardDetailsScreen({super.key, required this.card});
 
   @override
   State<CardDetailsScreen> createState() => _CardDetailsScreenState();
 }
 
-class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTickerProviderStateMixin {
+class _CardDetailsScreenState extends State<CardDetailsScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   bool get _showQrCode => _tabController.index == 1;
@@ -43,10 +41,11 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
   void _openFullScreenCode() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => FullScreenCodePage(
-          cardNumber: widget.card.memberId,
-          showQrCode: _showQrCode,
-        ),
+        builder:
+            (context) => FullScreenCodePage(
+              cardNumber: widget.card.memberId,
+              showQrCode: _showQrCode,
+            ),
       ),
     );
   }
@@ -54,17 +53,17 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
   void _navigateToOptions() {
     final navigator = Navigator.of(context);
 
-    navigator.push(
-      MaterialPageRoute(
-        builder: (context) => CardOptionsScreen(
-          card: widget.card,
-        ),
-      ),
-    ).then((result) {
-      if (result == true && mounted) {
-        navigator.pop(true);
-      }
-    });
+    navigator
+        .push(
+          MaterialPageRoute(
+            builder: (context) => CardOptionsScreen(card: widget.card),
+          ),
+        )
+        .then((result) {
+          if (result == true && mounted) {
+            navigator.pop(true);
+          }
+        });
   }
 
   @override
@@ -72,10 +71,13 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
     final theme = Theme.of(context);
     final customColors = theme.extension<CustomColors>()!;
     final localizations = AppLocalizations.of(context)!;
-    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
 
     String formatMemberId(String id) {
-      return id.replaceAllMapped(RegExp(r'.{1,3}'), (match) => '${match.group(0)} ').trim();
+      return id
+          .replaceAllMapped(RegExp(r'.{1,3}'), (match) => '${match.group(0)} ')
+          .trim();
     }
 
     return Scaffold(
@@ -111,16 +113,22 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
-                padding: isLandscape
-                    ? const EdgeInsets.fromLTRB(24, 32, 24, 32)
-                    : const EdgeInsets.fromLTRB(16, 42, 16, 42),
-                child: Text(
-                  formatMemberId(widget.card.memberId),
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.headlineLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: theme.colorScheme.primary,
-                  ),
+                padding:
+                    isLandscape
+                        ? const EdgeInsets.fromLTRB(24, 32, 24, 32)
+                        : const EdgeInsets.fromLTRB(16, 42, 16, 42),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 8),
+                    Text(
+                      formatMemberId(widget.card.memberId),
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.headlineLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                  ],
                 ),
               ),
 
@@ -175,13 +183,19 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
     final List<Widget> infoWidgets = [];
 
     if (simCard.phoneNumber != null) {
-      infoWidgets.add(_buildInfoRow(localizations.phone_number, simCard.phoneNumber!, theme));
+      infoWidgets.add(
+        _buildInfoRow(localizations.phone_number, simCard.phoneNumber!, theme),
+      );
     }
     if (simCard.pin != null) {
-      infoWidgets.add(_buildInfoRow(localizations.pin_label, simCard.pin!, theme));
+      infoWidgets.add(
+        _buildInfoRow(localizations.pin_label, simCard.pin!, theme),
+      );
     }
     if (simCard.puk != null) {
-      infoWidgets.add(_buildInfoRow(localizations.puk_label, simCard.puk!, theme));
+      infoWidgets.add(
+        _buildInfoRow(localizations.puk_label, simCard.puk!, theme),
+      );
     }
 
     if (infoWidgets.isEmpty) return const SizedBox.shrink();

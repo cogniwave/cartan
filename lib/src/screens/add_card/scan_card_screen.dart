@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 import 'package:cartan/src/blocs/cards/cards_bloc.dart';
 import 'package:cartan/src/models/provider_model.dart';
 import 'package:cartan/src/models/card_model.dart';
@@ -85,11 +85,7 @@ class _ScanCardScreenState extends State<ScanCardScreen>
   Map<String, dynamic>? _createMetadataForCardType(String cardType) {
     switch (cardType) {
       case 'sim':
-        return {
-          'phone_number': true,
-          'pin': true,
-          'puk': true,
-        };
+        return {'phone_number': true, 'pin': true, 'puk': true};
       case 'business':
         return {
           'name': true,
@@ -107,15 +103,12 @@ class _ScanCardScreenState extends State<ScanCardScreen>
         };
       case 'rewards':
         return {
-          'points': false,      // optional
-          'memberName': false,  // optional
-          'tier': false,        // optional
+          'points': false, // optional
+          'memberName': false, // optional
+          'tier': false, // optional
         };
       case 'informative':
-        return {
-          'description': true,
-          'instructions': false,
-        };
+        return {'description': true, 'instructions': false};
       case 'other':
         return <String, dynamic>{};
       case 'loyalty':
@@ -160,7 +153,7 @@ class _ScanCardScreenState extends State<ScanCardScreen>
     // Check for duplicates
     final bloc = context.read<CardsBloc>();
     final duplicate = bloc.state.cards.any(
-          (c) => c.provider.id == widget.provider.id && c.memberId == memberId,
+      (c) => c.provider.id == widget.provider.id && c.memberId == memberId,
     );
     if (duplicate) {
       setState(() {
@@ -180,9 +173,8 @@ class _ScanCardScreenState extends State<ScanCardScreen>
     if (_isValid) _tabController.animateTo(1);
   }
 
-  // New method to handle OCR data detection
+  // Method to handle OCR data detection
   void _handleOCRDataDetected(Map<String, String> ocrData) {
-
     // Populate form fields with detected data
     if (_cardFormManager != null) {
       ocrData.forEach((key, value) {
@@ -211,14 +203,15 @@ class _ScanCardScreenState extends State<ScanCardScreen>
 
     context.read<CardsBloc>().add(AddCard(newCard));
 
-    NavigationService().navigatorKey.currentState
-        ?.popUntil((route) => route.isFirst);
+    NavigationService().navigatorKey.currentState?.popUntil(
+      (route) => route.isFirst,
+    );
     AppSnackBar.showSuccess(localizations.card_added_successfully);
   }
 
   CardModel _createCardModel(Map<String, dynamic> allData) {
     final cardType = _cardFormManager?.cardTypeData.category ?? 'loyalty';
-    final memberId = allData['cardNumber']?.toString().trim() ?? '';
+    final memberId = allData['card_number']?.toString().trim() ?? '';
 
     switch (cardType.toLowerCase()) {
       case 'sim':
@@ -265,9 +258,10 @@ class _ScanCardScreenState extends State<ScanCardScreen>
           provider: widget.provider,
           memberId: memberId,
           description: _getOptionalStringValue(allData, 'description'),
-          instructions: allData['instructions'] is List
-              ? List<String>.from(allData['instructions'] as List<dynamic>)
-              : null,
+          instructions:
+              allData['instructions'] is List
+                  ? List<String>.from(allData['instructions'] as List<dynamic>)
+                  : null,
         );
 
       case 'other':
@@ -279,10 +273,7 @@ class _ScanCardScreenState extends State<ScanCardScreen>
 
       case 'loyalty':
       default:
-        return LoyaltyCard(
-          provider: widget.provider,
-          memberId: memberId,
-        );
+        return LoyaltyCard(provider: widget.provider, memberId: memberId);
     }
   }
 
@@ -370,9 +361,10 @@ class _ScanCardScreenState extends State<ScanCardScreen>
               dividerColor: Colors.transparent,
               tabs: [
                 Tab(
-                  text: _shouldUseOCR
-                      ? localizations.scan_ocr
-                      : localizations.scan_barcode,
+                  text:
+                      _shouldUseOCR
+                          ? localizations.scan_ocr
+                          : localizations.scan_barcode,
                 ),
                 Tab(text: localizations.enter_manually),
               ],

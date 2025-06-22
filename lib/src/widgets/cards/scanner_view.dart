@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 
 class ScannerView extends StatelessWidget {
   final Function(String) onCodeDetected;
 
-  const ScannerView({
-    super.key,
-    required this.onCodeDetected,
-  });
+  const ScannerView({super.key, required this.onCodeDetected});
 
   @override
   Widget build(BuildContext context) {
-
     return SafeArea(
       child: Column(
         children: [
@@ -39,7 +35,10 @@ class ScannerView extends StatelessWidget {
                   width: 280,
                   height: 180,
                   decoration: BoxDecoration(
-                    border: Border.all(color: Theme.of(context).colorScheme.primary, width: 2),
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.primary,
+                      width: 2,
+                    ),
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
@@ -51,9 +50,7 @@ class ScannerView extends StatelessWidget {
             child: Text(
               AppLocalizations.of(context)!.position_barcode_in_frame,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
-              ),
+              style: TextStyle(color: Theme.of(context).colorScheme.primary),
             ),
           ),
         ],

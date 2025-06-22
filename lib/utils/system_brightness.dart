@@ -1,3 +1,4 @@
+import 'package:bugsnag_flutter/bugsnag_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 
@@ -6,7 +7,7 @@ class SystemBrightness {
     try {
       return await ScreenBrightness().application;
     } catch (e) {
-      debugPrint('Failed to get brightness: $e');
+      bugsnag.notify(e, StackTrace.current);
       return 0.5; // Default fallback
     }
   }
@@ -15,7 +16,7 @@ class SystemBrightness {
     try {
       await ScreenBrightness().setApplicationScreenBrightness(brightness);
     } catch (e) {
-      debugPrint('Failed to set brightness: $e');
+      bugsnag.notify(e, StackTrace.current);
     }
   }
 }

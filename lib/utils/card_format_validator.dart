@@ -1,5 +1,5 @@
 import 'package:cartan/src/models/card_configuration.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 
 // Optimized validator for various card field formats
 class CardFormatValidator {
@@ -83,8 +83,10 @@ class CardFormatValidator {
   // Optimized validation methods using cached regex
   bool isValidPin(String pin) => pin.isNotEmpty && _pinRegex.hasMatch(pin);
   bool isValidPuk(String puk) => puk.isNotEmpty && _pukRegex.hasMatch(puk);
-  bool isValidEmail(String email) => email.isNotEmpty && _emailRegex.hasMatch(email);
-  bool isValidNumeric(String value) => value.isNotEmpty && _numericRegex.hasMatch(value);
+  bool isValidEmail(String email) =>
+      email.isNotEmpty && _emailRegex.hasMatch(email);
+  bool isValidNumeric(String value) =>
+      value.isNotEmpty && _numericRegex.hasMatch(value);
   bool isValidPoints(String points) => isValidNumeric(points);
 
   // Phone number validation (after cleaning separators)
@@ -99,9 +101,8 @@ class CardFormatValidator {
     if (date.isEmpty || !_dateRegex.hasMatch(date)) return false;
 
     try {
-      final normalizedDate = date.contains('/')
-          ? date.split('/').reversed.join('-')
-          : date;
+      final normalizedDate =
+          date.contains('/') ? date.split('/').reversed.join('-') : date;
       DateTime.parse(normalizedDate);
       return true;
     } catch (_) {
@@ -138,7 +139,9 @@ class CardFormatValidator {
     );
     if (basicValidation != null) return basicValidation;
 
-    if (formats.isNotEmpty && trimmed.isNotEmpty && !isValidFormat(trimmed, formats)) {
+    if (formats.isNotEmpty &&
+        trimmed.isNotEmpty &&
+        !isValidFormat(trimmed, formats)) {
       return localizations.invalid_card_format;
     }
 
@@ -147,11 +150,15 @@ class CardFormatValidator {
 
   // Check if a field is required based on card type
   bool _isFieldRequired(String fieldKey, String? cardType) {
-    final normalizedKey = _fieldNormalization[fieldKey.toLowerCase()] ?? fieldKey.toLowerCase();
+    final normalizedKey =
+        _fieldNormalization[fieldKey.toLowerCase()] ?? fieldKey.toLowerCase();
     final ct = cardType?.toLowerCase();
 
     // For SIM cards, make card_number and phone_number optional
-    if (ct == 'sim' || ct == 'business' || ct == 'informative' || ct == 'other') {
+    if (ct == 'sim' ||
+        ct == 'business' ||
+        ct == 'informative' ||
+        ct == 'other') {
       switch (normalizedKey) {
         case 'card_number':
         case 'phone_number':
@@ -167,13 +174,13 @@ class CardFormatValidator {
 
   // Main field validation with improved performance
   String? validateField(
-      String fieldKey,
-      String value,
-      AppLocalizations localizations, {
-        String? cardType,
-        InputType? inputType,
-        bool? isRequired,
-      }) {
+    String fieldKey,
+    String value,
+    AppLocalizations localizations, {
+    String? cardType,
+    InputType? inputType,
+    bool? isRequired,
+  }) {
     final trimmed = value.trim();
 
     // Determine if field is required
@@ -188,24 +195,33 @@ class CardFormatValidator {
     }
 
     // Normalize field key once
-    final normalizedKey = _fieldNormalization[fieldKey.toLowerCase()] ?? fieldKey.toLowerCase();
+    final normalizedKey =
+        _fieldNormalization[fieldKey.toLowerCase()] ?? fieldKey.toLowerCase();
 
     // Combined validation approach - check field name and input type together
-    return _validateFieldContent(normalizedKey, trimmed, cardType, inputType, localizations);
+    return _validateFieldContent(
+      normalizedKey,
+      trimmed,
+      cardType,
+      inputType,
+      localizations,
+    );
   }
 
   // Unified validation logic
   String? _validateFieldContent(
-      String key,
-      String value,
-      String? cardType,
-      InputType? inputType,
-      AppLocalizations localizations,
-      ) {
+    String key,
+    String value,
+    String? cardType,
+    InputType? inputType,
+    AppLocalizations localizations,
+  ) {
     // Primary validation by field name
     final validator = _getValidatorForField(key, inputType);
     if (validator != null && !validator(value)) {
-      final validationType = _fieldToValidationType[key] ?? _getValidationTypeFromInputType(inputType);
+      final validationType =
+          _fieldToValidationType[key] ??
+          _getValidationTypeFromInputType(inputType);
       return _getErrorMessage(validationType, cardType, localizations);
     }
 
@@ -213,17 +229,27 @@ class CardFormatValidator {
   }
 
   // Get appropriate validator function for field
-  bool Function(String)? _getValidatorForField(String key, InputType? inputType) {
+  bool Function(String)? _getValidatorForField(
+    String key,
+    InputType? inputType,
+  ) {
     switch (key) {
-      case 'pin': return isValidPin;
-      case 'puk': return isValidPuk;
-      case 'phone_number': return isValidPhoneNumber;
-      case 'card_number': return isValidCardNumber;
-      case 'points': return isValidPoints;
-      case 'expiry_date': return isValidDate;
-      case 'email': return isValidEmail;
+      case 'pin':
+        return isValidPin;
+      case 'puk':
+        return isValidPuk;
+      case 'phone_number':
+        return isValidPhoneNumber;
+      case 'card_number':
+        return isValidCardNumber;
+      case 'points':
+        return isValidPoints;
+      case 'expiry_date':
+        return isValidDate;
+      case 'email':
+        return isValidEmail;
       default:
-      // Fallback to input type validation
+        // Fallback to input type validation
         return _getValidatorForInputType(inputType);
     }
   }
@@ -231,40 +257,48 @@ class CardFormatValidator {
   // Get validator based on input type
   bool Function(String)? _getValidatorForInputType(InputType? type) {
     switch (type) {
-      case InputType.email: return isValidEmail;
-      case InputType.phone: return isValidPhoneNumber;
-      case InputType.numeric: return isValidNumeric;
-      case InputType.date: return isValidDate;
-      default: return null;
+      case InputType.email:
+        return isValidEmail;
+      case InputType.phone:
+        return isValidPhoneNumber;
+      case InputType.numeric:
+        return isValidNumeric;
+      case InputType.date:
+        return isValidDate;
+      default:
+        return null;
     }
   }
 
   // Get validation type from input type
   String _getValidationTypeFromInputType(InputType? type) {
     switch (type) {
-      case InputType.email: return 'email';
-      case InputType.phone: return 'phone';
-      case InputType.numeric: return 'numeric';
-      case InputType.date: return 'date';
-      default: return 'generic';
+      case InputType.email:
+        return 'email';
+      case InputType.phone:
+        return 'phone';
+      case InputType.numeric:
+        return 'numeric';
+      case InputType.date:
+        return 'date';
+      default:
+        return 'generic';
     }
   }
 
   // Optimized error message generation
   String _getErrorMessage(
-      String validationType,
-      String? cardType,
-      AppLocalizations localizations,
-      ) {
+    String validationType,
+    String? cardType,
+    AppLocalizations localizations,
+  ) {
     final ct = cardType?.toLowerCase();
 
     switch (validationType) {
       case 'pin':
         return ct == 'sim' ? localizations.pin_hint : localizations.pin_hint;
       case 'puk':
-        return ct == 'sim'
-            ? localizations.puk_hint
-            : localizations.puk_hint;
+        return ct == 'sim' ? localizations.puk_hint : localizations.puk_hint;
       case 'phone':
         return switch (ct) {
           'sim' => localizations.invalid_phone_number,
@@ -275,16 +309,17 @@ class CardFormatValidator {
           'sim' => localizations.invalid_card_not_empty_alphanumeric,
           _ => localizations.verify_entered_data,
         };
-      default: return localizations.verify_entered_data;
+      default:
+        return localizations.verify_entered_data;
     }
   }
 
   // Card data validation
   Map<String, String> validateCardData(
-      String cardType,
-      Map<String, dynamic> data,
-      AppLocalizations localizations,
-      ) {
+    String cardType,
+    Map<String, dynamic> data,
+    AppLocalizations localizations,
+  ) {
     final errors = <String, String>{};
     final ct = cardType.toLowerCase();
 
@@ -316,59 +351,122 @@ class CardFormatValidator {
   }
 
   // Strategy pattern for card-specific validation
-  void Function(Map<String, dynamic>, Map<String, String>, AppLocalizations)? _getCardValidator(String cardType) {
+  void Function(Map<String, dynamic>, Map<String, String>, AppLocalizations)?
+  _getCardValidator(String cardType) {
     switch (cardType) {
-      case 'sim': return _validateSimCard;
-      case 'business': return _validateBusinessCard;
-      case 'membership': return _validateMembershipCard;
-      case 'rewards': return _validateRewardsCard;
-      case 'informative': return _validateInformativeCard;
-      default: return null;
+      case 'sim':
+        return _validateSimCard;
+      case 'business':
+        return _validateBusinessCard;
+      case 'membership':
+        return _validateMembershipCard;
+      case 'rewards':
+        return _validateRewardsCard;
+      case 'informative':
+        return _validateInformativeCard;
+      default:
+        return null;
     }
   }
 
   // Card-specific validation methods
   void _validateSimCard(
-      Map<String, dynamic> data,
-      Map<String, String> errors,
-      AppLocalizations localizations,
-      ) {
-    _validateOptionalField(data, errors, 'pin', isValidPin, 'pin', 'sim', localizations);
-    _validateOptionalField(data, errors, 'puk', isValidPuk, 'puk', 'sim', localizations);
+    Map<String, dynamic> data,
+    Map<String, String> errors,
+    AppLocalizations localizations,
+  ) {
+    _validateOptionalField(
+      data,
+      errors,
+      'pin',
+      isValidPin,
+      'pin',
+      'sim',
+      localizations,
+    );
+    _validateOptionalField(
+      data,
+      errors,
+      'puk',
+      isValidPuk,
+      'puk',
+      'sim',
+      localizations,
+    );
     // Phone number is optional for SIM cards
-    _validateOptionalField(data, errors, 'phone_number', isValidPhoneNumber, 'phone', 'sim', localizations);
+    _validateOptionalField(
+      data,
+      errors,
+      'phone_number',
+      isValidPhoneNumber,
+      'phone',
+      'sim',
+      localizations,
+    );
   }
 
   void _validateBusinessCard(
-      Map<String, dynamic> data,
-      Map<String, String> errors,
-      AppLocalizations localizations,
-      ) {
-    _validateOptionalField(data, errors, 'email', isValidEmail, 'email', 'business', localizations);
-    _validateOptionalField(data, errors, 'phone', isValidPhoneNumber, 'phone', 'business', localizations);
+    Map<String, dynamic> data,
+    Map<String, String> errors,
+    AppLocalizations localizations,
+  ) {
+    _validateOptionalField(
+      data,
+      errors,
+      'email',
+      isValidEmail,
+      'email',
+      'business',
+      localizations,
+    );
+    _validateOptionalField(
+      data,
+      errors,
+      'phone',
+      isValidPhoneNumber,
+      'phone',
+      'business',
+      localizations,
+    );
   }
 
   void _validateMembershipCard(
-      Map<String, dynamic> data,
-      Map<String, String> errors,
-      AppLocalizations localizations,
-      ) {
-    _validateOptionalField(data, errors, 'expiryDate', isValidDate, 'date', 'membership', localizations);
+    Map<String, dynamic> data,
+    Map<String, String> errors,
+    AppLocalizations localizations,
+  ) {
+    _validateOptionalField(
+      data,
+      errors,
+      'expiryDate',
+      isValidDate,
+      'date',
+      'membership',
+      localizations,
+    );
   }
 
   void _validateRewardsCard(
-      Map<String, dynamic> data,
-      Map<String, String> errors,
-      AppLocalizations localizations,
-      ) {
-    _validateOptionalField(data, errors, 'points', isValidPoints, 'points', 'rewards', localizations);
+    Map<String, dynamic> data,
+    Map<String, String> errors,
+    AppLocalizations localizations,
+  ) {
+    _validateOptionalField(
+      data,
+      errors,
+      'points',
+      isValidPoints,
+      'points',
+      'rewards',
+      localizations,
+    );
   }
 
   void _validateInformativeCard(
-      Map<String, dynamic> data,
-      Map<String, String> errors,
-      AppLocalizations localizations,
-      ) {
+    Map<String, dynamic> data,
+    Map<String, String> errors,
+    AppLocalizations localizations,
+  ) {
     if (data.containsKey('description') &&
         data['description'].toString().trim().isEmpty) {
       errors['description'] = 'Description cannot be empty';
@@ -377,17 +475,21 @@ class CardFormatValidator {
 
   // Simplified optional field validation
   void _validateOptionalField(
-      Map<String, dynamic> data,
-      Map<String, String> errors,
-      String fieldKey,
-      bool Function(String) validator,
-      String validationType,
-      String cardType,
-      AppLocalizations localizations,
-      ) {
+    Map<String, dynamic> data,
+    Map<String, String> errors,
+    String fieldKey,
+    bool Function(String) validator,
+    String validationType,
+    String cardType,
+    AppLocalizations localizations,
+  ) {
     final input = data[fieldKey]?.toString() ?? '';
     if (input.isNotEmpty && !validator(input)) {
-      errors[fieldKey] = _getErrorMessage(validationType, cardType, localizations);
+      errors[fieldKey] = _getErrorMessage(
+        validationType,
+        cardType,
+        localizations,
+      );
     }
   }
 
@@ -396,7 +498,10 @@ class CardFormatValidator {
     final ct = cardType?.toLowerCase();
 
     // Card number is optional for these card types
-    if (ct == 'sim' || ct == 'business' || ct == 'informative' || ct == 'other') {
+    if (ct == 'sim' ||
+        ct == 'business' ||
+        ct == 'informative' ||
+        ct == 'other') {
       return false;
     }
 
@@ -406,11 +511,11 @@ class CardFormatValidator {
 
   // Validate card number with proper format checking
   String? validateCardNumber(
-      String? value,
-      AppLocalizations localizations,
-      String? cardType,
-      List<String> formats,
-      ) {
+    String? value,
+    AppLocalizations localizations,
+    String? cardType,
+    List<String> formats,
+  ) {
     final val = value?.trim() ?? '';
     final isRequired = isCardNumberRequired(cardType);
 

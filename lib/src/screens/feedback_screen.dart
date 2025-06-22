@@ -4,7 +4,7 @@ import 'package:cartan/src/services/navigation_service.dart';
 import 'package:cartan/utils/app_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 
 class FeedbackScreen extends StatefulWidget {
@@ -87,10 +87,11 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         Uri.parse(dotenv.env['SLACK_WEBHOOK_URL']!),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
-          'text': 'Novo Feedback:\n\n'
+          'text':
+              'Novo Feedback:\n\n'
               'Nome: ${_nameCtrl.text}\n'
               'Email: ${_emailCtrl.text}\n'
-              'Mensagem: ${_messageCtrl.text}'
+              'Mensagem: ${_messageCtrl.text}',
         }),
       );
 
@@ -179,13 +180,14 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _isSubmitting ? null : _onSubmit,
-                child: _isSubmitting
-                    ? const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-                    : Text(localizations.submit),
+                child:
+                    _isSubmitting
+                        ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                        : Text(localizations.submit),
               ),
             ),
           ],

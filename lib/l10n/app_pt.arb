@@ -319,5 +319,37 @@
   "optional_fields": "Campos opcionais",
   "@optional_fields": {
     "description": "Label shown for optional fields."
+  },
+  "coming_soon": "Brevemente",
+  "@coming_soon": {
+    "description": "Label for card types screen."
+  },
+  "loyalty_card": "Fidelização",
+  "@loyalty_card": {
+    "description": "Label for loyalty card."
+  },
+  "sim_card": "Sim",
+  "@sim_card": {
+    "description": "Label for sim card."
+  },
+  "business_card": "Visita",
+  "@business_card": {
+    "description": "Label for business card."
+  },
+  "membership_card": "Sócio",
+  "@membership_card": {
+    "description": "Label for membership card."
+  },
+  "informative_card": "Informativo",
+  "@informative_card": {
+    "description": "Label for informative card."
+  },
+  "rewards_card": "Recompensas",
+  "@rewards_card": {
+    "description": "Label for rewards card."
+  },
+  "other_card": "Outro",
+  "@other_card": {
+    "description": "Label for others card."
   }
 }

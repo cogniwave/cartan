@@ -4,7 +4,7 @@ import 'package:cartan/src/services/scaffold_messenger_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 import 'package:bugsnag_flutter/bugsnag_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -19,7 +19,8 @@ import 'utils/font_size_provider.dart';
 import 'package:cartan/src/widgets/font_size/font_size_scaler.dart';
 import 'package:cartan/src/repositories/cards_repository.dart';
 
-final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
 
 Future<void> initializeApp() async {
   runZonedGuarded(() async {
@@ -61,14 +62,17 @@ Future<void> initializeApp() async {
           ChangeNotifierProvider(create: (_) => FontSizeProvider()),
 
           Provider(create: (_) => ProvidersRepository()),
-          Provider(create: (context) => CardsRepository(
-            context.read<ProvidersRepository>(),
-          )),
+          Provider(
+            create:
+                (context) =>
+                    CardsRepository(context.read<ProvidersRepository>()),
+          ),
 
           BlocProvider<CardsBloc>(
-            create: (ctx) => CardsBloc(
-              cardRepo: ctx.read<CardsRepository>(),
-            )..add(const LoadCards()),
+            create:
+                (ctx) =>
+                    CardsBloc(cardRepo: ctx.read<CardsRepository>())
+                      ..add(const LoadCards()),
           ),
         ],
         child: const Cartan(),

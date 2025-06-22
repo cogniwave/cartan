@@ -5,16 +5,13 @@ import 'package:provider/provider.dart';
 import 'package:cartan/src/repositories/providers_repository.dart';
 import 'package:cartan/src/widgets/common/searchable_app_bar.dart';
 import 'scan_card_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class SelectProviderScreen extends StatefulWidget {
   final ProviderCategory category;
 
-  const SelectProviderScreen({
-    super.key,
-    required this.category,
-  });
+  const SelectProviderScreen({super.key, required this.category});
 
   @override
   State<SelectProviderScreen> createState() => _SelectProviderScreenState();
@@ -23,9 +20,8 @@ class SelectProviderScreen extends StatefulWidget {
 class _SelectProviderScreenState extends State<SelectProviderScreen> {
   String _searchQuery = '';
 
-
   String get _defaultImagePath {
-        return 'lib/assets/images/default_card.svg';
+    return 'lib/assets/images/default_card.svg';
   }
 
   String get _screenTitle {
@@ -76,19 +72,29 @@ class _SelectProviderScreenState extends State<SelectProviderScreen> {
 
             var providers = providersRepo.getAllProviders(widget.category);
 
-            providers.sort((a, b) => a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase()));
+            providers.sort(
+              (a, b) => a.displayName.toLowerCase().compareTo(
+                b.displayName.toLowerCase(),
+              ),
+            );
 
             // Filter providers based on search query
-            final filteredProviders = _searchQuery.isEmpty
-                ? providers
-                : providers.where((provider) =>
-                provider.displayName.toLowerCase().contains(_searchQuery)).toList();
+            final filteredProviders =
+                _searchQuery.isEmpty
+                    ? providers
+                    : providers
+                        .where(
+                          (provider) => provider.displayName
+                              .toLowerCase()
+                              .contains(_searchQuery),
+                        )
+                        .toList();
 
             // Show message when no providers match the search query
             if (filteredProviders.isEmpty && _searchQuery.isNotEmpty) {
               return SearchResults.buildNoResultsFound(
-                  message: localizations.no_results_found,
-                  theme: theme
+                message: localizations.no_results_found,
+                theme: theme,
               );
             }
 
@@ -113,7 +119,8 @@ class _SelectProviderScreenState extends State<SelectProviderScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ScanCardScreen(provider: provider)
+                          builder:
+                              (context) => ScanCardScreen(provider: provider),
                         ),
                       ).then((result) {
                         if (result == true) {
@@ -134,9 +141,11 @@ class _SelectProviderScreenState extends State<SelectProviderScreen> {
 
 // Factory methods
 class SelectMerchantScreen extends SelectProviderScreen {
-  const SelectMerchantScreen({super.key}) : super(category: ProviderCategory.loyalty);
+  const SelectMerchantScreen({super.key})
+    : super(category: ProviderCategory.loyalty);
 }
 
 class SelectCarrierScreen extends SelectProviderScreen {
-  const SelectCarrierScreen({super.key}) : super(category: ProviderCategory.sim);
+  const SelectCarrierScreen({super.key})
+    : super(category: ProviderCategory.sim);
 }

@@ -1,7 +1,7 @@
 import 'package:cartan/src/models/provider_model.dart';
 import 'package:cartan/src/services/navigation_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:cartan/utils/app_snackbar.dart';
 import 'package:cartan/utils/url_launcher.dart';
@@ -13,10 +13,7 @@ import 'package:cartan/src/blocs/cards/cards_bloc.dart';
 class CardOptionsScreen extends StatelessWidget {
   final CardModel card;
 
-  const CardOptionsScreen({
-    super.key,
-    required this.card,
-  });
+  const CardOptionsScreen({super.key, required this.card});
 
   void _showDeleteDialog(BuildContext context, String cardId) {
     final localizations = AppLocalizations.of(context)!;
@@ -43,7 +40,9 @@ class CardOptionsScreen extends StatelessWidget {
                   context.read<CardsBloc>().add(DeleteCard(cardId));
 
                   NavigationService().pop();
-                  AppSnackBar.showSuccess(localizations.card_deleted_successfully);
+                  AppSnackBar.showSuccess(
+                    localizations.card_deleted_successfully,
+                  );
 
                   NavigationService().pop(true);
                 } catch (e) {
@@ -128,20 +127,22 @@ class CardOptionsScreen extends StatelessWidget {
               ListTile(
                 title: Text(localizations.nearest_places),
                 leading: const Icon(AntIcons.environmentOutlined),
-                onTap: () => UrlLauncher.launchExternalUrl(
-                  context,
-                  card.provider.displayName,
-                  urlType: 'map',
-                ),
+                onTap:
+                    () => UrlLauncher.launchExternalUrl(
+                      context,
+                      card.provider.displayName,
+                      urlType: 'map',
+                    ),
               ),
               ListTile(
                 title: Text(localizations.website),
                 leading: const Icon(AntIcons.globalOutlined),
-                onTap: () => UrlLauncher.launchExternalUrl(
-                  context,
-                  card.provider.website,
-                  urlType: 'web',
-                ),
+                onTap:
+                    () => UrlLauncher.launchExternalUrl(
+                      context,
+                      card.provider.website,
+                      urlType: 'web',
+                    ),
               ),
               Divider(
                 color: theme.dividerTheme.color,
@@ -163,20 +164,34 @@ class CardOptionsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSimCardDetails(BuildContext context, ThemeData theme, AppLocalizations localizations) {
+  Widget _buildSimCardDetails(
+    BuildContext context,
+    ThemeData theme,
+    AppLocalizations localizations,
+  ) {
     if (card is! SimCard) return const SizedBox.shrink();
 
     final simCard = card as SimCard;
     final List<Widget> details = [];
 
     if (simCard.phoneNumber != null) {
-      details.add(_buildDetailRow(localizations.phone_number, simCard.phoneNumber!, theme));
+      details.add(
+        _buildDetailRow(
+          localizations.phone_number,
+          simCard.phoneNumber!,
+          theme,
+        ),
+      );
     }
     if (simCard.pin != null) {
-      details.add(_buildDetailRow(localizations.pin_label, simCard.pin!, theme));
+      details.add(
+        _buildDetailRow(localizations.pin_label, simCard.pin!, theme),
+      );
     }
     if (simCard.puk != null) {
-      details.add(_buildDetailRow(localizations.puk_label, simCard.puk!, theme));
+      details.add(
+        _buildDetailRow(localizations.puk_label, simCard.puk!, theme),
+      );
     }
 
     if (details.isEmpty) return const SizedBox.shrink();

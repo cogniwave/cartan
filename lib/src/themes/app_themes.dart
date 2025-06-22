@@ -31,10 +31,20 @@ class CustomColors extends ThemeExtension<CustomColors> {
   final Color accent;
   final Color accentAlt;
 
-  const CustomColors({required this.success, required this.borders, required this.accent, required this.accentAlt});
+  const CustomColors({
+    required this.success,
+    required this.borders,
+    required this.accent,
+    required this.accentAlt,
+  });
 
   @override
-  CustomColors copyWith({Color? success, Color? borders, Color? accent, Color? accentAlt}) {
+  CustomColors copyWith({
+    Color? success,
+    Color? borders,
+    Color? accent,
+    Color? accentAlt,
+  }) {
     return CustomColors(
       success: success ?? this.success,
       borders: borders ?? this.borders,
@@ -89,7 +99,11 @@ class AppThemes {
       extensions: [CustomColors.dark],
 
       // AppBar
-      appBarTheme: AppBarTheme(backgroundColor: AppColors.background, foregroundColor: AppColors.primary, elevation: 0),
+      appBarTheme: AppBarTheme(
+        backgroundColor: AppColors.background,
+        foregroundColor: AppColors.primary,
+        elevation: 0,
+      ),
 
       // Text
       textTheme: TextTheme(bodyMedium: TextStyle(color: AppColors.primary)),
@@ -99,14 +113,23 @@ class AppThemes {
 
       // Buttons
       elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(backgroundColor: AppColors.accent, foregroundColor: Colors.white),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.accent,
+          foregroundColor: Colors.white,
+        ),
       ),
 
       // Inputs
       inputDecorationTheme: InputDecorationTheme(
-        border: OutlineInputBorder(borderSide: BorderSide(color: AppColors.borders)),
-        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.borders)),
-        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.accent)),
+        border: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.borders),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.borders),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.accent),
+        ),
       ),
 
       // Cards
@@ -142,21 +165,35 @@ class AppThemes {
       ),
 
       // Text
-      textTheme: TextTheme(bodyMedium: TextStyle(color: AppColors.primary)),
+      textTheme: TextTheme(
+        bodyMedium: TextStyle(color: AppColorsLight.primary),
+      ),
 
       // Dividers
-      dividerTheme: DividerThemeData(color: AppColorsLight.borders, thickness: 1),
+      dividerTheme: DividerThemeData(
+        color: AppColorsLight.borders,
+        thickness: 1,
+      ),
 
       // Buttons
       elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(backgroundColor: AppColorsLight.accent, foregroundColor: Colors.white),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColorsLight.accent,
+          foregroundColor: Colors.white,
+        ),
       ),
 
       // Inputs
       inputDecorationTheme: InputDecorationTheme(
-        border: OutlineInputBorder(borderSide: BorderSide(color: AppColorsLight.borders)),
-        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColorsLight.borders)),
-        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColorsLight.accent)),
+        border: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColorsLight.borders),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColorsLight.borders),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColorsLight.accent),
+        ),
       ),
 
       // Cards
