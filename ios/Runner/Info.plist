@@ -46,7 +46,6 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>LSApplicationQueriesSchemes</key>
-    <key>LSApplicationQueriesSchemes</key>
     <array>
       <string>maps</string>            <!-- Apple Maps -->
       <string>comgooglemaps</string>   <!-- Google Maps -->
@@ -59,7 +58,5 @@
       <string>osmandmaps</string>      <!-- OsmAnd -->
       <string>mq</string>              <!-- MapQuest -->
     </array>
-
-
 </dict>
 </plist>
