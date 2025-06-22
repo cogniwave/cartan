@@ -6,8 +6,8 @@ void main() async {
     flavor: Flavor.staging,
     values: FlavorValues(
       apiBaseUrl: "https://apibaseurl-staging.com",
-      appIcon: "assets/images/app_icon_staging.png",
-      appName: "App Staging",
+      appIcon: "assets/images/icon/app_icon_white.png",
+      appName: "Cartan - Staging",
     ),
   );
 

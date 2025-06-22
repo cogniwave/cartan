@@ -6,8 +6,8 @@ void main() async {
     flavor: Flavor.prod,
     values: FlavorValues(
       apiBaseUrl: "https://apibaseurl-prod.com",
-      appIcon: "assets/images/app_icon_prod.png",
-      appName: "App Production",
+      appIcon: "assets/images/icon/app_icon_white.png",
+      appName: "Cartan",
     ),
   );
 
