@@ -1,7 +1,7 @@
 import 'package:cartan/src/services/navigation_service.dart';
 import 'package:cartan/utils/custom_tap.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:cartan/utils/app_snackbar.dart';
 import 'package:cartan/utils/url_launcher.dart';
@@ -15,11 +15,7 @@ class CardOptionsScreen extends StatelessWidget {
   final LoyaltyCard card;
   final Merchant merchant;
 
-  const CardOptionsScreen({
-    super.key,
-    required this.card,
-    required this.merchant,
-  });
+  const CardOptionsScreen({super.key, required this.card, required this.merchant});
 
   void _showDeleteDialog(BuildContext context, String cardId) {
     final localizations = AppLocalizations.of(context)!;
@@ -38,9 +34,7 @@ class CardOptionsScreen extends StatelessWidget {
               },
             ),
             TextButton(
-              style: TextButton.styleFrom(
-                foregroundColor: Theme.of(context).colorScheme.error,
-              ),
+              style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
               onPressed: () async {
                 try {
                   final repository = Provider.of<LoyaltyCardRepository>(context, listen: false);
@@ -70,9 +64,7 @@ class CardOptionsScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     String formatMemberId(String id) {
-      return id
-          .replaceAllMapped(RegExp(r'.{1,3}'), (match) => '${match.group(0)} ')
-          .trim();
+      return id.replaceAllMapped(RegExp(r'.{1,3}'), (match) => '${match.group(0)} ').trim();
     }
 
     return Scaffold(
@@ -83,11 +75,7 @@ class CardOptionsScreen extends StatelessWidget {
         iconTheme: IconThemeData(color: theme.colorScheme.primary),
         title: Row(
           children: [
-            SvgPicture.asset(
-              merchant.assetImagePath,
-              width: 70,
-              height: 40,
-            ),
+            SvgPicture.asset(merchant.assetImagePath, width: 70, height: 40),
             const SizedBox(width: 8),
             Flexible(
               child: Text(
@@ -124,42 +112,22 @@ class CardOptionsScreen extends StatelessWidget {
                 ),
               ),
             ),
-            Divider(
-              color: theme.dividerTheme.color,
-              thickness: theme.dividerTheme.thickness,
-            ),
+            Divider(color: theme.dividerTheme.color, thickness: theme.dividerTheme.thickness),
 
             const SizedBox(height: 12),
             // Nearest places
             CustomTap(
-              onTap: () => UrlLauncher.launchExternalUrl(
-                context,
-                merchant.displayName,
-                urlType: 'map',
-              ),
-              child: ListTile(
-                title: Text(localizations.nearest_places),
-                leading: Icon(AntIcons.environmentOutlined),
-              ),
+              onTap: () => UrlLauncher.launchExternalUrl(context, merchant.displayName, urlType: 'map'),
+              child: ListTile(title: Text(localizations.nearest_places), leading: Icon(AntIcons.environmentOutlined)),
             ),
 
             // Website
             CustomTap(
-              onTap: () => UrlLauncher.launchExternalUrl(
-                context,
-                merchant.website,
-                urlType: 'web',
-              ),
-              child: ListTile(
-                title: Text(localizations.website),
-                leading: Icon(AntIcons.globalOutlined),
-              ),
+              onTap: () => UrlLauncher.launchExternalUrl(context, merchant.website, urlType: 'web'),
+              child: ListTile(title: Text(localizations.website), leading: Icon(AntIcons.globalOutlined)),
             ),
 
-            Divider(
-              color: theme.dividerTheme.color,
-              thickness: theme.dividerTheme.thickness,
-            ),
+            Divider(color: theme.dividerTheme.color, thickness: theme.dividerTheme.thickness),
 
             // Remove
             CustomTap(
@@ -167,14 +135,8 @@ class CardOptionsScreen extends StatelessWidget {
                 _showDeleteDialog(context, card.id);
               },
               child: ListTile(
-                title: Text(
-                  localizations.remove,
-                  style: TextStyle(color: theme.colorScheme.error),
-                ),
-                leading: Icon(
-                  AntIcons.deleteOutlined,
-                  color: theme.colorScheme.error,
-                ),
+                title: Text(localizations.remove, style: TextStyle(color: theme.colorScheme.error)),
+                leading: Icon(AntIcons.deleteOutlined, color: theme.colorScheme.error),
               ),
             ),
           ],

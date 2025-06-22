@@ -1,8 +1,8 @@
+import 'package:cartan/l10n/app_localizations.dart';
 import 'package:cartan/utils/custom_tap.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cartan/src/blocs/cards/cards_bloc.dart';
 import 'package:cartan/src/models/loyalty_card.dart';
 import 'package:cartan/src/screens/add_card/select_merchant_screen.dart';
@@ -25,9 +25,7 @@ enum CardViewType {
   }
 
   IconData get icon {
-    return this == CardViewType.grid
-        ? Icons.view_list
-        : Icons.grid_view;
+    return this == CardViewType.grid ? Icons.view_list : Icons.grid_view;
   }
 }
 
@@ -49,10 +47,7 @@ class _HomePageState extends State<HomePage> {
 
   // Navigate to merchant selection, then reload cards if added.
   Future<void> _onAddNewCard(BuildContext context) async {
-    final result = await Navigator.push<bool>(
-      context,
-      MaterialPageRoute(builder: (_) => const SelectMerchantScreen()),
-    );
+    final result = await Navigator.push<bool>(context, MaterialPageRoute(builder: (_) => const SelectMerchantScreen()));
 
     if (result == true && context.mounted) {
       context.read<CardsBloc>().add(const LoadCards());
@@ -63,9 +58,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> _onCardTap(BuildContext context, LoyaltyCard card) async {
     await Navigator.push<bool>(
       context,
-      MaterialPageRoute(
-        builder: (_) => CardDetailsScreen(card: card, merchant: card.merchant),
-      ),
+      MaterialPageRoute(builder: (_) => CardDetailsScreen(card: card, merchant: card.merchant)),
     ).then((result) {
       if (result == true && context.mounted) {
         context.read<CardsBloc>().add(const LoadCards());
@@ -77,125 +70,104 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final addCardButton = AddCardButton(
-      onPressed: () => _onAddNewCard(context),
-    );
+    final addCardButton = AddCardButton(onPressed: () => _onAddNewCard(context));
 
     return BlocProvider(
       create: (_) => CardViewCubit(),
       child: BlocBuilder<CardViewCubit, CardViewType>(
-          builder: (context, viewType) {
-            return Scaffold(
-              appBar: SearchableAppBar(
-                title: localizations.cards,
-                searchHint: localizations.search,
-                titleStyle: TextStyle(
-                  color: theme.colorScheme.primary,
-                  fontWeight: FontWeight.bold,
+        builder: (context, viewType) {
+          return Scaffold(
+            appBar: SearchableAppBar(
+              title: localizations.cards,
+              searchHint: localizations.search,
+              titleStyle: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold),
+              searchStyle: TextStyle(color: theme.colorScheme.onSurface),
+              backgroundColor: theme.appBarTheme.backgroundColor,
+              onSearch: (query) {
+                setState(() {
+                  _searchQuery = query.toLowerCase();
+                });
+              },
+              trailingActions: [
+                CustomTap(
+                  onTap: () {
+                    context.read<CardViewCubit>().toggleView();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(viewType.icon, color: theme.colorScheme.primary),
+                  ),
                 ),
-                searchStyle: TextStyle(color: theme.colorScheme.onSurface),
-                backgroundColor: theme.appBarTheme.backgroundColor,
-                onSearch: (query) {
-                  setState(() {
-                    _searchQuery = query.toLowerCase();
-                  });
-                },
-                trailingActions: [
-                  CustomTap(
-                    onTap: () {
-                      context.read<CardViewCubit>().toggleView();
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(viewType.icon, color: theme.colorScheme.primary),
-                    ),
+                CustomTap(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(Icons.more_vert, color: theme.colorScheme.primary),
                   ),
-                  CustomTap(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const SettingsScreen()),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(Icons.more_vert, color: theme.colorScheme.primary),
-                    ),
-                  ),
-                ],
-              ),
-              body: RefreshIndicator(
-                onRefresh: () async {
-                  context.read<CardsBloc>().add(const LoadCards());
-                },
-                child: BlocBuilder<CardsBloc, CardsState>(
-                  builder: (context, state) {
-                    if (state.status == Status.loading) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (state.status == Status.failure) {
-                      return Center(child: Text('Error: ${state.error}'));
-                    } else if (state.status == Status.success) {
-                      final cards = state.cards;
+                ),
+              ],
+            ),
+            body: RefreshIndicator(
+              onRefresh: () async {
+                context.read<CardsBloc>().add(const LoadCards());
+              },
+              child: BlocBuilder<CardsBloc, CardsState>(
+                builder: (context, state) {
+                  if (state.status == Status.loading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state.status == Status.failure) {
+                    return Center(child: Text('Error: ${state.error}'));
+                  } else if (state.status == Status.success) {
+                    final cards = state.cards;
 
-                      // Filter cards based on search query
-                      final queryNormalized = removeDiacritics(_searchQuery.toLowerCase());
+                    // Filter cards based on search query
+                    final queryNormalized = removeDiacritics(_searchQuery.toLowerCase());
 
-                      final filteredCards = _searchQuery.isEmpty
-                          ? cards
-                          : cards.where((card) {
-                        final nameNormalized = removeDiacritics(card.name.toLowerCase());
-                        final merchantNameNormalized = removeDiacritics(card.merchant.displayName.toLowerCase());
-                        return nameNormalized.contains(queryNormalized) ||
-                            merchantNameNormalized.contains(queryNormalized);
-                      }).toList();
+                    final filteredCards =
+                        _searchQuery.isEmpty
+                            ? cards
+                            : cards.where((card) {
+                              final nameNormalized = removeDiacritics(card.name.toLowerCase());
+                              final merchantNameNormalized = removeDiacritics(card.merchant.displayName.toLowerCase());
+                              return nameNormalized.contains(queryNormalized) ||
+                                  merchantNameNormalized.contains(queryNormalized);
+                            }).toList();
 
-                      if (cards.isEmpty) {
-                        return ListView(
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          children: [
-                            EmptyCardsView(addCardButton: addCardButton),
-                          ],
-                        );
-                      }
-
-                      if (filteredCards.isEmpty && _searchQuery.isNotEmpty) {
-                        return SearchResults.buildNoResultsFound(
-                          message: localizations.no_results_found,
-                          theme: theme,
-                        );
-                      }
-
-                      return Stack(
-                        children: [
-                          viewType == CardViewType.grid
-                              ? CardsGridView(
-                            cards: filteredCards,
-                            onCardTap: (card) => _onCardTap(context, card),
-                          )
-                              : CardsListView(
-                            cards: filteredCards,
-                            onCardTap: (card) => _onCardTap(context, card),
-                          ),
-                          SafeArea(
-                            minimum: const EdgeInsets.all(16),
-                            child: Align(
-                              alignment: Alignment.bottomRight,
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 24),
-                                child: addCardButton,
-                              ),
-                            ),
-                          )
-                        ],
+                    if (cards.isEmpty) {
+                      return ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: [EmptyCardsView(addCardButton: addCardButton)],
                       );
                     }
-                    // Unknown state, should not occur
-                    return const SizedBox.shrink();
-                  },
-                ),
+
+                    if (filteredCards.isEmpty && _searchQuery.isNotEmpty) {
+                      return SearchResults.buildNoResultsFound(message: localizations.no_results_found, theme: theme);
+                    }
+
+                    return Stack(
+                      children: [
+                        viewType == CardViewType.grid
+                            ? CardsGridView(cards: filteredCards, onCardTap: (card) => _onCardTap(context, card))
+                            : CardsListView(cards: filteredCards, onCardTap: (card) => _onCardTap(context, card)),
+                        SafeArea(
+                          minimum: const EdgeInsets.all(16),
+                          child: Align(
+                            alignment: Alignment.bottomRight,
+                            child: Padding(padding: const EdgeInsets.only(bottom: 24), child: addCardButton),
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                  // Unknown state, should not occur
+                  return const SizedBox.shrink();
+                },
               ),
-            );
-          }
+            ),
+          );
+        },
       ),
     );
   }

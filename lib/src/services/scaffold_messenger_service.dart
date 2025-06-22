@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 
 class ScaffoldMessengerService {
   static final ScaffoldMessengerService _instance = ScaffoldMessengerService._internal();
@@ -53,19 +53,12 @@ class ScaffoldMessengerService {
         children: [
           Icon(icon, color: color),
           const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              message,
-              style: TextStyle(color: color),
-            ),
-          ),
+          Expanded(child: Text(message, style: TextStyle(color: color))),
         ],
       ),
       backgroundColor: color.withValues(alpha: 0.4),
       behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       margin: EdgeInsets.only(
         left: 16,
         right: 16,

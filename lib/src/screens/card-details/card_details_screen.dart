@@ -1,6 +1,6 @@
 import 'package:cartan/utils/custom_tap.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 import 'package:cartan/src/models/merchant.dart';
 import 'package:cartan/src/models/loyalty_card.dart';
 import 'package:cartan/src/themes/app_themes.dart';
@@ -13,11 +13,7 @@ class CardDetailsScreen extends StatefulWidget {
   final LoyaltyCard card;
   final Merchant merchant;
 
-  const CardDetailsScreen({
-    super.key,
-    required this.card,
-    required this.merchant,
-  });
+  const CardDetailsScreen({super.key, required this.card, required this.merchant});
 
   @override
   State<CardDetailsScreen> createState() => _CardDetailsScreenState();
@@ -46,10 +42,7 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
   void _openFullScreenCode() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => FullScreenCodePage(
-          cardNumber: widget.card.memberId,
-          showQrCode: _showQrCode,
-        ),
+        builder: (context) => FullScreenCodePage(cardNumber: widget.card.memberId, showQrCode: _showQrCode),
       ),
     );
   }
@@ -57,18 +50,13 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
   void _navigateToOptions() {
     final navigator = Navigator.of(context);
 
-    navigator.push(
-      MaterialPageRoute(
-        builder: (context) => CardOptionsScreen(
-          card: widget.card,
-          merchant: widget.merchant,
-        ),
-      ),
-    ).then((result) {
-      if (result == true && mounted) {
-        navigator.pop(true);
-      }
-    });
+    navigator
+        .push(MaterialPageRoute(builder: (context) => CardOptionsScreen(card: widget.card, merchant: widget.merchant)))
+        .then((result) {
+          if (result == true && mounted) {
+            navigator.pop(true);
+          }
+        });
   }
 
   @override
@@ -90,11 +78,7 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
         iconTheme: IconThemeData(color: theme.colorScheme.primary),
         title: Row(
           children: [
-            SvgPicture.asset(
-              widget.merchant.assetImagePath,
-              width: 70,
-              height: 40,
-            ),
+            SvgPicture.asset(widget.merchant.assetImagePath, width: 70, height: 40),
             const SizedBox(width: 8),
             Flexible(
               child: Text(
@@ -109,13 +93,7 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
         actions: [
           CustomTap(
             onTap: _navigateToOptions,
-            child: const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Icon(
-                Icons.more_vert,
-                size: 24,
-              ),
-            ),
+            child: const Padding(padding: EdgeInsets.all(8.0), child: Icon(Icons.more_vert, size: 24)),
           ),
         ],
       ),
@@ -126,9 +104,8 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
-                padding: isLandscape
-                    ? const EdgeInsets.fromLTRB(24, 32, 24, 32)
-                    : const EdgeInsets.fromLTRB(16, 42, 16, 42),
+                padding:
+                    isLandscape ? const EdgeInsets.fromLTRB(24, 32, 24, 32) : const EdgeInsets.fromLTRB(16, 42, 16, 42),
 
                 child: Text(
                   formatMemberId(widget.card.memberId),
@@ -153,10 +130,7 @@ class _CardDetailsScreenState extends State<CardDetailsScreen> with SingleTicker
                   indicatorSize: TabBarIndicatorSize.label,
                   dividerColor: Colors.transparent,
                   splashFactory: NoSplash.splashFactory,
-                  tabs: [
-                    Tab(text: localizations.barcode),
-                    Tab(text: localizations.qr_code),
-                  ],
+                  tabs: [Tab(text: localizations.barcode), Tab(text: localizations.qr_code)],
                 ),
               ),
 

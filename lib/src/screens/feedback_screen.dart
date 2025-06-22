@@ -4,7 +4,7 @@ import 'package:cartan/src/services/navigation_service.dart';
 import 'package:cartan/utils/app_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 
 class FeedbackScreen extends StatefulWidget {
@@ -87,10 +87,11 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         Uri.parse(dotenv.env['SLACK_WEBHOOK_URL']!),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
-          'text': 'Novo Feedback:\n\n'
+          'text':
+              'Novo Feedback:\n\n'
               'Nome: ${_nameCtrl.text}\n'
               'Email: ${_emailCtrl.text}\n'
-              'Mensagem: ${_messageCtrl.text}'
+              'Mensagem: ${_messageCtrl.text}',
         }),
       );
 
@@ -124,10 +125,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
           children: [
             TextFormField(
               controller: _nameCtrl,
-              decoration: InputDecoration(
-                labelText: localizations.name,
-                errorText: _nameError,
-              ),
+              decoration: InputDecoration(labelText: localizations.name, errorText: _nameError),
               textInputAction: TextInputAction.next,
               onChanged: (_) {
                 // Clear error when user types
@@ -141,10 +139,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             const SizedBox(height: 12),
             TextFormField(
               controller: _emailCtrl,
-              decoration: InputDecoration(
-                labelText: localizations.email,
-                errorText: _emailError,
-              ),
+              decoration: InputDecoration(labelText: localizations.email, errorText: _emailError),
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
               onChanged: (_) {
@@ -159,10 +154,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             const SizedBox(height: 12),
             TextFormField(
               controller: _messageCtrl,
-              decoration: InputDecoration(
-                labelText: localizations.message,
-                errorText: _messageError,
-              ),
+              decoration: InputDecoration(labelText: localizations.message, errorText: _messageError),
               maxLines: 5,
               minLines: 3,
               onChanged: (_) {
@@ -179,13 +171,10 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _isSubmitting ? null : _onSubmit,
-                child: _isSubmitting
-                    ? const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-                    : Text(localizations.submit),
+                child:
+                    _isSubmitting
+                        ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                        : Text(localizations.submit),
               ),
             ),
           ],

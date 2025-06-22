@@ -3,7 +3,6 @@ import 'package:cartan/src/services/scaffold_messenger_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:bugsnag_flutter/bugsnag_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -17,6 +16,7 @@ import 'utils/font_size_provider.dart';
 import 'package:cartan/src/widgets/font_size/font_size_scaler.dart';
 import 'package:cartan/src/repositories/merchants_repository.dart';
 import 'package:cartan/src/repositories/loyalty_card_repository.dart';
+import 'l10n/app_localizations.dart';
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 

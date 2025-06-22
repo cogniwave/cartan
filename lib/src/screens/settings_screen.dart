@@ -1,6 +1,6 @@
 import 'package:cartan/utils/custom_tap.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:bugsnag_flutter/bugsnag_flutter.dart';
 import 'package:provider/provider.dart';

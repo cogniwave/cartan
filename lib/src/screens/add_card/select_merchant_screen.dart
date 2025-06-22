@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:cartan/src/repositories/merchants_repository.dart';
 import 'package:cartan/src/widgets/common/searchable_app_bar.dart';
 import 'scan_card_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class SelectMerchantScreen extends StatefulWidget {
@@ -19,7 +19,6 @@ class SelectMerchantScreen extends StatefulWidget {
 
 class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
   String _searchQuery = '';
-
 
   @override
   Widget build(BuildContext context) {
@@ -54,13 +53,13 @@ class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
             // Filter merchants based on search query
             final queryNormalized = removeDiacritics(_searchQuery.toLowerCase());
 
-            final filteredMerchants = _searchQuery.isEmpty
-                ? merchants
-                : merchants.where((merchant) {
-              final nameNormalized = removeDiacritics(merchant.displayName.toLowerCase());
-              return nameNormalized.contains(queryNormalized);
-            }).toList();
-
+            final filteredMerchants =
+                _searchQuery.isEmpty
+                    ? merchants
+                    : merchants.where((merchant) {
+                      final nameNormalized = removeDiacritics(merchant.displayName.toLowerCase());
+                      return nameNormalized.contains(queryNormalized);
+                    }).toList();
 
             // Show message when no merchants match the search query
             if (filteredMerchants.isEmpty && _searchQuery.isNotEmpty) {
@@ -78,9 +77,7 @@ class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => ScanCardScreen(merchant: merchant),
-                        ),
+                        MaterialPageRoute(builder: (context) => ScanCardScreen(merchant: merchant)),
                       ).then((result) {
                         if (result == true) {
                           NavigationService().pop(true);
@@ -93,9 +90,7 @@ class _SelectMerchantScreenState extends State<SelectMerchantScreen> {
                         width: 100,
                         alignment: Alignment.centerLeft,
                         errorBuilder: (context, error, stackTrace) {
-                          return SvgPicture.asset(
-                            'lib/assets/images/loyalty_cards/default_card.svg',
-                          );
+                          return SvgPicture.asset('lib/assets/images/loyalty_cards/default_card.svg');
                         },
                       ),
                       title: Text(merchant.displayName),

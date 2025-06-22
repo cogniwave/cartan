@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 import 'package:cartan/utils/locale_provider.dart';
 import 'package:cartan/src/widgets/language/language_option.dart';
 
@@ -14,9 +14,7 @@ class LanguageScreen extends StatelessWidget {
     final currentLanguage = localeProvider.getCurrentLanguage();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(localizations.language),
-      ),
+      appBar: AppBar(title: Text(localizations.language)),
       body: ListView(
         children: [
           LanguageOption(

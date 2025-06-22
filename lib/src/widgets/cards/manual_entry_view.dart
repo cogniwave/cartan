@@ -1,7 +1,7 @@
 import 'package:antdesign_icons/antdesign_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 import 'package:cartan/src/themes/app_themes.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -51,10 +51,7 @@ class ManualEntryView extends StatelessWidget {
                 child: SizedBox(
                   width: 150,
                   height: 100,
-                  child: FittedBox(
-                    fit: BoxFit.fill,
-                    child: SvgPicture.asset(assetImagePath),
-                  ),
+                  child: FittedBox(fit: BoxFit.fill, child: SvgPicture.asset(assetImagePath)),
                 ),
               ),
             ),
@@ -66,33 +63,25 @@ class ManualEntryView extends StatelessWidget {
               decoration: InputDecoration(
                 labelText: localizations.card_number,
                 errorText: errorMessage,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
               keyboardType: TextInputType.text,
-              inputFormatters: hasSpecificFormat
-                  ? <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(expectedDigits),
-              ]
-                  : <TextInputFormatter>[],
+              inputFormatters:
+                  hasSpecificFormat
+                      ? <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(expectedDigits),
+                      ]
+                      : <TextInputFormatter>[],
             ),
 
             const SizedBox(height: 12),
 
-            if (hasSpecificFormat)
-              Text(
-                localizations.format_hint,
-                style: theme.textTheme.bodySmall,
-              ),
+            if (hasSpecificFormat) Text(localizations.format_hint, style: theme.textTheme.bodySmall),
 
             if (hasSpecificFormat) ...[
               const SizedBox(height: 4),
-              Text(
-                '($expectedDigits ${localizations.digits})',
-                style: theme.textTheme.bodySmall,
-              ),
+              Text('($expectedDigits ${localizations.digits})', style: theme.textTheme.bodySmall),
             ],
 
             const SizedBox(height: 46),
@@ -102,16 +91,10 @@ class ManualEntryView extends StatelessWidget {
                 icon: const Icon(AntIcons.formOutlined),
                 label: Text(localizations.add_card),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                  theme.extension<CustomColors>()!.accent,
+                  backgroundColor: theme.extension<CustomColors>()!.accent,
                   foregroundColor: theme.colorScheme.primary,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
                 ),
                 onPressed: () {
                   onChanged(controller.text);

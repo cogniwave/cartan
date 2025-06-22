@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 import 'package:cartan/src/blocs/cards/cards_bloc.dart';
 import 'package:cartan/src/models/merchant.dart';
 import 'package:cartan/src/models/loyalty_card.dart';
@@ -21,8 +21,7 @@ class ScanCardScreen extends StatefulWidget {
   State<ScanCardScreen> createState() => _ScanCardScreenState();
 }
 
-class _ScanCardScreenState extends State<ScanCardScreen>
-    with SingleTickerProviderStateMixin {
+class _ScanCardScreenState extends State<ScanCardScreen> with SingleTickerProviderStateMixin {
   final TextEditingController _codeController = TextEditingController();
   late TabController _tabController;
 
@@ -37,8 +36,7 @@ class _ScanCardScreenState extends State<ScanCardScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this)
-      ..addListener(() => setState(() {}));
+    _tabController = TabController(length: 2, vsync: this)..addListener(() => setState(() {}));
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _requestCameraPermission();
     });
@@ -74,18 +72,14 @@ class _ScanCardScreenState extends State<ScanCardScreen>
       setState(() {
         _isValid = false;
         _errorMessage =
-            formats.isEmpty
-                ? localizations.invalid_card_not_empty_alphanumeric
-                : localizations.invalid_card_format;
+            formats.isEmpty ? localizations.invalid_card_not_empty_alphanumeric : localizations.invalid_card_format;
       });
       return;
     }
 
     // Duplicates val
     final bloc = context.read<CardsBloc>();
-    final duplicate = bloc.state.cards.any(
-      (c) => c.merchant.id == widget.merchant.id && c.memberId == memberId,
-    );
+    final duplicate = bloc.state.cards.any((c) => c.merchant.id == widget.merchant.id && c.memberId == memberId);
     if (duplicate) {
       setState(() {
         _isValid = false;
@@ -110,10 +104,7 @@ class _ScanCardScreenState extends State<ScanCardScreen>
   void _saveCard() {
     if (!_isValid) return;
 
-    final newCard = LoyaltyCard(
-      merchant: widget.merchant,
-      memberId: _codeController.text.trim(),
-    );
+    final newCard = LoyaltyCard(merchant: widget.merchant, memberId: _codeController.text.trim());
     context.read<CardsBloc>().add(AddCard(newCard));
 
     AppSnackBar.showSuccess(localizations.card_added_successfully);
@@ -129,11 +120,7 @@ class _ScanCardScreenState extends State<ScanCardScreen>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              AntIcons.cameraOutlined,
-              size: 64,
-              color: theme.colorScheme.secondary,
-            ),
+            Icon(AntIcons.cameraOutlined, size: 64, color: theme.colorScheme.secondary),
             const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -144,10 +131,7 @@ class _ScanCardScreenState extends State<ScanCardScreen>
               ),
             ),
             const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _openAppSettings,
-              child: Text(localizations.open_settings),
-            ),
+            ElevatedButton(onPressed: _openAppSettings, child: Text(localizations.open_settings)),
           ],
         ),
       );
@@ -170,10 +154,7 @@ class _ScanCardScreenState extends State<ScanCardScreen>
               child: SizedBox(
                 width: 50,
                 height: 30,
-                child: FittedBox(
-                  fit: BoxFit.fill,
-                  child: SvgPicture.asset(widget.merchant.assetImagePath),
-                ),
+                child: FittedBox(fit: BoxFit.fill, child: SvgPicture.asset(widget.merchant.assetImagePath)),
               ),
             ),
             const SizedBox(width: 8),
@@ -198,10 +179,7 @@ class _ScanCardScreenState extends State<ScanCardScreen>
               unselectedLabelColor: theme.colorScheme.primary,
               indicatorColor: custom.accentAlt,
               dividerColor: Colors.transparent,
-              tabs: [
-                Tab(text: localizations.scan_barcode),
-                Tab(text: localizations.enter_manually),
-              ],
+              tabs: [Tab(text: localizations.scan_barcode), Tab(text: localizations.enter_manually)],
             ),
           ),
           Expanded(

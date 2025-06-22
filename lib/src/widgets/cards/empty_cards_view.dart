@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cartan/l10n/app_localizations.dart';
 
 class EmptyCardsView extends StatelessWidget {
   final Widget addCardButton;
 
-  const EmptyCardsView({
-    super.key,
-    required this.addCardButton,
-  });
+  const EmptyCardsView({super.key, required this.addCardButton});
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +13,7 @@ class EmptyCardsView extends StatelessWidget {
 
     return Column(
       children: <Widget>[
-        Divider(
-          color: theme.dividerTheme.color,
-          thickness: theme.dividerTheme.thickness,
-        ),
+        Divider(color: theme.dividerTheme.color, thickness: theme.dividerTheme.thickness),
         Padding(
           padding: const EdgeInsets.only(top: 100.0, left: 16.0, right: 16.0),
           child: Column(
@@ -28,10 +22,7 @@ class EmptyCardsView extends StatelessWidget {
             children: <Widget>[
               Text(
                 localizations.empty_cards,
-                style: TextStyle(
-                  fontSize: 24,
-                  color: theme.colorScheme.secondary,
-                ),
+                style: TextStyle(fontSize: 24, color: theme.colorScheme.secondary),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 50),
