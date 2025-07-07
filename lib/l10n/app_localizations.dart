@@ -590,10 +590,10 @@ abstract class AppLocalizations {
   /// **'Fidelização'**
   String get loyalty_card;
 
-  /// Label for sim card.
+  /// Label for SIM card.
   ///
   /// In pt, this message translates to:
-  /// **'Sim'**
+  /// **'SIM'**
   String get sim_card;
 
   /// Label for business card.

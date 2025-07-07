@@ -328,9 +328,9 @@
   "@loyalty_card": {
     "description": "Label for loyalty card."
   },
-  "sim_card": "Sim",
+  "sim_card": "SIM",
   "@sim_card": {
-    "description": "Label for sim card."
+    "description": "Label for SIM card."
   },
   "business_card": "Business",
   "@business_card": {

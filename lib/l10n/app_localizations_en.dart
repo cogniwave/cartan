@@ -265,7 +265,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loyalty_card => 'Loyalty';
 
   @override
-  String get sim_card => 'Sim';
+  String get sim_card => 'SIM';
 
   @override
   String get business_card => 'Business';

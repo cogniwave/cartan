@@ -65,8 +65,7 @@ class _ManualEntryViewState extends State<ManualEntryView> {
 
     final cardType = widget.cardType ?? 'loyalty';
 
-    if (!_formatValidator.isCardNumberRequired(cardType) &&
-        cardNumber.isEmpty) {
+    if (!_formatValidator.isCardNumberRequired(cardType) && cardNumber.isEmpty) {
       data.remove('card_number');
     } else if (cardNumber.isNotEmpty) {
       data['card_number'] = cardNumber;
@@ -101,50 +100,34 @@ class _ManualEntryViewState extends State<ManualEntryView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(
-                  child: CardPreviewWidget(
-                    assetImagePath: widget.assetImagePath,
-                    formManager: widget.formManager,
-                  ),
+                  child: CardPreviewWidget(assetImagePath: widget.assetImagePath, formManager: widget.formManager),
                 ),
                 const SizedBox(height: 32),
 
                 // Required fields
                 ...requiredFields.map(
-                  (field) => Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: _fieldBuilder.buildField(field),
-                  ),
+                  (field) =>
+                      Padding(padding: const EdgeInsets.only(bottom: 16), child: _fieldBuilder.buildField(field)),
                 ),
 
                 // Optional toggle
                 if (optionalFields.isNotEmpty) ...[
                   GestureDetector(
-                    onTap:
-                        () => setState(
-                          () => _showOptionalFields = !_showOptionalFields,
-                        ),
+                    onTap: () => setState(() => _showOptionalFields = !_showOptionalFields),
                     child: Row(
                       children: [
-                        Text(
-                          localizations.optional_fields,
-                          style: theme.textTheme.bodyMedium,
-                        ),
+                        Text(localizations.optional_fields, style: theme.textTheme.bodyMedium),
 
                         const SizedBox(width: 8),
-                        Icon(
-                          _showOptionalFields
-                              ? Icons.expand_less
-                              : Icons.expand_more,
-                        ),
+                        Icon(_showOptionalFields ? Icons.expand_less : Icons.expand_more),
                       ],
                     ),
                   ),
+
                   if (_showOptionalFields)
                     ...optionalFields.map(
-                      (field) => Padding(
-                        padding: const EdgeInsets.only(top: 16, bottom: 16),
-                        child: _fieldBuilder.buildField(field),
-                      ),
+                      (field) =>
+                          Padding(padding: const EdgeInsets.only(bottom: 16), child: _fieldBuilder.buildField(field)),
                     ),
                 ],
 
@@ -157,13 +140,8 @@ class _ManualEntryViewState extends State<ManualEntryView> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: theme.extension<CustomColors>()!.accent,
                       foregroundColor: theme.colorScheme.primary,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 16,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     ),
                     onPressed: _handleSave,
                   ),

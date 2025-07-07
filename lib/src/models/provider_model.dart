@@ -32,8 +32,7 @@ abstract class Provider {
   // Factory method to create instances based on category
   static Provider fromJson(Map<String, dynamic> json) {
     final category = json['category'] as String;
-    return categoryToClass[category.toLowerCase()]?.call(json)
-        ?? LoyaltyProvider.fromJson(json);
+    return categoryToClass[category.toLowerCase()]?.call(json) ?? LoyaltyProvider.fromJson(json);
   }
 }
 
@@ -123,8 +122,7 @@ class BusinessProvider extends Provider {
   // Business-specific methods
   String? get industry => metadata['industry'] as String?;
   String? get businessType => metadata['businessType'] as String?;
-  List<String> get services =>
-      List<String>.from(metadata['services'] as List<dynamic>? ?? []);
+  List<String> get services => List<String>.from(metadata['services'] as List<dynamic>? ?? []);
 
   bool get isB2B => metadata['isB2B'] as bool? ?? false;
   bool get isB2C => metadata['isB2C'] as bool? ?? true;
@@ -224,8 +222,7 @@ class InformativeProvider extends Provider {
 
   // Informative-specific metadata getters
   String? get description => metadata['description'] as String?;
-  List<String>? get instructions =>
-      List<String>.from(metadata['instructions'] as List<dynamic>? ?? []);
+  List<String>? get instructions => List<String>.from(metadata['instructions'] as List<dynamic>? ?? []);
 }
 
 // Other provider (generic catch-all)
@@ -278,71 +275,14 @@ class ProviderHelper {
     required String website,
     Map<String, dynamic>? metadata,
   }) {
-    switch (category.toLowerCase()) {
-      case 'sim':
-        return SimProvider(
-          id: id,
-          displayName: displayName,
-          formats: formats,
-          assetImagePath: assetImagePath,
-          website: website,
-          metadata: metadata ?? {},
-        );
-      case 'business':
-        return BusinessProvider(
-          id: id,
-          displayName: displayName,
-          formats: formats,
-          assetImagePath: assetImagePath,
-          website: website,
-          metadata: metadata ?? {},
-        );
-      case 'membership':
-        return MembershipProvider(
-          id: id,
-          displayName: displayName,
-          formats: formats,
-          assetImagePath: assetImagePath,
-          website: website,
-          metadata: metadata ?? {},
-        );
-      case 'rewards':
-        return RewardsProvider(
-          id: id,
-          displayName: displayName,
-          formats: formats,
-          assetImagePath: assetImagePath,
-          website: website,
-          metadata: metadata ?? {},
-        );
-      case 'informative':
-        return InformativeProvider(
-          id: id,
-          displayName: displayName,
-          formats: formats,
-          assetImagePath: assetImagePath,
-          website: website,
-          metadata: metadata ?? {},
-        );
-      case 'other':
-        return OtherProvider(
-          id: id,
-          displayName: displayName,
-          formats: formats,
-          assetImagePath: assetImagePath,
-          website: website,
-          metadata: metadata ?? {},
-        );
-      default:
-        return LoyaltyProvider(
-          id: id,
-          displayName: displayName,
-          formats: formats,
-          assetImagePath: assetImagePath,
-          website: website,
-          metadata: metadata ?? {},
-        );
-    }
+    return categoryToClass[category.toLowerCase()]!({
+      "id": id,
+      "displayName": displayName,
+      "formats": formats,
+      "assetImagePath": assetImagePath,
+      "website": website,
+      "metadata": metadata ?? {},
+    });
   }
 }
 

@@ -2,15 +2,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:cartan/src/models/provider_model.dart';
 
-enum ProviderCategory {
-  loyalty,
-  sim,
-  membership,
-  rewards,
-  informative,
-  business,
-  other
-}
+enum ProviderCategory { loyalty, sim, membership, rewards, informative, business, other }
 
 extension ProviderCategoryExtension on ProviderCategory {
   String get name {

@@ -265,7 +265,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get loyalty_card => 'Fidelização';
 
   @override
-  String get sim_card => 'Sim';
+  String get sim_card => 'SIM';
 
   @override
   String get business_card => 'Visita';
