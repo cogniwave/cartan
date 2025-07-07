@@ -1,5 +1,4 @@
 import 'package:bugsnag_flutter/bugsnag_flutter.dart';
-import 'package:flutter/material.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 
 class SystemBrightness {
